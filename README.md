@@ -10,7 +10,7 @@
 *check PSR-1 too 
 
 ## Documentation
-* [guide for documentation comments] (https://www.sitepoint.com/introduction-to-phpdoc/)
+* [guide for documentation comments](https://www.sitepoint.com/introduction-to-phpdoc/)
 * for documentation we are using [phpDocumentor](https://docs.phpdoc.org/)
 
 documentation is at /docs/
