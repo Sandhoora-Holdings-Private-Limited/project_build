@@ -50,7 +50,6 @@ class Main extends CI_Controller
                 	$_SESSION['user'] = $user;
                 	$_SESSION['access'] = $role_data['access'];
                 	$_SESSION['apps'] = $role_data['apps'];
-                	$_SESSION['tabs'] = $this->$make_side_menu($role_data['access']);
                 	redirect('/Main', 'refresh');
                 }
             }
