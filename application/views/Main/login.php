@@ -57,6 +57,7 @@
         <div class="col-xs-4 col-sm-2">
         </div>
       </div>
+      <input name="clicked" value="ture" hidden>
     </form>
 
     <!--div class="social-auth-links text-center">

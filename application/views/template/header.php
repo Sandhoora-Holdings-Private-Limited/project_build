@@ -162,36 +162,45 @@ desired effect
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NEVIGATION</li>
-        <li class="header"><?= $user['app']?></li>
-        <!-- Optionally, you can add icons to the links -->
-        <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>
-        <?php
-
-        
-        foreach($user['tabs'] as $value){
-          //echo "$value <br>";}
-          ?><li class="active"><a href="#"><i class="fa fa-link"></i> <span><?= $value ?></span></a></li><?php ; }?>
-          
-        
-        
-
-
-       
-        
-        <!--
-        <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
         <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
+          <a href="#">
+            <i class="fa fa-dashboard"></i> <span>Apps</span>
             <span class="pull-right-container">
-                <i class="fa fa-angle-left pull-right"></i>
-              </span>
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="#">Link in level 2</a></li>
-            <li><a href="#">Link in level 2</a></li>
+        <?php
+        foreach ($apps as $app) {
+          echo '<li><a href="'.base_url().'/'.$app['controller_name'].'"><i class="'.$app['icon'].'"></i>'.$app['name'].'</a></li>';
+        }
+        ?>
           </ul>
         </li>
-      -->
+
+        <?php
+        if(isset($page['app_name'])) echo '<li class="header">'.$page['app_name'].'</li>';
+        if(isset($tabs)){
+          foreach ($tabs as $tab) {
+            if(isset($tab['next_level']))
+            {
+              echo '<li class="treeview">';
+              echo '<a href="#"><i class="'.$tab['icon'].'"></i> <span>'.$tab['name'].'</span>';
+              echo '<span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i> </span> </a>';
+              echo '<ul class="treeview-menu">';
+              foreach ($tab['next_level'] as $tab_2) {
+                echo '<li><a href="'.$tab_2['link'].'"><i class="'.$tab_2['icon'].'"></i>'.$tab_2['name'].'</a></li>';
+              }
+            echo '</ul> </li>';
+            }
+            else
+            {
+              echo '<li><a href="'.$tab['link'].'"><i class="'.$tab['icon'].'"></i> <span>'.$tab['name'].'</span></a></li>';
+            }
+          }
+        }
+        ?>
+
       </ul>
       <!-- /.sidebar-menu -->
     </section>
