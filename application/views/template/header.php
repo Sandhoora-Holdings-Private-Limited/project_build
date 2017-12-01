@@ -162,8 +162,23 @@ desired effect
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NEVIGATION</li>
+        <li class="header"><?= $user['app']?></li>
         <!-- Optionally, you can add icons to the links -->
         <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>
+        <?php
+
+        
+        foreach($user['tabs'] as $value){
+          //echo "$value <br>";}
+          ?><li class="active"><a href="#"><i class="fa fa-link"></i> <span><?= $value ?></span></a></li><?php ; }?>
+          
+        
+        
+
+
+       
+        
+        <!--
         <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
@@ -176,6 +191,7 @@ desired effect
             <li><a href="#">Link in level 2</a></li>
           </ul>
         </li>
+      -->
       </ul>
       <!-- /.sidebar-menu -->
     </section>
