@@ -11,6 +11,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <title>ProjectBuild</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
   <link rel="stylesheet" href= "<?php echo base_url(); ?>/assets/css/bootstrap.min.css">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="<?php echo base_url(); ?>/assets/css/font-awesome.min.css">
@@ -18,6 +19,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="<?php echo base_url(); ?>/assets/css/ionicons.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="<?php echo base_url(); ?>/assets/css/AdminLTE.min.css">
+  <!-- bootstrap datepicker -->
+  <link rel="stylesheet" href="<?php echo base_url(); ?>/assets/css/bootstrap-datepicker.min.css">
   <!-- Applying skin-black-->
   <link rel="stylesheet" href="<?php echo base_url(); ?>/assets/css/skin-black.min.css">
 
