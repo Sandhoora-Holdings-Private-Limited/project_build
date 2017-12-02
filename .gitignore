@@ -1,10 +1,4 @@
 .DS_Store
 *.ignore
-application/config/sessions/ci_session2cpk9mpnopn862kl3d8cg4n3go3poktc
-application/config/sessions/ci_sessionbm3gdp9dnvq56h1hal1snmko1sd6tav5
-application/config/sessions/ci_sessionefvmi83e00o19vri5r43qsj1t1a49id5
-application/config/sessions/ci_sessiongbfo64dkrhcbr6qshol72jvlodbc1jcp
-application/config/sessions/ci_sessionm7pcgl45h1a465jrud25fhb9bakj5g30
-application/config/sessions/ci_sessionn8rgfa0pk8ojviamofijih8g8uok7687
-application/config/sessions/ci_sessionq8ao0iq63jjn8jua76o9e92u7f22ugfh
-application/config/sessions/ci_sessionuus05hh5r7j538u4sk5dkt9jicpskhv8
+application/config/sessions/*
+Database/*
