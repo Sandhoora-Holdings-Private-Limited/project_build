@@ -1,7 +1,5 @@
 
-<!--https://adminlte.io/themes/AdminLTE/pages/forms/advanced.html -->
 <!DOCTYPE html>
-
 <html>
 <head>
   <meta charset="utf-8">
@@ -38,25 +36,25 @@
 <form role="form">
               <div class="box-body">
                 <div class="form-group">
-                  <label for="exampleInputEmail1">Email address</label>
-                  <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                  <label for="exampleInputEmail1">Name</label>
+                  <input type="text" class="form-control" id="name" placeholder="Enter Name">
                 </div>
+              <div class="box-body">
                 <div class="form-group">
-                  <label for="exampleInputPassword1">Password</label>
-                  <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                  <label for="exampleInputEmail1">Address</label>
+                  <input type="text" class="form-control" id="address" placeholder="Enter Address">
                 </div>
+              <div class="box-body">
                 <div class="form-group">
-                  <label for="exampleInputFile">File input</label>
-                  <input type="file" id="exampleInputFile">
+                  <label for="exampleInputEmail1">Email </label>
+                  <input type="email" class="form-control" id="email" placeholder="Enter Email">
+                </div>
 
-                  <p class="help-block">Example block-level help text here.</p>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Contact Number</label>
+                  <input type="text" class="form-control" id="phone_number" placeholder="Enter Contact Number">
                 </div>
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox"> Check me out
-                  </label>
-                </div>
-              </div>
+                
               <!-- /.box-body -->
 
               <div class="box-footer">
