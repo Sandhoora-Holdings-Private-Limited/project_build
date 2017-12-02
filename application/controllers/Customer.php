@@ -25,7 +25,7 @@ class Customer extends CI_Controller
             redirect('/Main/login', 'refresh');
         }
     }
-    public function new()
+    /*public function new()
     {
         if(isset($_SESSION['user']))
         {
@@ -41,5 +41,11 @@ class Customer extends CI_Controller
             redirect('/Main/login', 'refresh');
         }
 
+    }*/
+    public function newCus(){
+        $data['page'] = array('header'=>'Customer', 'description'=>'pick a customer or create new one','app_name'=>'CUSTOMER');
+        //$this->load->view('template/header',$data);
+            $this->load->view('Customer/new');
+            $this->load->view('template/footer');
     }
 }
