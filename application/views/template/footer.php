@@ -107,14 +107,39 @@
 <script src="<?php echo base_url(); ?>/assets/js/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="<?php echo base_url(); ?>/assets/js/adminlte.min.js"></script>
+<!-- DataTables -->
+<script src="<?php echo base_url(); ?>/assets/js/jquery.dataTables.min.js"></script>
+<script src="<?php echo base_url(); ?>/assets/js/dataTables.bootstrap.min.js"></script>
 <!-- Page script -->
 <script>
   $(function () {
+
     //Date picker
-    $('#datepicker').datepicker({
+    $('#project_new_datepicker').datepicker({
+      format: 'yyyy-mm-dd',
+      autoclose: true
+    })
+    $('#project_new_datepicker1').datepicker({
+      format: 'yyyy-mm-dd',
       autoclose: true
     })
   })
+
+  <?php
+    if(isset($data_tables))
+    {
+      foreach ($data_tables as $data_table) {
+        echo "$('#".$data_table."').DataTable(";
+        // echo "'paging'      : true,";
+        // echo "'lengthChange'      : false,";
+        // echo "'searching'      : true,";
+        // echo "'ordering'      : true,";
+        // echo "'info'      : true,";
+        // echo "'autoWidth'      : false";
+        echo ")";
+      }
+    }
+  ?>
 </script>
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.

@@ -23,6 +23,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="<?php echo base_url(); ?>/assets/css/bootstrap-datepicker.min.css">
   <!-- Applying skin-black-->
   <link rel="stylesheet" href="<?php echo base_url(); ?>/assets/css/skin-black.min.css">
+    <!-- DataTables -->
+  <link rel="stylesheet" href="<?php echo base_url(); ?>/assets/css/dataTables.bootstrap.min.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -181,24 +183,50 @@ desired effect
           </ul>
         </li>
 
+        <!-- TABS GO HERE -->
         <?php
+        //app name as a spearator
         if(isset($page['app_name'])) echo '<li class="header">'.$page['app_name'].'</li>';
+
+        //tabs
         if(isset($tabs)){
+          $uri = $_SERVER['REQUEST_URI'];
+          $url =  base_url();
+          $full_url = $url.substr($uri,1);
+          //var_dump( strcmp($murl, 'http://localhost:8001//Project/inventory_dashboard/2') );
+
+
           foreach ($tabs as $tab) {
+            $active = '';
+            $drop_active = '';
             if(isset($tab['next_level']))
             {
-              echo '<li class="treeview">';
+              if(isset($tab['active']))
+                $drop_active='active menu-open';
+              else
+                $drop_active='';
+
+              echo '<li class="treeview '.$drop_active.'">';
               echo '<a href="#"><i class="'.$tab['icon'].'"></i> <span>'.$tab['name'].'</span>';
               echo '<span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i> </span> </a>';
               echo '<ul class="treeview-menu">';
               foreach ($tab['next_level'] as $tab_2) {
-                echo '<li><a href="'.$tab_2['link'].'"><i class="'.$tab_2['icon'].'"></i>'.$tab_2['name'].'</a></li>';
+                 if(strcmp($full_url, $tab_2['link']) == 0)
+                    $active = 'class="active"';
+                else
+                    $active = '';
+                echo '<li '.$active.'><a href="'.$tab_2['link'].'"><i class="'.$tab_2['icon'].'"></i>'.$tab_2['name'].'</a></li>';
               }
             echo '</ul> </li>';
             }
             else
             {
-              echo '<li><a href="'.$tab['link'].'"><i class="'.$tab['icon'].'"></i> <span>'.$tab['name'].'</span></a></li>';
+              if(strcmp($full_url, $tab['link']) == 0)
+                $active = 'class="active"';
+              else
+                $active = '';
+
+              echo '<li '.$active.'><a href="'.$tab['link'].'"><i class="'.$tab['icon'].'"></i> <span>'.$tab['name'].'</span></a></li>';
             }
           }
         }
