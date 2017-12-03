@@ -57,17 +57,27 @@ class Customer extends CI_Controller
 
         if ($this->form_validation->run() == FALSE)
                 {
-                        $this->load->view('Customer/new');
-                        $this->load->view('template/footer');
+                        //$this->load->view('Customer/new');
+                       // $this->load->view('template/footer');
+                        redirect('http://localhost/group-project-1.1/index.php/Customer/newCus', 'refresh');
                 }
                 else
                 {
                        $this->load->model('Customer_model');
                        $this->Customer_model->set_customer_data();
+                       
                 }
     }
     public function aa(){
-        echo "submit";
+        //$this->load->view('Customer/list_customer');
+        $this->load->model('Customer_model');
+        $this->Customer_model->get_customer_data();
+    }
+    public function listcustomer(){
+        $this->load->model('Customer_model');
+        $data['customers']=$this->Customer_model->get_customer_data();
+        $this->load->view('Customer/list_customer',$data);
+
     }
 
     
