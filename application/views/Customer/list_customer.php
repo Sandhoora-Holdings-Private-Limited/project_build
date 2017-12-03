@@ -2,17 +2,17 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Responsive Hover Table</h3>
-
-              <div class="box-tools">
-                <div class="input-group input-group-sm" style="width: 150px;">
-                  <input name="table_search" class="form-control pull-right" placeholder="Search" type="text">
-
-                  <div class="input-group-btn">
-                    <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                  </div>
-                </div>
-              </div>
+              <h3 class="box-title">Customers Details</h3>
+        <?php  echo form_open('http://localhost/group-project-1.1/index.php/Customer/customerbyid'); ?>
+        <class="sidebar-form">
+        <div class="input-group">
+          <input type="text" name="id" class="form-control" placeholder="Search...">
+              <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                </button>
+              </span>
+        </div>
+      </form>
             </div>
             <!-- /.box-header -->
             <div class="box-body table-responsive no-padding">
