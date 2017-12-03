@@ -34,8 +34,8 @@
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
-
-<form role="form">
+<? php  echo form_open(); ?>
+<!--<form role="form" > -->
               <div class="box-body">
                 <div class="form-group">
                   <label for="exampleInputEmail1">Email address</label>
@@ -63,5 +63,6 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
               </div>
             </form>
+            <? php  echo form_close(); ?>
 </body>
 </html>

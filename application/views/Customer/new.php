@@ -32,27 +32,27 @@
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
-
-<form role="form">
+<?php echo validation_errors(); ?>
+          <?php  echo form_open('http://localhost/group-project-1.1/index.php/Customer/Newcustomer'); ?>
               <div class="box-body">
                 <div class="form-group">
                   <label for="exampleInputEmail1">Name</label>
-                  <input type="text" class="form-control" id="name" placeholder="Enter Name">
+                  <input type="text" class="form-control" id="name" placeholder="Enter Name" name="name">
                 </div>
               <div class="box-body">
                 <div class="form-group">
                   <label for="exampleInputEmail1">Address</label>
-                  <input type="text" class="form-control" id="address" placeholder="Enter Address">
+                  <input type="text" class="form-control" id="address" placeholder="Enter Address" name="address">
                 </div>
               <div class="box-body">
                 <div class="form-group">
                   <label for="exampleInputEmail1">Email </label>
-                  <input type="email" class="form-control" id="email" placeholder="Enter Email">
+                  <input type="email" class="form-control" id="email" placeholder="Enter Email" name="email">
                 </div>
 
                 <div class="form-group">
                   <label for="exampleInputPassword1">Contact Number</label>
-                  <input type="text" class="form-control" id="phone_number" placeholder="Enter Contact Number">
+                  <input type="text" class="form-control" id="phone_number" placeholder="Enter Contact Number" name="phone_number">
                 </div>
                 
               <!-- /.box-body -->
@@ -60,6 +60,6 @@
               <div class="box-footer">
                 <button type="submit" class="btn btn-primary">Submit</button>
               </div>
-            </form>
+      <?php echo form_close(); ?>
 </body>
 </html>
