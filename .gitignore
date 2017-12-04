@@ -1,4 +1,5 @@
 .DS_Store
 *.ignore
-application/config/sessions/*
-Database/*
+./application/config/sessions/*
+./Database/*
+./application/config/config.php
