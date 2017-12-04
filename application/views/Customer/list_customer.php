@@ -28,6 +28,7 @@
 <th></th>
                 </tr>
                 <?php 
+                //echo form_open('http://localhost/group-project-1.1/index.php/Customer/customerbyid');
                 foreach ($customers as $customer) {
                  
                 
@@ -40,13 +41,19 @@
 
                   
                   
-  echo '<td> <button type="button" class="btn btn-block btn-info">Info</button>  </td>';
+  echo '<td><a href="http://localhost/group-project-1.1/index.php/Customer/customerbyidview/"><button type="button" class="btn btn-block btn-info" >Info</button> </a> </td>';
   echo '<td> <button type="button" class="btn btn-block btn-success">Edit</button> </td>';
    echo '<td><button type="button" class="btn btn-block btn-danger">Danger</button></td>';
+
+   //<a href="<?php echo base_url('index.php/Admin/editRingPost/'.$row['ringId']);
+   
                 
-              echo '</tr>';
+              //echo '</tr>';
               }
+              //</form>
               ?>
+
+
                 <!--<tr>
                   <td>219</td>
                   <td>Alexander Pierce</td>

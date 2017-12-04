@@ -68,11 +68,11 @@ class Customer extends CI_Controller
                        
                 }
     }
-    /*public function aa(){
-        //$this->load->view('Customer/list_customer');
-        $this->load->model('Customer_model');
-        $this->Customer_model->get_customer_data();
-    }*/
+    public function aa(){
+        $this->load->view('Customer/view');
+        //$this->load->model('Customer_model');
+        //$this->Customer_model->get_customer_data();
+    }
     public function listcustomer(){
         $this->load->model('Customer_model');
         $data['customers']=$this->Customer_model->get_customer_data();
@@ -85,6 +85,15 @@ class Customer extends CI_Controller
         $this->load->model('Customer_model');
         $data['customers']=$this->Customer_model->get_data_by_id($id);
         $this->load->view('Customer/list_customer',$data);
+        
+    
+    }
+    public function customerbyidview()
+    {
+        $id = $this->input->post('ID');
+        $this->load->model('Customer_model');
+        $data['customers']=$this->Customer_model->get_data_by_id($id);
+        $this->load->view('Customer/view',$data);
     }
     
 

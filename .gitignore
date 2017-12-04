@@ -3,3 +3,4 @@
 ./application/config/sessions/*
 ./Database/*
 ./application/config/config.php
+application/config/sessions/
