@@ -1,5 +1,20 @@
 <div class="row">
   <div class="col-xs-12">
+    <div class="alert alert-success alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <h4><i class="icon fa fa-check"></i> Sucess </h4>
+      Customer succefully added.
+    </div>
+    <div class="alert alert-danger alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <h4><i class="icon fa fa-ban"></i> Failed!</h4>
+      Failed to add to customer !
+    </div>
+
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
     <div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">New Customer</h3>
@@ -7,7 +22,7 @@
         <!-- /.box-header -->
         <!-- form start -->
         <?php echo validation_errors(); ?>
-        <form role="form" action="<?= base_url(); ?>/Customer/Newcustomer" method="post">
+        <form role="form" action="<?= base_url(); ?>/Customer/Addnewcustomer" method="post">
           <div class="box-body">
             <div class="form-group">
               <label for="exampleInputEmail1">Name</label>

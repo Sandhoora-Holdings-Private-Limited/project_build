@@ -41,7 +41,12 @@
 
                   
                   
-  echo '<td><a href="http://localhost/group-project-1.1/index.php/Customer/customerbyidview/"><button type="button" class="btn btn-block btn-info" >Info</button> </a> </td>';
+  echo '<td>
+          <form action="'.base_url().'/Customer/customerbyidview" method="post">
+              <input hidden name="id" value="'.$customer->id.'">
+              <button type="submit" class="btn btn-block btn-info" >Info</button>
+            </form>
+          </td>';
   echo '<td> <button type="button" class="btn btn-block btn-success">Edit</button> </td>';
    echo '<td><button type="button" class="btn btn-block btn-danger">Danger</button></td>';
 
