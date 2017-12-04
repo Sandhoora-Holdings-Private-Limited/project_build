@@ -44,9 +44,14 @@ class Customer extends CI_Controller
     }*/
     public function newCus(){
         $data['page'] = array('header'=>'Customer', 'description'=>'pick a customer or create new one','app_name'=>'CUSTOMER');
-        //$this->load->view('template/header',$data);
-            $this->load->view('Customer/new');
-            $this->load->view('template/footer');
+        $data['page'] = array('header'=>'Projects', 'description'=>'pick a project or create new one','app_name'=>'PROJECTS');
+        $data['user'] = $_SESSION['user'];
+        $data['apps'] = $_SESSION['apps'];
+        
+        #$data['tabs'] = 
+        $this->load->view('template/header',$data);
+        $this->load->view('Customer/new');
+        $this->load->view('template/footer');
     }
     public function Newcustomer(){
         $this->load->library('form_validation');
