@@ -40,7 +40,7 @@ class Project extends CI_Controller
             {
                 $this->Project_model->new_project($_POST['name'], $_POST['address'], $_POST['start_date'], $_POST['end_date']);
                 $data['sucess'] = true;
-                $data['error'] = false;
+                $data['error_log(message)'] = false;
             }
             $data['page'] = array('header'=>'Project New', 'description'=>'create a new project','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];

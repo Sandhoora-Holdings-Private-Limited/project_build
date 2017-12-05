@@ -4,3 +4,7 @@
 ./Database/*
 ./application/config/config.php
 application/config/sessions/
+*.xml
+application/config/config.php
+*.iml
+application/config/config.php
