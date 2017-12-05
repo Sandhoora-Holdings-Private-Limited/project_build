@@ -110,9 +110,11 @@
 <!-- DataTables -->
 <script src="<?php echo base_url(); ?>/assets/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo base_url(); ?>/assets/js/dataTables.bootstrap.min.js"></script>
+<!-- Select2 -->
+<script src="<?php echo base_url(); ?>/assets/js/select2.full.min.js"></script>
 <!-- Page script -->
 <script>
-  $(function () {
+  $(document).ready(function () {
 
     //Date picker
     $('#project_new_datepicker').datepicker({
@@ -123,6 +125,24 @@
       format: 'yyyy-mm-dd',
       autoclose: true
     })
+
+    $('.select2').select2();
+    <?php
+    if(isset($data_tables))
+    {
+      foreach ($data_tables as $data_table) {
+        echo "$('#".$data_table."').DataTable(";
+        // echo "'paging'      : true,";
+        // echo "'lengthChange'      : false,";
+        // echo "'searching'      : true,";
+        // echo "'ordering'      : true,";
+        // echo "'info'      : true,";
+        // echo "'autoWidth'      : false";
+        echo ")";
+      }
+    }
+      ?>
+
   })
 
   <?php

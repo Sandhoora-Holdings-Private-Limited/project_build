@@ -8,7 +8,7 @@ class Project extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Project_model');
-
+        $this->load->model('Transaction_material_model');
     }
 
     public function index()
@@ -30,7 +30,6 @@ class Project extends CI_Controller
         {
             redirect('/Main/login', 'refresh');
         }
-
     }
 
     public function new()
@@ -94,7 +93,6 @@ class Project extends CI_Controller
         {
             redirect('/Main/login', 'refresh');
         }
-
     }
 
     public function team_authority($project_id)
@@ -187,7 +185,6 @@ class Project extends CI_Controller
         {
             redirect('/Main/login', 'refresh');
         }
-
     }
 
     public function budget_change($project_id)
@@ -207,16 +204,83 @@ class Project extends CI_Controller
         {
             redirect('/Main/login', 'refresh');
         }
-
     }
 
-    function operation_inbox($project_id){
+    function operation_inbox($project_id)
+    {
         if(isset($_SESSION['user']))
         {
+            if(isset($_POST['type']))
+            {
+                switch($_POST['type'])
+                {
+                    case 'approve' :
+                    {
+                        $result = $this->Transaction_material_model->approve_transaction($_POST['transaction_id'],$_SESSION['user']['id'],1,$_POST['transaction_type']);
+                        if(!$result)
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = 'Failed to approve transaction '.$_POST['transaction_id'];
+                        }
+                        else
+                        {
+                            $data['sucess'] = true;
+                            $data['message'] = 'Sucessfully approved transaction '.$_POST['transaction_id'];
+                        }
+                        break;
+                    }
+                    case 'denie' :
+                    {
+                        $result = $this->Transaction_material_model->approve_transaction($_POST['transaction_id'],$_SESSION['user']['id'],0,$_POST['transaction_type']);
+                        if(!$result)
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = 'Failed to approve transaction '.$_POST['transaction_id'];
+                        }
+                        else
+                        {
+                            $data['sucess'] = true;
+                            $data['message'] = 'Sucessfully approved transaction '.$_POST['transaction_id'];
+                        }
+                        break;
+                    }
+                    case 'view' :
+                    {
+                        $data['view_transaction_details'] = true;
+                        break;
+                    }
+                    case 'split':
+                    {
+                        $data['fail'] = true;
+                        $data['sucess'] = true;
+                        $data['message'] = 'some message';
+                        break;
+                    }
+                    case 'transfer':
+                    {
+                        $data['fail'] = true;
+                        $data['sucess'] = true;
+                        $data['message'] = 'some message';
+                        break;
+                    }
+                }
+            }
             $data['page'] = array('header'=>'Inbox', 'description'=>'Requests need your approval','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
+            $data['project_id'] = $project_id;
+            $transactions['to_be_approved'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_approved');
+            $transactions['to_be_purchased'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_purchased');
+            $transactions['to_be_recived'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_recived');
+            $transactions['to_be_transfered'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_transfered');
+
+            $transactions['to_be_approved_other'] = $this->Transaction_material_model->get_other_transaction_data_by_state($project_id, 'to_be_approved');
+            $transactions['to_be_paid_other'] = $this->Transaction_material_model->get_other_transaction_data_by_state($project_id, 'to_be_paid');
+
+            $data['transactions'] = $transactions;
+            $data['data_tables'] = array('table_approvals');
+            $data['active_tab'] = 'tab_approvals';
             $this->load->view('template/header',$data);
             $this->load->view('Project/Operation/operation_inbox',$data);
             $this->load->view('template/footer');
@@ -227,7 +291,38 @@ class Project extends CI_Controller
         }
     }
 
-    function operation_request($project_id){
+    function operation_inbox_create_purchase_order($project_id)
+    {
+        if(isset($_SESSION['user']))
+        {
+            $data['page'] = array('header'=>'Inbox', 'description'=>'Requests need your approval','app_name'=>'PROJECTS');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
+            $data['project_id'] = $project_id;
+            //$data['']
+            $this->load->view('template/header',$data);
+            $this->load->view('Project/Operation/inbox/operation_inbox_material_PO',$data);
+            $this->load->view('template/footer');
+        }
+        else
+        {
+            redirect('/Main/login', 'refresh');
+        }
+    }
+
+    function operation_inbox_pay_purchase_order($project_id, $order_id)
+    {
+
+    }
+
+    function operation_inbox_confirm_goods_recived($project_id)
+    {
+
+    }
+
+    function operation_request($project_id)
+    {
         if(isset($_SESSION['user']))
         {
             $data['page'] = array('header'=>'Create requests', 'description'=>'Create requests for material and other payments','app_name'=>'PROJECTS');
@@ -244,7 +339,8 @@ class Project extends CI_Controller
         }
     }
 
-    function operation_pending($project_id){
+    function operation_pending($project_id)
+    {
         if(isset($_SESSION['user']))
         {
             $data['page'] = array('header'=>'Pending requests', 'description'=>'Your pending requests','app_name'=>'PROJECTS');
@@ -261,7 +357,8 @@ class Project extends CI_Controller
         }
     }
 
-    function operation_history($project_id){
+    function operation_history($project_id)
+    {
         if(isset($_SESSION['user']))
         {
             $data['page'] = array('header'=>'Request history', 'description'=>'Your request history approved and denied','app_name'=>'PROJECTS');
@@ -331,6 +428,5 @@ class Project extends CI_Controller
 
     function make_project_apps($access, $project_id)
     {
-
     }
 }
