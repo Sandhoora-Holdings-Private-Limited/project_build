@@ -20,6 +20,7 @@ class Customer_model extends CI_Model
 	}
 	public function get_customer_data()
 	{
+		$this->db->where('active', '1');
 		$query = $this->db->get('customer');
 		return $query->result();
 	}
@@ -27,8 +28,11 @@ class Customer_model extends CI_Model
 	{
 		
 		$this->db->where('id', $id);
+		$this->db->where('active', '1');
 		$query = $this->db->get('customer');
 		return $query->result();
+
+
 
 	}
 	public function get_project($id)
@@ -47,5 +51,12 @@ class Customer_model extends CI_Model
 	$this->db->where('id', $id);
 	$this->db->update('customer', $data);
 
+	}
+	public function delete($id){
+		$data = array(
+			'active' => '0'
+		);
+		$this->db->where('id', $id);
+		$this->db->update('customer', $data);
 	}
 }

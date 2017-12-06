@@ -54,7 +54,13 @@
             </form>
           </td>';
   //echo '<td> <button type="button" class="btn btn-block btn-success">Edit</button> </td>';
-   echo '<td><button type="button" class="btn btn-block btn-danger">Danger</button></td>';
+   //echo '<td><button type="button" class="btn btn-block btn-danger">Danger</button></td>';
+  echo '<td>
+          <form action="'.base_url().'/Customer/delete" method="post">
+              <input hidden name="id" value="'.$customer->id.'">
+              <button type="submit" class="btn btn-block btn-danger" >Delete</button>
+            </form>
+          </td>';
 
    //<a href="<?php echo base_url('index.php/Admin/editRingPost/'.$row['ringId']);
    

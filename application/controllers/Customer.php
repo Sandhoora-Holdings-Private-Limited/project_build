@@ -105,7 +105,10 @@ class Customer extends CI_Controller
         $id = $this->input->post('id');
         $this->load->model('Customer_model');
         $data['customers']=$this->Customer_model->get_data_by_id($id);
-        $this->load->view('Customer/list_customer',$data);}
+        $this->load->view('template/header',$data);
+        $this->load->view('Customer/list_customer',$data);
+        $this->load->view('template/footer');
+    }
         
         
     
@@ -158,6 +161,13 @@ class Customer extends CI_Controller
            
         }
 
+    }
+    public function delete(){
+        if(isset($_SESSION['user']))
+        {
+            $id = $_SESSION['id'];
+            $this->Customer_model->delete($id);
+        }
     }
 
 

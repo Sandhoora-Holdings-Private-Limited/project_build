@@ -8,3 +8,4 @@ application/config/sessions/
 application/config/config.php
 *.iml
 application/config/config.php
+application/config/config.php
