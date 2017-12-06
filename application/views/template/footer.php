@@ -125,6 +125,11 @@
       format: 'yyyy-mm-dd',
       autoclose: true
     })
+    $('#po_datepicker').datepicker({
+      format: 'yyyy-mm-dd',
+      autoclose: true
+    })
+
 
     $('.select2').select2();
     <?php

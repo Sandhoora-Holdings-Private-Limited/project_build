@@ -9,6 +9,7 @@ class Project extends CI_Controller
         parent::__construct();
         $this->load->model('Project_model');
         $this->load->model('Transaction_material_model');
+        $this->load->model('Vendor_model');
     }
 
     public function index()
@@ -40,7 +41,7 @@ class Project extends CI_Controller
             {
                 $this->Project_model->new_project($_POST['name'], $_POST['address'], $_POST['start_date'], $_POST['end_date']);
                 $data['sucess'] = true;
-                $data['error_log(message)'] = false;
+                $data['error'] = false;
             }
             $data['page'] = array('header'=>'Project New', 'description'=>'create a new project','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
@@ -206,7 +207,7 @@ class Project extends CI_Controller
         }
     }
 
-    function operation_inbox($project_id)
+    function operation_inbox($project_id, $active_tab='tab_approvals')
     {
         if(isset($_SESSION['user']))
         {
@@ -280,7 +281,7 @@ class Project extends CI_Controller
 
             $data['transactions'] = $transactions;
             $data['data_tables'] = array('table_approvals');
-            $data['active_tab'] = 'tab_approvals';
+            $data['active_tab'] = $active_tab;
             $this->load->view('template/header',$data);
             $this->load->view('Project/Operation/operation_inbox',$data);
             $this->load->view('template/footer');
@@ -300,7 +301,51 @@ class Project extends CI_Controller
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
             $data['project_id'] = $project_id;
-            //$data['']
+            $data['vendors'] = $this->Vendor_model->get_all_vendors();
+            $transactions = array();
+            if(isset($_POST['form']))
+            {
+                $j = 4;
+                if(isset($_POST['vendor']))
+                    $data['vendor'] = $this->Vendor_model->get_vendor_details_by_id($_POST['vendor']);
+                else
+                {
+                    $j--;
+                    $data['fail'] = true;
+                    $data['message'] = 'Please pick a vendor';
+                }
+                if(isset($_POST['tax']))
+                    $data['tax'] = $_POST['tax'];
+                else
+                {
+                    $j--;
+                    $data['fail'] = true;
+                    $data['message'] = 'Please enter tax percentage';
+                }
+                if(isset($_POST['date']))
+                    $data['date'] = $_POST['date'];
+                else
+                {
+                    $j--;
+                    $data['fail'] = true;
+                    $data['message'] = 'Please pick a order date';
+                }
+                for ($i=0; $i < sizeof($_POST)-$j; $i++) {
+                    array_push($transactions, $this->Transaction_material_model->get_transaction_details($_POST['t_'.$i]));
+                }
+                if(!isset($data['fail']))
+                {
+
+                }
+
+            }
+            else
+            {
+                foreach ($_POST as $id) {
+                    array_push($transactions, $this->Transaction_material_model->get_transaction_details($id));
+                }
+            }
+            $data['transactions'] = $transactions;
             $this->load->view('template/header',$data);
             $this->load->view('Project/Operation/inbox/operation_inbox_material_PO',$data);
             $this->load->view('template/footer');

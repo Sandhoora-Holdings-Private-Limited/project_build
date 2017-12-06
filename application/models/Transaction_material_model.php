@@ -7,6 +7,39 @@ class Transaction_material_model extends CI_Model {
 	{
 
 	}
+	public function get_transaction_details($transaction_id)
+	{
+		$query = 'SELECT
+				t.id as transaction_id,
+				t.time as time,
+				t.no_of_units as no_of_units,
+				b.id as budget_entry_id,
+				b.no_of_units as budgeted_no_of_units,
+				b.over_budget_limit as over_budget_limit,
+				bs.name as stage_name,
+				i.name as item_name,
+				i.unit as item_unit,
+				i.id as item_id,
+				p.price as price
+
+				from
+				material_transaction as t
+				JOIN budget_entry_material as b
+				on t.budget_entry_material_id = b.id
+
+				JOIN budget_stage as bs
+				on bs.id = b.budget_stage_id
+
+				JOIN inventory_item as i
+				on b.inventory_item_id = i.id
+
+				JOIN inventory_item_price as p
+				on (b.inventory_item_price_list_id = p.inventory_item_price_list_id AND b.inventory_item_id = p.inventory_item_id)
+				WHERE t.id = '.$transaction_id ;
+
+		$query = $this->db->query($query);
+		return $query->row();
+	}
 
 	public function get_material_transaction_data_by_state($project_id,$state)
 	{

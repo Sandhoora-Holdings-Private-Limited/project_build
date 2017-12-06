@@ -155,7 +155,7 @@
                     echo '<td>'.$transaction->price.'</td>';
                     echo '<td>'.($transaction->no_of_units * $transaction->price).'</td>';
                     echo '<td>'.$transaction->time.'</td>';
-                    echo '<td><input value="'.$transaction->transaction_id.'" type="checkbox"></td>';
+                    echo '<td><input name="transaction_for_item'.$transaction->transaction_id.'" value="'.$transaction->transaction_id.'" type="checkbox"></td>';
                   echo '</tr>';
                 }
                 ?>

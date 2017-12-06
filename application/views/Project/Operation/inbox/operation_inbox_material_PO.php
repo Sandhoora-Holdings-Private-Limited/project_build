@@ -1,38 +1,86 @@
+<div class="row">
+  <div class="col-xs-12">
+    <div style="display:<?php if(isset($fail)) echo"block"; else echo "none"; ?>;" class="alert alert-danger alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <h4><i class="icon fa fa-ban"></i> Failed!</h4>
+      <?php if(isset($message)) echo $message; ?>
+    </div>
+    <div style="display:<?php if(isset($sucess)) echo"block"; else echo "none"; ?>;"  class="alert alert-success alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <h4><i class="icon fa fa-check"></i> Sucess!</h4>
+      <?php if(isset($message)) echo $message; ?>
+    </div>
+  </div>
+</div>
 <section class="invoice">
+   <form action="<?= base_url(); ?>/Project/operation_inbox_create_purchase_order/<?= $project_id ?>" method="post">
       <!-- title row -->
       <div class="row">
         <div class="col-xs-12">
-          <form action="<?= base_url(); ?>/Project/operation_inbox_create_purchase_order/<?= $project_id ?>" method="post">
           <h2 class="page-header">
-            <img src="http://localhost:8001//assets/img/logo.jpg" alt="logo">
+            Sandhoora Holdings Private Limited
+            <big class="pull-right">
+            Purchase Order
+          </big>
           </h2>
+
         </div>
         <!-- /.col -->
       </div>
       <!-- info row -->
+
       <div class="row invoice-info">
         <div class="col-sm-6 invoice-col">
-          <div class="form-group">
-            <label for="vendor" class="col-sm-2 control-label">Vendor : </label>
-            <div class="col-sm-10">
-              <select class="select2" name="vendor">
+          <table class="table">
+            <tr>
+              <td> <strong class="pull-right"> Vendor :</strong> </td>
+              <td>
                 <?php
-                  foreach ($vendors as $vendor) {
-                    echo '<option value="'.$vendor->id.'">'.$vendor->name.'</option>';
+                  if(isset($vendor))
+                  {
+                    echo $vendor->name;
+                    echo '<input name="vendor" value="'.$vendor->id.'" hidden>';
                   }
+                  else
+                  {
+                    echo '<select class="select2" name="state">';
+                    foreach ($vendors as $vendor) {
+                      echo '<option name="vendor" value="'.$vendor->id.'">'.$vendor->name.'</option>';
+                    }
+                    //echo '<option value="'.$vendor->id.'">ads asd as da sd a sd asd as das</option>';
+                    echo '</select>';
+                  }
+
                 ?>
-              </select>
-            </div>
-          </div>
+              </td>
+            </tr>
+          </table>
         </div>
         <!-- /.col -->
-        <div class="col-sm-6 invoice-col">PO ID<address>
-            <strong>John Doe</strong><br>
-            795 Folsom Ave, Suite 600<br>
-            San Francisco, CA 94107<br>
-            Phone: (555) 539-1037<br>
-            Email: john.doe@example.com
-          </address>
+        <div class="col-sm-6 invoice-col">
+          <table class="table">
+            <tr>
+              <td> <strong class="pull-right">Purchase order ID :</strong> </td>
+              <td>#PO-<?php if(isset($po_id))echo $po_id; else echo "__"; ?> </td>
+            </tr>
+            <tr>
+              <td> <strong class="pull-right">Order date :</strong> </td>
+              <td>
+                <?php
+                  if(isset($date))
+                  {
+                    echo $date;
+                    echo '<input name="date" value="'.$date.'" hidden>';
+                  }
+                  else
+                  {
+                     echo '<input name="date" class="form-control pull-right" value="'.date('Y-m-d').'" id="po_datepicker" type="text">';
+                  }
+
+                ?>
+              </td>
+            </tr>
+          </table>
         </div>
         <!-- /.col -->
 
@@ -54,34 +102,19 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>1</td>
-              <td>Call of Duty</td>
-              <td>455-981-221</td>
-              <td>El snort testosterone trophy driving gloves handsome</td>
-              <td>$64.50</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>Need for Speed IV</td>
-              <td>247-925-726</td>
-              <td>Wes Anderson umami biodiesel</td>
-              <td>$50.00</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>Monsters DVD</td>
-              <td>735-845-642</td>
-              <td>Terry Richardson helvetica tousled street art master</td>
-              <td>$10.70</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>Grown Ups Blue Ray</td>
-              <td>422-568-642</td>
-              <td>Tousled lomo letterpress</td>
-              <td>$25.99</td>
-            </tr>
+            <?php
+            $total = 0.00;
+              for ($i=0; $i < sizeof($transactions); $i++)
+              {
+                echo '<input name="t_'.$i.'" value="'.$transactions[$i]->transaction_id.'" hidden>';
+                echo '<td>'.$transactions[$i]->no_of_units.' '.$transactions[$i]->item_unit.'</td>';
+                echo '<td>'.$transactions[$i]->item_name.'</td>';
+                echo '<td> #ITM'.$transactions[$i]->item_id.'</td>';
+                echo '<td>'.$transactions[$i]->stage_name.'</td>';
+                echo '<td>'.($transactions[$i]->no_of_units * $transactions[$i]->price).'</td>';
+                $total += ($transactions[$i]->no_of_units * $transactions[$i]->price);
+              }
+            ?>
             </tbody>
           </table>
         </div>
@@ -101,16 +134,38 @@
             <table class="table">
               <tbody><tr>
                 <th style="width:50%">Subtotal:</th>
-                <td>$250.30</td>
+                <td>Rs<?= $total; ?></td>
               </tr>
               <tr>
-                <th>Tax (9.3%)</th>
-                <td>$10.34</td>
+                  <?php
+                  if(isset($tax))
+                  {
+                    echo '<th>Tax('.$tax.'%)</th>';
+                    echo '<td>Rs'.(($tax/100)*$total).' </td>';
+                  }
+                  else
+                  {
+                    echo '<th>Tax :</th>';
+                     echo '<td><input type="number" min="1" max="100" step="0.01" name="tax"> %</td>';
+                  }
+                 ?>
               </tr>
 
               <tr>
                 <th>Total:</th>
-                <td>$265.24</td>
+                <td>Rs
+                  <?php
+                  if(isset($tax))
+                    {
+                      echo (($tax/100)+1)*$total;
+                      echo '<input name="tax" value="'.$tax.'" hidden>';
+                    }
+                  else
+                  {
+                     echo $total.' + Tax';
+                  }
+                 ?>
+                </td>
               </tr>
             </tbody></table>
           </div>
@@ -122,12 +177,27 @@
       <!-- this row will not appear when printing -->
       <div class="row no-print">
         <div class="col-xs-12">
-          <a href="invoice-print.html" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Print</a>
-          <button type="button" class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Submit Payment
+          <button type="submit" class="btn btn-success pull-right">
+            <?php
+              if(isset($sucess))
+              {
+                echo '<button disabled="true" type="submit" class="btn btn-success pull-right">';
+                echo 'Print purchase order';
+                echo '</button>';
+              }
+              else
+              {
+                echo '<button type="submit" class="btn btn-success pull-right">';
+                echo 'Confirm purchase order';
+                echo '</button>';
+              }
+            ?>
           </button>
-          <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px;">
-            <i class="fa fa-download"></i> Generate PDF
-          </button>
+          <a style="margin-right: 5px;" href="<?= base_url(); ?>/Project/operation_inbox/<?= $project_id ?>" class="btn btn-danger pull-left" >
+            Go back
+          </a>
         </div>
       </div>
+    <input hidden name="form" value="true">
+    </form>
     </section>
