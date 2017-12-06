@@ -1,17 +1,47 @@
-<div class="row">
-  <div class="col-xs-12">
-    <div style="display:<?php if(isset($fail)) echo"block"; else echo "none"; ?>;" class="alert alert-danger alert-dismissible">
-      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-      <h4><i class="icon fa fa-ban"></i> Failed!</h4>
-      <?php if(isset($message)) echo $message; ?>
-    </div>
-    <div style="display:<?php if(isset($sucess)) echo"block"; else echo "none"; ?>;"  class="alert alert-success alert-dismissible">
-      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-      <h4><i class="icon fa fa-check"></i> Sucess!</h4>
-      <?php if(isset($message)) echo $message; ?>
-    </div>
-  </div>
-</div>
+
+<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ProjectBuild</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href= "http://localhost:8001//assets/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="http://localhost:8001//assets/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="http://localhost:8001//assets/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="http://localhost:8001//assets/css/AdminLTE.min.css">
+  <!-- bootstrap datepicker -->
+  <link rel="stylesheet" href="http://localhost:8001//assets/css/bootstrap-datepicker.min.css">
+  <!-- Applying skin-black-->
+  <link rel="stylesheet" href="http://localhost:8001//assets/css/skin-black.min.css">
+    <!-- DataTables -->
+  <link rel="stylesheet" href="http://localhost:8001//assets/css/dataTables.bootstrap.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="http://localhost:8001//assets/css/select2.min.css">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <!-- Google Font -->
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body>
+
+
 <section class="invoice">
    <form action="<?= base_url(); ?>/Project/operation_inbox_create_purchase_order/<?= $project_id ?>" method="post">
       <!-- title row -->
@@ -62,7 +92,6 @@
             <tr>
               <td> <strong class="pull-right">Purchase order ID :</strong> </td>
               <td>#PO-<?php if(isset($po_id))echo $po_id; else echo "__"; ?> </td>
-              <input hidden name="po_id" value="<?php if(isset($po_id))echo $po_id; else echo "__"; ?>">
             </tr>
             <tr>
               <td> <strong class="pull-right">Order date :</strong> </td>
@@ -109,7 +138,7 @@
               {
                 echo "<tr>";
                 echo '<input name="t_'.$i.'" value="'.$transactions[$i]->transaction_id.'" hidden>';
-                echo '<td>'.number_format(($transactions[$i]->no_of_units),2,'.',',' ).' '.$transactions[$i]->item_unit.'</td>';
+                echo '<td>'.$transactions[$i]->no_of_units.' '.$transactions[$i]->item_unit.'</td>';
                 echo '<td>'.$transactions[$i]->item_name.'</td>';
                 echo '<td> #ITM'.$transactions[$i]->item_id.'</td>';
                 echo '<td>'.$transactions[$i]->stage_name.'</td>';
@@ -178,30 +207,12 @@
       <!-- /.row -->
 
       <!-- this row will not appear when printing -->
-      <div class="row no-print">
-        <div class="col-xs-12">
-
-            <?php
-              if(isset($sucess))
-              {
-                echo '<input name="print" hidden value="true"/>';
-                echo '<button type="submit" class="btn btn-success pull-right">';
-                echo 'Print !';
-                echo '</button>';
-              }
-              else
-              {
-                echo '<input name="do_not_print" hidden value="true"/>';
-                echo '<button type="submit" class="btn btn-success pull-right">';
-                echo 'Confirm purchase order';
-                echo '</button>';
-              }
-            ?>
-          <a style="margin-right: 5px;" href="<?= base_url(); ?>/Project/operation_inbox/<?= $project_id ?>" class="btn btn-danger pull-left" >
-            Go back
-          </a>
-        </div>
-      </div>
     <input hidden name="po_form" value="true">
     </form>
     </section>
+    <script type="text/javascript">
+      win = window.open("<?= base_url(); ?>/Project/operation_inbox/<?= $project_id; ?>", '_blank');
+      win.focus();
+    </script>>
+</body>
+</html>

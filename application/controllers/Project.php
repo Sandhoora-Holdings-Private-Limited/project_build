@@ -3,7 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Project extends CI_Controller
 {
-
     public function __construct()
     {
         parent::__construct();
@@ -57,8 +56,8 @@ class Project extends CI_Controller
         {
             redirect('/Main/login', 'refresh');
         }
-
     }
+
     public function view($project_id)
     {
         if(isset($_SESSION['user']))
@@ -207,7 +206,7 @@ class Project extends CI_Controller
         }
     }
 
-    function operation_inbox($project_id, $active_tab='tab_approvals')
+    public function operation_inbox($project_id, $active_tab='tab_approvals')
     {
         if(isset($_SESSION['user']))
         {
@@ -221,12 +220,12 @@ class Project extends CI_Controller
                         if(!$result)
                         {
                             $data['fail'] = true;
-                            $data['message'] = 'Failed to approve transaction '.$_POST['transaction_id'];
+                            $data['message'] = 'Failed to approve transaction '.$_POST['transaction_type'].' '.$_POST['transaction_id'];
                         }
                         else
                         {
                             $data['sucess'] = true;
-                            $data['message'] = 'Sucessfully approved transaction '.$_POST['transaction_id'];
+                            $data['message'] = 'Sucessfully approved transaction '.$_POST['transaction_type'].' '.$_POST['transaction_id'];
                         }
                         break;
                     }
@@ -236,12 +235,12 @@ class Project extends CI_Controller
                         if(!$result)
                         {
                             $data['fail'] = true;
-                            $data['message'] = 'Failed to approve transaction '.$_POST['transaction_id'];
+                            $data['message'] = 'Failed to denie transaction '.$_POST['transaction_type'].' '.$_POST['transaction_id'];
                         }
                         else
                         {
                             $data['sucess'] = true;
-                            $data['message'] = 'Sucessfully approved transaction '.$_POST['transaction_id'];
+                            $data['message'] = 'Sucessfully denied transaction '.$_POST['transaction_type'].' '.$_POST['transaction_id'];
                         }
                         break;
                     }
@@ -264,6 +263,19 @@ class Project extends CI_Controller
                         $data['message'] = 'some message';
                         break;
                     }
+                    case 'pay':
+                        $result = $this->Transaction_material_model->change_transaction_state($_POST['transaction_id'],'paid', 'other_payment');
+                        if($result)
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = 'Failed to pay transaction '.$_POST['transaction_id'];
+                        }
+                        else
+                        {
+                            $data['sucess'] = true;
+                            $data['message'] = 'Sucessfully paid transaction '.$_POST['transaction_id'];
+                        }
+                        break;
                 }
             }
             $data['page'] = array('header'=>'Inbox', 'description'=>'Requests need your approval','app_name'=>'PROJECTS');
@@ -273,14 +285,15 @@ class Project extends CI_Controller
             $data['project_id'] = $project_id;
             $transactions['to_be_approved'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_approved');
             $transactions['to_be_purchased'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_purchased');
-            $transactions['to_be_recived'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_recived');
+            $transactions['to_be_recived'] = $this->Transaction_material_model->get_material_transaction_data_with_po($project_id);
             $transactions['to_be_transfered'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_transfered');
 
             $transactions['to_be_approved_other'] = $this->Transaction_material_model->get_other_transaction_data_by_state($project_id, 'to_be_approved');
             $transactions['to_be_paid_other'] = $this->Transaction_material_model->get_other_transaction_data_by_state($project_id, 'to_be_paid');
 
+            $data['POs'] = $this->Transaction_material_model->get_all_POs();
             $data['transactions'] = $transactions;
-            $data['data_tables'] = array('table_approvals');
+            $data['data_tables'] = array('table_approvals', 'table_purchases', 'table_recivables','table_pay');
             $data['active_tab'] = $active_tab;
             $this->load->view('template/header',$data);
             $this->load->view('Project/Operation/operation_inbox',$data);
@@ -292,7 +305,7 @@ class Project extends CI_Controller
         }
     }
 
-    function operation_inbox_create_purchase_order($project_id)
+    public function operation_inbox_create_purchase_order($project_id)
     {
         if(isset($_SESSION['user']))
         {
@@ -303,9 +316,11 @@ class Project extends CI_Controller
             $data['project_id'] = $project_id;
             $data['vendors'] = $this->Vendor_model->get_all_vendors();
             $transactions = array();
-            if(isset($_POST['form']))
+            if(isset($_POST['po_form']))
             {
-                $j = 4;
+                $j = 6;
+                if(isset($_POST['po_id']))
+                    $data['po_id'] = $_POST['po_id'];
                 if(isset($_POST['vendor']))
                     $data['vendor'] = $this->Vendor_model->get_vendor_details_by_id($_POST['vendor']);
                 else
@@ -330,25 +345,66 @@ class Project extends CI_Controller
                     $data['fail'] = true;
                     $data['message'] = 'Please pick a order date';
                 }
-                for ($i=0; $i < sizeof($_POST)-$j; $i++) {
-                    array_push($transactions, $this->Transaction_material_model->get_transaction_details($_POST['t_'.$i]));
-                }
-                if(!isset($data['fail']))
+                for ($i=0; $i < sizeof($_POST)-$j; $i++)
                 {
+                    array_push($transactions, $this->Transaction_material_model->get_material_transaction_details($_POST['t_'.$i]));
+                }
+                if(sizeof($_POST) == $j)
+                {
+                    $data['fail'] = true;
+                    $data['message'] = 'Go back and pick some items to putchase';
+                }
+                //Sucess
+                if(!isset($data['fail']) && !isset($_POST['print']))
+                {
+                    $transaction_ids = array();
+                    for ($i=0; $i < sizeof($_POST)-$j; $i++)
+                    {
+                        array_push($transaction_ids, $_POST['t_'.$i]);
+                    }
+                    $result = $this->Transaction_material_model->create_PO($transaction_ids, $_POST['vendor'],$_SESSION['user']['id'], $_POST['date']);
+                    if($result)
+                    {
+                        $data['sucess'] = true;
+                        $date['message'] = 'Sucessfully created purchase order';
+                        $data['po_id'] = $result;
+                    }
+                    else
+                    {
+                        $data['failed'] = true;
+                        $date['message'] = 'Failed created purchase order';
+                    }
 
                 }
-
             }
             else
             {
-                foreach ($_POST as $id) {
-                    array_push($transactions, $this->Transaction_material_model->get_transaction_details($id));
+                if(isset($_POST['table_purchases_length']))
+                    unset($_POST['table_purchases_length']);
+                foreach ($_POST as $id)
+                {
+                    $there_is_items = true;
+                    array_push($transactions, $this->Transaction_material_model->get_material_transaction_details($id));
+                }
+                if(!isset($there_is_items))
+                {
+                    $data['failed'] = true;
+                    $date['message'] = 'Please go back and pick items to purchase';
                 }
             }
             $data['transactions'] = $transactions;
-            $this->load->view('template/header',$data);
-            $this->load->view('Project/Operation/inbox/operation_inbox_material_PO',$data);
-            $this->load->view('template/footer');
+
+            if(isset($_POST['print']))
+            {
+                $this->load->view('Project/Operation/inbox/print/operation_inbox_material_PO_print',$data);
+            }
+            else
+            {
+                $this->load->view('template/header',$data);
+                $this->load->view('Project/Operation/inbox/operation_inbox_material_PO',$data);
+                $this->load->view('template/footer');
+            }
+
         }
         else
         {
@@ -356,17 +412,140 @@ class Project extends CI_Controller
         }
     }
 
-    function operation_inbox_pay_purchase_order($project_id, $order_id)
+    public function operation_inbox_pay_purchase_order($project_id)
     {
-
+        if(isset($_SESSION['user']))
+        {
+            $data['page'] = array('header'=>'Inbox', 'description'=>'Requests need your approval','app_name'=>'PROJECTS');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
+            $data['project_id'] = $project_id;
+            if(isset($_POST['tab_pay_length']))
+                    unset($_POST['tab_pay_length']);
+            $transaction_ids = $this->Transaction_material_model->get_PO_items($_POST['po_id']);
+            $transactions = array();
+            foreach ($transaction_ids as $transaction)
+            {
+                array_push($transactions, $this->Transaction_material_model->get_material_transaction_details($transaction->transaction_id));
+            }
+            $data['transactions'] = $transactions;
+            $data['po'] = $this->Transaction_material_model->get_PO_details($_POST['po_id']);
+            $data['po_id'] = $_POST['po_id'];
+            if(isset($_POST['po_pay_form']))
+            {
+                $result = $this->Transaction_material_model->pay_PO($transaction_ids, $_POST['po_id']);
+                if($result)
+                {
+                    $data['sucess'] = true;
+                    $data['message'] = 'Sucessully recorded payment on #PO-'.$_POST['po_id'];
+                }
+                else
+                {
+                    $data['fail'] = true;
+                    $data['message'] = 'Failed to record payment on #PO-'.$_POST['po_id'];
+                }
+            }
+            if(isset($_POST['print']))
+            {
+                $this->load->view('Project/Operation/inbox/print/operation_inbox_material_pay_print',$data);
+            }
+            else
+            {
+                $data['data_tables'] = array('table_PO_reconsiliation');
+                $this->load->view('template/header',$data);
+                $this->load->view('Project/Operation/inbox/operation_inbox_material_pay',$data);
+                $this->load->view('template/footer',$data);
+            }
+        }
+        else
+        {
+            redirect('/Main/login', 'refresh');
+        }
     }
 
-    function operation_inbox_confirm_goods_recived($project_id)
+    public function operation_inbox_confirm_goods_recived($project_id)
     {
+        if(isset($_SESSION['user']))
+        {
+            $data['page'] = array('header'=>'Inbox', 'description'=>'Requests need your approval','app_name'=>'PROJECTS');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
+            $data['project_id'] = $project_id;
+            $transactions = array();
+            if(isset($_POST['table_recivables_length']))
+                    unset($_POST['table_recivables_length']);
+            if(isset($_POST['gr_form']))
+            {
+                $j = 3;
+                for ($i=0; $i < (sizeof($_POST)-$j)/2; $i++)
+                {
+                    array_push($transactions, $this->Transaction_material_model->get_material_transaction_details($_POST['t_'.$i]));
+                }
+                if(sizeof($_POST) == $j)
+                {
+                    $data['fail'] = true;
+                    $data['message'] = 'Go back and pick recived items';
+                }
+                //Sucess
+                if(!isset($data['fail']) && !isset($_POST['print']))
+                {
+                    $transaction_ids = array();
+                    for ($i=0; $i < (sizeof($_POST)-$j)/2; $i++)
+                    {
+                        $transaction = array('state' => $_POST['t_state_'.$i], 'id' => $_POST['t_'.$i]);
+                        array_push($transaction_ids, $transaction);
+                    }
+                    $result = $this->Transaction_material_model->create_GR($transaction_ids);
+                    if($result)
+                    {
+                        $data['sucess'] = true;
+                        $date['message'] = 'Sucessfully created goods recived note';
+                    }
+                    else
+                    {
+                        $data['failed'] = true;
+                        $date['message'] = 'Failed created goods recived note';
+                    }
 
+                }
+            }
+            else
+            {
+                foreach ($_POST as $id)
+                {
+                    $there_is_items = true;
+                    array_push($transactions, $this->Transaction_material_model->get_material_transaction_details($id));
+                }
+                if(!isset($there_is_items))
+                {
+                    $data['failed'] = true;
+                    $date['message'] = 'Please go back and pick items to purchase';
+                }
+            }
+            $data['transactions'] = $transactions;
+
+            if(isset($_POST['print']))
+            {
+                $this->load->view('Project/Operation/inbox/print/operation_inbox_material_GR_print',$data);
+            }
+            else
+            {
+                $data['data_tables'] = array('table_GR_items');
+                $this->load->view('template/header',$data);
+                $this->load->view('Project/Operation/inbox/operation_inbox_material_GR',$data);
+                $this->load->view('template/footer',$data);
+            }
+
+        }
+        else
+        {
+            redirect('/Main/login', 'refresh');
+        }
     }
 
-    function operation_request($project_id)
+    public function operation_request($project_id)
     {
         if(isset($_SESSION['user']))
         {
@@ -384,7 +563,7 @@ class Project extends CI_Controller
         }
     }
 
-    function operation_pending($project_id)
+    public function operation_pending($project_id)
     {
         if(isset($_SESSION['user']))
         {
@@ -402,7 +581,7 @@ class Project extends CI_Controller
         }
     }
 
-    function operation_history($project_id)
+    public function operation_history($project_id)
     {
         if(isset($_SESSION['user']))
         {

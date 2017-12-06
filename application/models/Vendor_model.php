@@ -9,7 +9,7 @@ class Vendor_model extends CI_Model {
 
 	public function get_all_vendors()
 	{
-		$query = $this->db->get('vendor');
+		$query = $this->db->get_where('vendor',array('active' => 1));
 		return $query->result();
 	}
 
