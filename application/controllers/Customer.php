@@ -68,28 +68,14 @@ class Customer extends CI_Controller
         if(isset($_SESSION['user']))
         {
            
-            $this->load->library('form_validation');
-            $this->form_validation->set_rules('name', 'name', 'required');
-            $this->form_validation->set_rules('address', 'address', 'required');
-            $this->form_validation->set_rules('email', 'email', 'required|valid_email');
-            $this->form_validation->set_rules('phone_number', 'phone_number', 'required');
-
-        if ($this->form_validation->run() == FALSE)
-                {
-                        redirect('/Customer/newCus', 'refresh');
-                }
-                else
-                {
+                    $this->Customer_model->set_customer_data();
                     $data['page'] = array('header'=>'Customer New', 'description'=>'create a new customer','app_name'=>'CUSTOMER');
                     $data['user'] = $_SESSION['user'];
                     $data['apps'] = $_SESSION['apps'];
-                    $data['sucess'] = 'flase';
+                    
                     $this->load->view('template/header',$data);
                     $this->load->view('Customer/new',$data);
                     $this->load->view('template/footer');
-                       
-                }
-
                 
            
            
@@ -136,6 +122,42 @@ class Customer extends CI_Controller
         $this->load->view('template/header',$data);
         $this->load->view('Customer/view',$data);
         $this->load->view('template/footer');}
+    }
+    public function edit(){
+        if(isset($_SESSION['user'])){
+            $id = $this->input->post('id');
+            $data['page'] = array('header'=>'Customers', 'description'=>'pick a customer or create new customer','app_name'=>'Customer');
+            $id = $this->input->post('id');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $_SESSION['id'] = $id;
+        
+        
+        $this->load->view('template/header',$data);
+        $this->load->view('Customer/edit',$data);
+        $this->load->view('template/footer');
+        
+    }
+       
+
+    }
+    public function update(){
+        if(isset($_SESSION['user']))
+        {
+            $id = $_SESSION['id'];
+            $this->Customer_model->update($id);
+            $data['page'] = array('header'=>'Customers', 'description'=>'pick a customer or create new customer','app_name'=>'Customer');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $data['customers']=$this->Customer_model->get_customer_data();
+            $this->load->view('template/header',$data);
+            $this->load->view('Customer/list_customer',$data);
+            $this->load->view('template/footer');
+                
+           
+           
+        }
+
     }
 
 
