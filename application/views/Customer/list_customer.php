@@ -47,7 +47,13 @@
               <button type="submit" class="btn btn-block btn-info" >Info</button>
             </form>
           </td>';
-  echo '<td> <button type="button" class="btn btn-block btn-success">Edit</button> </td>';
+  echo '<td>
+          <form action="'.base_url().'/Customer/edit" method="post">
+              <input hidden name="id" value="'.$customer->id.'">
+              <button type="submit" class="btn btn-block btn-success" >Edit</button>
+            </form>
+          </td>';
+  //echo '<td> <button type="button" class="btn btn-block btn-success">Edit</button> </td>';
    echo '<td><button type="button" class="btn btn-block btn-danger">Danger</button></td>';
 
    //<a href="<?php echo base_url('index.php/Admin/editRingPost/'.$row['ringId']);

@@ -37,4 +37,15 @@ class Customer_model extends CI_Model
 		$query = $this->db->get('customer_has_project');
 		return $query->result();
 	}
+	public function update($id){
+		$data = array(
+        'name' => $this->input->post('name'),
+		'address'=> $this->input->post('address'),
+		'email' => $this->input->post('email'),
+		'phone_number' => $this->input->post('phone_number')
+);
+	$this->db->where('id', $id);
+	$this->db->update('customer', $data);
+
+	}
 }
