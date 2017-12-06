@@ -9,6 +9,7 @@ class Project extends CI_Controller
         $this->load->model('Project_model');
         $this->load->model('Transaction_material_model');
         $this->load->model('Vendor_model');
+        $this->load->model('Budget_model');
     }
 
     public function index()
@@ -267,13 +268,13 @@ class Project extends CI_Controller
                         $result = $this->Transaction_material_model->change_transaction_state($_POST['transaction_id'],'paid', 'other_payment');
                         if($result)
                         {
-                            $data['fail'] = true;
-                            $data['message'] = 'Failed to pay transaction '.$_POST['transaction_id'];
+                            $data['sucess'] = true;
+                            $data['message'] = 'Sucessfully paid transaction '.$_POST['transaction_id'];
                         }
                         else
                         {
-                            $data['sucess'] = true;
-                            $data['message'] = 'Sucessfully paid transaction '.$_POST['transaction_id'];
+                            $data['fail'] = true;
+                            $data['message'] = 'Failed to pay transaction '.$_POST['transaction_id'];
                         }
                         break;
                 }
@@ -497,7 +498,7 @@ class Project extends CI_Controller
                         $transaction = array('state' => $_POST['t_state_'.$i], 'id' => $_POST['t_'.$i]);
                         array_push($transaction_ids, $transaction);
                     }
-                    $result = $this->Transaction_material_model->create_GR($transaction_ids);
+                    $result = $this->Transaction_material_model->create_GR($transaction_ids, $project_id, $_SESSION['user']['id']);
                     if($result)
                     {
                         $data['sucess'] = true;
@@ -545,7 +546,7 @@ class Project extends CI_Controller
         }
     }
 
-    public function operation_request($project_id)
+    public function operation_request($project_id, $stage_id=NULL)
     {
         if(isset($_SESSION['user']))
         {
@@ -553,9 +554,22 @@ class Project extends CI_Controller
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
-            $this->load->view('template/header',$data);
-            $this->load->view('Project/Operation/operation_request',$data);
-            $this->load->view('template/footer');
+            $data['project_id'] = $project_id;
+            if($stage_id == NULL)
+            {
+                $data['data_tables'] = array('table_stages_material_request');
+                $data['stages'] = $this->Budget_model->get_stages_by_project($project_id);
+                $this->load->view('template/header',$data);
+                $this->load->view('Project/Operation/operation_request',$data);
+                $this->load->view('template/footer',$data);
+            }
+            else
+            {
+
+                $this->load->view('template/header',$data);
+                $this->load->view('Project/Operation/operation_request_stage',$data);
+                $this->load->view('template/footer',$data);
+            }
         }
         else
         {

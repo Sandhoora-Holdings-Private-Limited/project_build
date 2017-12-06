@@ -61,19 +61,25 @@ class Transaction_material_model extends CI_Model {
 		return $query->result();
 	}
 
-	public function create_GR($transactions)
+	public function create_GR($transactions, $project_id, $user_id)
 	{
 		$this->db->trans_begin();
 		foreach ($transactions as $transaction) {
 			switch ($transaction['state']) {
 				case 'to_be_transfered':
 					$query = 'UPDATE material_transaction SET state="transfered" WHERE id='.$transaction['id'];
+					$this->db->query($query);
 					break;
 				case 'to_be_recived':
 					$query = 'UPDATE material_transaction SET state="to_be_paid" WHERE id='.$transaction['id'];
+					$this->db->query($query);
+					$query = 'SELECT no_of_units,inventory_item_id as item_id from budget_entry_material WHERE id='.$transaction['id'];
+					$res = $this->db->query($query);
+					$e = $res->row();
+					$query = 'CALL inventory_IN('.$e->item_id.', '.$project_id.', '.$e->no_of_units.', "'.$user_id.'")';
+					$this->db->query($query);
 					break;
 			}
-			$this->db->query($query);
 		}
 		if ($this->db->trans_status() === FALSE)
 		{
@@ -90,7 +96,8 @@ class Transaction_material_model extends CI_Model {
 	public function create_PO($transactions, $vendor_id, $user_id, $date)
 	{
 		$this->db->trans_begin();
-		$query ='INSERT INTO purchase_order(vendor_id,user_id,date) VALUES ('.$vendor_id.',"'.$user_id.'",'.$date.')';
+		$query ='INSERT INTO purchase_order(`vendor_id`,`user_id`,`date`) VALUES ('.$vendor_id.',"'.$user_id.'","'.$date.'")';
+		echo $query;
 		$this->db->query($query);
 		$query = 'SELECT LAST_INSERT_ID() as result';
 		$query = $this->db->query($query);
@@ -128,6 +135,7 @@ class Transaction_material_model extends CI_Model {
 				$query = 'UPDATE other_payment_transaction SET state="'.$state.'" WHERE id='.$transaction_id;
 			}
 		}
+		$this->db->query($query);
 		return $this->db->affected_rows();
 	}
 

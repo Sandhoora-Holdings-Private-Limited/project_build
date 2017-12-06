@@ -17,14 +17,15 @@
   <div class="col-xs-12">
     <div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title">Pick a stage</h3>
+        <h3 class="box-title">Request material</h3>
       </div>
       <div class="box-body">
         <table id="table_stages_material_request" class="table table-bordered table-striped">
           <thead>
             <tr>
-              <th>Stage ID</th>
-              <th>Stage name</th>
+              <th>Item ID</th>
+              <th>Item name</th>
+              <th>Stock</th>
               <th></th>
             </tr>
           </thead>
