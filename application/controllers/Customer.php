@@ -20,7 +20,8 @@ class Customer extends CI_Controller
             $data['apps'] = $_SESSION['apps'];
             $tab1 = array('name'=>'Customer List','link'=>base_url().'/Customer/listcustomer', 'icon'=>'fa fa-circle-o');
             $tab2 = array('name'=>'New Customer','link'=>base_url().'/Customer/new', 'icon'=>'fa fa-circle-o');
-            $data['tabs'] = array($tab1,$tab2);
+            $tab3 = array('name'=>'Payment','link'=>base_url().'/Customer/makepayment', 'icon'=>'fa fa-circle-o');
+            $data['tabs'] = array($tab1,$tab2,$tab3);
             $data['customers'] = $this->Customer_model->get_customer_data($_SESSION['user']['id']);
             $this->load->view('template/header',$data);
             $this->load->view('Customer/list_customer',$data);
@@ -169,6 +170,37 @@ class Customer extends CI_Controller
             $this->Customer_model->delete($id);
         }
     }
+    public function makepayment(){
+        if(isset($_SESSION['user']))
+        {
+            $data['page'] = array('header'=>'Customer New', 'description'=>'create a new customer','app_name'=>'CUSTOMER');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            
+            $this->load->view('template/header',$data);
+            $this->load->view('Customer/makepayment',$data);
+            $this->load->view('template/footer');
+        }
+        else
+        {
+            redirect('/Main/login', 'refresh');
+        }
+
+
+    }
+    public function payment(){
+        if(isset($_SESSION['user'])){
+        $this->Customer_model->makepayment();
+        $data['page'] = array('header'=>'Customer New', 'description'=>'create a new customer','app_name'=>'CUSTOMER');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            
+            $this->load->view('template/header',$data);
+            $this->load->view('Customer/makepayment',$data);
+            $this->load->view('template/footer');
+    }
+    }
+
 
 
 

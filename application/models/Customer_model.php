@@ -59,4 +59,12 @@ class Customer_model extends CI_Model
 		$this->db->where('id', $id);
 		$this->db->update('customer', $data);
 	}
+	public function makepayment(){
+		$data = array(
+			'customer_id' => $this->input->post('customer_id'),
+			'project_id' => $this->input->post('project_id'),
+			'ammount' => $this->input->post('ammount')
+		);
+		$this->db->insert('customer_payment',$data);
+	}
 }
