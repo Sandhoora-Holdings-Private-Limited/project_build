@@ -40,7 +40,10 @@ class Customer extends CI_Controller
             $data['page'] = array('header'=>'Customer New', 'description'=>'create a new customer','app_name'=>'CUSTOMER');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
-
+            $tab1 = array('name'=>'Customer List','link'=>base_url().'/Customer/listcustomer', 'icon'=>'fa fa-circle-o');
+            $tab2 = array('name'=>'New Customer','link'=>base_url().'/Customer/new', 'icon'=>'fa fa-circle-o');
+            $tab3 = array('name'=>'Payment','link'=>base_url().'/Customer/makepayment', 'icon'=>'fa fa-circle-o');
+            $data['tabs'] = array($tab1,$tab2,$tab3);
             
             $this->load->view('template/header',$data);
             $this->load->view('Customer/new',$data);
@@ -74,6 +77,7 @@ class Customer extends CI_Controller
                     $data['page'] = array('header'=>'Customer New', 'description'=>'create a new customer','app_name'=>'CUSTOMER');
                     $data['user'] = $_SESSION['user'];
                     $data['apps'] = $_SESSION['apps'];
+
                     
                     $this->load->view('template/header',$data);
                     $this->load->view('Customer/new',$data);
@@ -108,6 +112,10 @@ class Customer extends CI_Controller
             $data['page'] = array('header'=>'Customers', 'description'=>'pick a customer or create new customer','app_name'=>'Customer');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
+            $tab1 = array('name'=>'Customer List','link'=>base_url().'/Customer/listcustomer', 'icon'=>'fa fa-circle-o');
+            $tab2 = array('name'=>'New Customer','link'=>base_url().'/Customer/new', 'icon'=>'fa fa-circle-o');
+            $tab3 = array('name'=>'Payment','link'=>base_url().'/Customer/makepayment', 'icon'=>'fa fa-circle-o');
+            $data['tabs'] = array($tab1,$tab2,$tab3);
         $id = $this->input->post('id');
         $this->load->model('Customer_model');
         $data['customers']=$this->Customer_model->get_data_by_id($id);
@@ -142,6 +150,7 @@ class Customer extends CI_Controller
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $data['id'] = $id;
+            $data['tabs'] = $this->maketab($_SESSION['access'],$id);
             //$_SESSION['id'] = $id;
         
         
@@ -172,11 +181,22 @@ class Customer extends CI_Controller
         }
 
     }
-    public function delete(){
+    public function deletecustomer($id){
         if(isset($_SESSION['user']))
         {
-            $id = $_SESSION['id'];
             $this->Customer_model->delete($id);
+            $data['page'] = array('header'=>'Customers', 'description'=>'pick a customer or create new customer','app_name'=>'Customer');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $tab1 = array('name'=>'Customer List','link'=>base_url().'/Customer/listcustomer', 'icon'=>'fa fa-circle-o');
+            $tab2 = array('name'=>'New Customer','link'=>base_url().'/Customer/new', 'icon'=>'fa fa-circle-o');
+            $tab3 = array('name'=>'Payment','link'=>base_url().'/Customer/makepayment', 'icon'=>'fa fa-circle-o');
+            $data['tabs'] = array($tab1,$tab2,$tab3);
+            $data['customers']=$this->Customer_model->get_customer_data();
+            $this->load->view('template/header',$data);
+            $this->load->view('Customer/list_customer',$data);
+            $this->load->view('template/footer');
+
         }
     }
     public function makepayment(){
@@ -185,6 +205,10 @@ class Customer extends CI_Controller
             $data['page'] = array('header'=>'Customer New', 'description'=>'create a new customer','app_name'=>'CUSTOMER');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
+            $tab1 = array('name'=>'Customer List','link'=>base_url().'/Customer/listcustomer', 'icon'=>'fa fa-circle-o');
+            $tab2 = array('name'=>'New Customer','link'=>base_url().'/Customer/new', 'icon'=>'fa fa-circle-o');
+            $tab3 = array('name'=>'Payment','link'=>base_url().'/Customer/makepayment', 'icon'=>'fa fa-circle-o');
+            $data['tabs'] = array($tab1,$tab2,$tab3);
             
             $this->load->view('template/header',$data);
             $this->load->view('Customer/makepayment',$data);
@@ -217,7 +241,7 @@ class Customer extends CI_Controller
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $data['id'] = $id;
-            
+            $data['tabs'] = $this->maketab($_SESSION['access'],$id);
             $this->load->view('template/header',$data);
             $this->load->view('Customer/makepaymentbyid',$data);
             $this->load->view('template/footer');
@@ -256,15 +280,39 @@ class Customer extends CI_Controller
 
         return array($tab1,$tab2,$tab3);
     }
-    /*//Dashboard
-        $tab1 = array('name'=>'Dashboard','link'=>base_url().'/Project/view/'.$project_id, 'icon'=>'fa fa-briefcase');
-        //Analytics
-        $tab2 = array('name'=>'Analytics','link'=>base_url().'/Project/analytics/'.$project_id, 'icon'=>'fa fa-line-chart');
-        //Inventory
-        $tab3_1 = array('name'=>'Dashboard','link'=>base_url().'/Project/inventory_dashboard/'.$project_id, 'icon'=>'fa fa-fw fa-circle-o');
-        $tab3_2 = array('name'=>'Stock','link'=>base_url().'/Project/inventory_stock/'.$project_id, 'icon'=>'fa fa-fw fa-circle-o');
-        $tab3_3 = array('name'=>'Log','link'=>base_url().'/Project/inventory_log/'.$project_id, 'icon'=>'fa fa-fw fa-circle-o');
-        $tab3 = array('name'=>'Inventory', 'icon'=>'fa fa-fw fa-cubes', 'next_level'=>array($tab3_1,$tab3_2,$tab3_3));*/
+    
+    public function opertion(){
+        if(isset($_SESSION['user']))
+        {
+            $result =$this->Customer_model->set_customer_data();
+            if(!$result)
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = 'Failed to approve transaction ';
+                        }
+                        else
+                        {
+                            $data['sucess'] = true;
+                            $data['message'] = 'Sucessfully approved transaction ';
+                        }
+                        $data['page'] = array('header'=>'Customer New', 'description'=>'create a new customer','app_name'=>'CUSTOMER');
+                    $data['user'] = $_SESSION['user'];
+                    $data['apps'] = $_SESSION['apps'];
+                    
+                    $this->load->view('template/header',$data);
+                    $this->load->view('Customer/new',$data);
+                    $this->load->view('template/footer');
+        }
+    }
+
+    //$this->load->library('form_validation');
+            //$this->form_validation->set_rules('name', 'name', 'required');
+            //$this->form_validation->set_rules('address', 'address', 'required');
+           // $this->form_validation->set_rules('email', 'email', 'required|valid_email');
+           // $this->form_validation->set_rules('phone_number', 'phone_number', 'required');
+
+
+
 
 
 
