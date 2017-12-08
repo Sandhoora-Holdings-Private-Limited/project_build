@@ -6,6 +6,22 @@ class Transaction_material_model extends CI_Model {
 	public function __construct()
 	{
 	}
+	public function create_transaction($budget_entry_id, $ammount, $type)
+	{
+		switch($type)
+		{
+			case 'material':
+				$data = array('budget_entry_material_id'=>$budget_entry_id, 'no_of_units'=>$ammount);
+				$this->db->insert('material_transaction', $data);
+				break;
+			case 'payment':
+				$data = array('budget_entry_other_id'=>$budget_entry_id,
+				 	'ammount'=>$ammount);
+				$this->db->insert('other_payment_transaction', $data);
+				break;
+		}
+		return $this->db->affected_rows();
+	}
 
 	public function pay_PO($transaction_ids, $po_id)
 	{
@@ -71,13 +87,35 @@ class Transaction_material_model extends CI_Model {
 					$this->db->query($query);
 					break;
 				case 'to_be_recived':
+					//Set transactino to be paid
 					$query = 'UPDATE material_transaction SET state="to_be_paid" WHERE id='.$transaction['id'];
 					$this->db->query($query);
+					//get transaction details
+					$query = 'SELECT no_of_units from material_transaction WHERE id='.$transaction['id'];
+					$query = $this->db->query($query);
+					$no_of_units = $query->row()->no_of_units;
+					// get budget entry details
 					$query = 'SELECT no_of_units,inventory_item_id as item_id from budget_entry_material WHERE id='.$transaction['id'];
-					$res = $this->db->query($query);
-					$e = $res->row();
-					$query = 'CALL inventory_IN('.$e->item_id.', '.$project_id.', '.$e->no_of_units.', "'.$user_id.'")';
-					$this->db->query($query);
+					$query = $this->db->query($query);
+					$budget_entry = $query->row();
+					// get inventory stock details
+					$query = 'SELECT no_of_units FROM inventory_item_stock WHERE inventory_item_id='.$budget_entry->item_id.' AND project_id='.$project_id;
+					$query = $this->db->query($query);
+					// update ot insert stock entry
+					if($query->num_rows() > 0)
+					{
+						$ammount = $query->row()->no_of_units + $no_of_units;
+						$query = 'UPDATE `inventory_item_stock` SET `no_of_units` = '.$ammount.' WHERE `inventory_item_id` = '.$budget_entry->item_id.' AND `project_id` = '.$project_id ;
+						$this->db->query($query);
+					}
+					else
+					{
+						$ammount = $no_of_units;
+						$query = 'INSERT INTO `inventory_item_stock` (`inventory_item_id`, `project_id`, `no_of_units`) VALUES('.$budget_entry->item_id.', '.$project_id.', '.$ammount.')';
+						$this->db->query($query);
+					}
+					//insert to inverntory log;
+					$query = 'INSERT INTO `inventory_item_stock_log` (`inventory_item_id`, `to_project_id`, `no_of_units`, `user_id`) VALUES('.$budget_entry->item_id.', '.$project_id.', '.$ammount.', '.$user_id.')';
 					break;
 			}
 		}
@@ -97,7 +135,6 @@ class Transaction_material_model extends CI_Model {
 	{
 		$this->db->trans_begin();
 		$query ='INSERT INTO purchase_order(`vendor_id`,`user_id`,`date`) VALUES ('.$vendor_id.',"'.$user_id.'","'.$date.'")';
-		echo $query;
 		$this->db->query($query);
 		$query = 'SELECT LAST_INSERT_ID() as result';
 		$query = $this->db->query($query);

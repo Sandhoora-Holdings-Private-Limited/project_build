@@ -565,7 +565,23 @@ class Project extends CI_Controller
             }
             else
             {
-
+                if(isset($_POST['budget_entry_id']))
+                {
+                    $result = $this->Transaction_material_model->create_transaction($_POST['budget_entry_id'], $_POST['ammount'], $_POST['type']);
+                    if($result)
+                    {
+                        $data['sucess'] = true;
+                        $data['message'] = "Sucessfully created the request";
+                    }
+                    else
+                    {
+                        $data['fail'] = true;
+                        $data['message'] = "Failed to create request";
+                    }
+                }
+                $data['items'] = $this->Budget_model->get_entries_material_by_stage($stage_id);
+                $data['payments'] = $this->Budget_model->get_entries_payments_by_stage($stage_id);
+                $data['stage_id'] = $stage_id;
                 $this->load->view('template/header',$data);
                 $this->load->view('Project/Operation/operation_request_stage',$data);
                 $this->load->view('template/footer',$data);
@@ -585,9 +601,22 @@ class Project extends CI_Controller
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
+            $data['project_id'] = $project_id;
+
+            $transactions['to_be_approved'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_approved');
+            $transactions['to_be_purchased'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_purchased');
+            $transactions['to_be_recived'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_recived');
+            $transactions['to_be_transfered'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_transfered');
+            $transactions['to_be_paid'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_paid');
+
+            $transactions['to_be_approved_other'] = $this->Transaction_material_model->get_other_transaction_data_by_state($project_id, 'to_be_approved');
+            $transactions['to_be_paid_other'] = $this->Transaction_material_model->get_other_transaction_data_by_state($project_id, 'to_be_paid');
+
+            $data['transactions'] = $transactions;
+            $data['data_tables'] = array('table_pending_requesst');
             $this->load->view('template/header',$data);
             $this->load->view('Project/Operation/operation_pending',$data);
-            $this->load->view('template/footer');
+            $this->load->view('template/footer', $data);
         }
         else
         {
@@ -599,13 +628,25 @@ class Project extends CI_Controller
     {
         if(isset($_SESSION['user']))
         {
-            $data['page'] = array('header'=>'Request history', 'description'=>'Your request history approved and denied','app_name'=>'PROJECTS');
+            $data['page'] = array('header'=>'Pending requests', 'description'=>'Your pending requests','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
+            $data['project_id'] = $project_id;
+
+            $transactions['paid'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'paid');
+            $transactions['denied'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'denied');
+            $transactions['transfered'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'transfered');
+            $transactions['splitted'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'splitted');
+
+            $transactions['paid_other'] = $this->Transaction_material_model->get_other_transaction_data_by_state($project_id, 'paid');
+            $transactions['denied_other'] = $this->Transaction_material_model->get_other_transaction_data_by_state($project_id, 'denied');
+
+            $data['transactions'] = $transactions;
+            $data['data_tables'] = array('table_history_requesst');
             $this->load->view('template/header',$data);
             $this->load->view('Project/Operation/operation_history',$data);
-            $this->load->view('template/footer');
+            $this->load->view('template/footer', $data);
         }
         else
         {
