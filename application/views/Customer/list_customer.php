@@ -42,17 +42,17 @@
                   
                   
   echo '<td>
-          <form action="'.base_url().'/Customer/customerbyidview" method="post">
+          <form action="'.base_url().'/Customer/customerbyidview/'.$customer->id.'" method="post">
               <input hidden name="id" value="'.$customer->id.'">
               <button type="submit" class="btn btn-block btn-info" >Info</button>
             </form>
           </td>';
-  echo '<td>
+ /* echo '<td>
           <form action="'.base_url().'/Customer/edit" method="post">
               <input hidden name="id" value="'.$customer->id.'">
               <button type="submit" class="btn btn-block btn-success" >Edit</button>
             </form>
-          </td>';
+          </td>';*/
   //echo '<td> <button type="button" class="btn btn-block btn-success">Edit</button> </td>';
    //echo '<td><button type="button" class="btn btn-block btn-danger">Danger</button></td>';
   echo '<td>

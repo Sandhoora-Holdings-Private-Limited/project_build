@@ -8,7 +8,7 @@
       
         <!-- /.box-header -->
         <!-- form start -->
-        <form role="form" action="<?= base_url(); ?>/Customer/update" method="post">
+        <form role="form" action="<?= base_url(); ?>/Customer/update/<?= $id ?>" method="post">
           
           <div class="box-body">
             
