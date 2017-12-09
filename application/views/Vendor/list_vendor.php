@@ -2,8 +2,8 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Customers Details</h3>
-        <?php  echo form_open('http://localhost/group-project-1.1/index.php/Customer/customerbyid'); ?>
+              <h3 class="box-title">Vendor Details</h3>
+        <?php  echo form_open('http://localhost/group-project-1.1/index.php/Vendor/vendorbyid'); ?>
         <class="sidebar-form">
         <div class="input-group">
           <input type="text" name="id" class="form-control" placeholder="Search...">
@@ -29,40 +29,37 @@
                 </tr>
                 <?php 
                 //echo form_open('http://localhost/group-project-1.1/index.php/Customer/customerbyid');
-                foreach ($customers as $customer) {
+                foreach ($vendors as $vendor) {
                  
                 
                 echo '<tr>';
-                  echo '<td>'.$customer->id.'</td>';
-                  echo '<td>'.$customer->name.'</td>';
-                  echo '<td>'.$customer->address.'</td>';
-                  echo '<td>'. $customer->email.'</td>';
-                 echo  '<td>'.$customer->phone_number.'</td>';
+                  echo '<td>'.$vendor->id.'</td>';
+                  echo '<td>'.$vendor->name.'</td>';
+                  echo '<td>'.$vendor->address.'</td>';
+                  echo '<td>'. $vendor->email.'</td>';
+                 echo  '<td>'.$vendor->phone_number.'</td>';
 
                   
                   
   echo '<td>
-          <form action="'.base_url().'/Customer/customerbyidview/'.$customer->id.'" method="post">
-              <input hidden name="id" value="'.$customer->id.'">
+          <form action="'.base_url().'/Vendor/vendorbyidview" method="post">
+              <input hidden name="id" value="'.$vendor->id.'">
               <button type="submit" class="btn btn-block btn-info" >Info</button>
             </form>
           </td>';
- /* echo '<td>
-          <form action="'.base_url().'/Customer/edit" method="post">
-              <input hidden name="id" value="'.$customer->id.'">
+   echo '<td>
+          <form action="'.base_url().'/Vendor/edit" method="post">
+              <input hidden name="id" value="'.$vendor->id.'">
               <button type="submit" class="btn btn-block btn-success" >Edit</button>
             </form>
-          </td>';*/
-  //echo '<td> <button type="button" class="btn btn-block btn-success">Edit</button> </td>';
-   //echo '<td><button type="button" class="btn btn-block btn-danger">Danger</button></td>';
-  echo '<td>
+          </td>';
+    echo '<td>
            
-          <form action="'.base_url().'/Customer/deletecustomer/'.$customer->id.'" method="post">
-              <input hidden name="id" value="'.$customer->id.'">
+          <form action="'.base_url().'/Vendor/deletevendor/'.$vendor->id.'" method="post">
+              <input hidden name="id" value="'.$vendor->id.'">
               <button type="submit" class="btn btn-block btn-danger" >Delete</button>
           </form>
         </td>';
-
    //<a href="<?php echo base_url('index.php/Admin/editRingPost/'.$row['ringId']);
    
                 
