@@ -36,7 +36,7 @@
                 echo '<td> '.$stage->name.'</td>';
                 echo '<td>
                         <form action="'.base_url().'/Project/operation_request/'.$project_id.'/'.$stage->id.'" method="post">
-                            <button type="submit" class="btn btn-block btn-info"> Pick </button></td>
+                            <button type="submit" class="btn btn-block btn-info"> Pick </button>
                           </form>
                         </td>';
                 echo "</tr>";
