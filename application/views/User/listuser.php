@@ -41,7 +41,7 @@
             </form>
           </td>';
                         echo '<td> <button type="button" class="btn btn-block btn-success">Edit</button> </td>';
-                        echo '<td><button type="button" class="btn btn-block btn-danger">Danger</button></td>';
+                        echo '<td><button type="button" class="btn btn-block btn-danger">Delete</button></td>';
 
                         //<a href="<?php echo base_url('index.php/Admin/editRingPost/'.$row['ringId']);
 
