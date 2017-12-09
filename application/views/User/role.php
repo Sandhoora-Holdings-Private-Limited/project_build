@@ -2,8 +2,24 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-header">
-                <h3 class="box-title">User Details</h3>
-                <?php  echo form_open('http://http://localhost/group-project-1.1///User/listuser'); ?>
+                <h3 class="box-title">User Role Details</h3>
+<div class="col-lg-3 col-xs-6">
+<a href="#" class="small-box-footer">
+  <div class="small-box bg-aqua">
+    <div class="inner">
+        <h3>Add</h3>
+        <p>New Role</p>
+      </div>
+      <div class="icon">
+        <i class="glyphicon glyphicon-plus"></i>
+            </div>
+              <div class="small-box-footer">
+              create <i class="fa fa-arrow-circle-right"></i>
+            </div>
+        </div>
+    </a>
+</div>
+                <?php  echo form_open('http://http://localhost/group-project-1.1///User/role'); ?>
                 <class="sidebar-form">
                 <div class="input-group">
                     <input type="text" name="id" class="form-control" placeholder="Search...">
@@ -19,36 +35,27 @@
                 <table class="table table-hover">
                     <tbody><tr>
                         <th>ID</th>
-                        <th>RoleID</th>
                         <th>Name</th>
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
                     </tr>
                     <?php
-                    //echo form_open('http://localhost/group-project-1.1/index.php/Customer/customerbyid');
-                    foreach ($users as $user) {
-
-
+                    foreach ($roles as $role) {
                         echo '<tr>';
-                        echo '<td>'.$user->id.'</td>';
-                        echo '<td>'.$user->role_id.'</td>';
-                        echo '<td>'.$user->name.'</td>';
-
-                        echo '<td>
-              <input hidden name="id" value="'.$user->id.'">
-              <button type="submit" class="btn btn-block btn-info" >Info</button>
-            </form>
-          </td>';
+                        echo '<td>'.$role->id.'</td>';
+                        echo '<td>'.$role->name.'</td>';
+                        //echo '<td><a href="'.base_url().'/User/role/'.$role->id.'"><button type="button" class="btn btn-block btn-info">Pick</button></td></a>';
                         echo '<td> <button type="button" class="btn btn-block btn-success">Edit</button> </td>';
                         echo '<td><button type="button" class="btn btn-block btn-danger">Delete</button></td>';
 
                         //<a href="<?php echo base_url('index.php/Admin/editRingPost/'.$row['ringId']);
 
 
-                        //echo '</tr>';
-                    }
+                        echo '</tr>';
                     //</form>
+                  }
                     ?>
 
 
@@ -81,9 +88,3 @@
     </div>
 </div>
 <?php
-/**
- * Created by PhpStorm.
- * User: Viha
- * Date: 12/7/2017
- * Time: 3:32 PM
- */

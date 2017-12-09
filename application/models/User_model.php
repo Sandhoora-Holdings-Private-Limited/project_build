@@ -17,7 +17,7 @@ class User_model extends CI_Model {
 	public function get_all_users()
 	{
 		$query = $this->db->get('user');
-		return $query->results();
+		return $query->result();
 	}
 
 	public function get_users_by_project($project_id)
@@ -25,5 +25,6 @@ class User_model extends CI_Model {
 		$query = $this->db->get_where('user', array('project_id' => $project_id));
 		return $query->results();
 	}
+
 
 }
