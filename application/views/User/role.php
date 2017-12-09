@@ -46,8 +46,12 @@
                         echo '<tr>';
                         echo '<td>'.$role->id.'</td>';
                         echo '<td>'.$role->name.'</td>';
-                        //echo '<td><a href="'.base_url().'/User/role/'.$role->id.'"><button type="button" class="btn btn-block btn-info">Pick</button></td></a>';
-                        echo '<td> <button type="button" class="btn btn-block btn-success">Edit</button> </td>';
+                        echo '<td></td>';
+                        echo '<td></td>';
+                        echo '<td></td>';
+                        echo '<td></td>';
+                        echo '<td><button type="button" class="btn btn-block btn-info">info</button></td>';
+                        echo '<td><a href="'.base_url().'/User/editrole/'.$role->id.'"> <button type="button" class="btn btn-block btn-success">Edit</button> </td></a>';
                         echo '<td><button type="button" class="btn btn-block btn-danger">Delete</button></td>';
 
                         //<a href="<?php echo base_url('index.php/Admin/editRingPost/'.$row['ringId']);
