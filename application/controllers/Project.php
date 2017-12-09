@@ -7,7 +7,7 @@ class Project extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Project_model');
-        $this->load->model('Transaction_material_model');
+        $this->load->model('Transaction_model');
         $this->load->model('Vendor_model');
         $this->load->model('Budget_model');
     }
@@ -217,7 +217,7 @@ class Project extends CI_Controller
                 {
                     case 'approve' :
                     {
-                        $result = $this->Transaction_material_model->approve_transaction($_POST['transaction_id'],$_SESSION['user']['id'],1,$_POST['transaction_type']);
+                        $result = $this->Transaction_model->approve_transaction($_POST['transaction_id'],$_SESSION['user']['id'],1,$_POST['transaction_type']);
                         if(!$result)
                         {
                             $data['fail'] = true;
@@ -232,7 +232,7 @@ class Project extends CI_Controller
                     }
                     case 'denie' :
                     {
-                        $result = $this->Transaction_material_model->approve_transaction($_POST['transaction_id'],$_SESSION['user']['id'],0,$_POST['transaction_type']);
+                        $result = $this->Transaction_model->approve_transaction($_POST['transaction_id'],$_SESSION['user']['id'],0,$_POST['transaction_type']);
                         if(!$result)
                         {
                             $data['fail'] = true;
@@ -248,6 +248,10 @@ class Project extends CI_Controller
                     case 'view' :
                     {
                         $data['view_transaction_details'] = true;
+
+                        $donut_chart['id'] = 'myChart';
+                        $donut_chart['items'] = array( array('name'=>'a', 'value'=> 1),array('name'=>'b', 'value'=>2) );
+                        $data['donut_charts'] = array($donut_chart);
                         break;
                     }
                     case 'split':
@@ -265,7 +269,7 @@ class Project extends CI_Controller
                         break;
                     }
                     case 'pay':
-                        $result = $this->Transaction_material_model->change_transaction_state($_POST['transaction_id'],'paid', 'other_payment');
+                        $result = $this->Transaction_model->change_transaction_state($_POST['transaction_id'],'paid', 'other_payment');
                         if($result)
                         {
                             $data['sucess'] = true;
@@ -284,15 +288,15 @@ class Project extends CI_Controller
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
             $data['project_id'] = $project_id;
-            $transactions['to_be_approved'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_approved');
-            $transactions['to_be_purchased'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_purchased');
-            $transactions['to_be_recived'] = $this->Transaction_material_model->get_material_transaction_data_with_po($project_id);
-            $transactions['to_be_transfered'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_transfered');
+            $transactions['to_be_approved'] = $this->Transaction_model->get_material_transaction_data_by_state($project_id, 'to_be_approved');
+            $transactions['to_be_purchased'] = $this->Transaction_model->get_material_transaction_data_by_state($project_id, 'to_be_purchased');
+            $transactions['to_be_recived'] = $this->Transaction_model->get_material_transaction_data_with_po($project_id);
+            $transactions['to_be_transfered'] = $this->Transaction_model->get_material_transaction_data_by_state($project_id, 'to_be_transfered');
 
-            $transactions['to_be_approved_other'] = $this->Transaction_material_model->get_other_transaction_data_by_state($project_id, 'to_be_approved');
-            $transactions['to_be_paid_other'] = $this->Transaction_material_model->get_other_transaction_data_by_state($project_id, 'to_be_paid');
+            $transactions['to_be_approved_other'] = $this->Transaction_model->get_other_transaction_data_by_state($project_id, 'to_be_approved');
+            $transactions['to_be_paid_other'] = $this->Transaction_model->get_other_transaction_data_by_state($project_id, 'to_be_paid');
 
-            $data['POs'] = $this->Transaction_material_model->get_all_POs();
+            $data['POs'] = $this->Transaction_model->get_all_POs();
             $data['transactions'] = $transactions;
             $data['data_tables'] = array('table_approvals', 'table_purchases', 'table_recivables','table_pay');
             $data['active_tab'] = $active_tab;
@@ -348,7 +352,7 @@ class Project extends CI_Controller
                 }
                 for ($i=0; $i < sizeof($_POST)-$j; $i++)
                 {
-                    array_push($transactions, $this->Transaction_material_model->get_material_transaction_details($_POST['t_'.$i]));
+                    array_push($transactions, $this->Transaction_model->get_material_transaction_details($_POST['t_'.$i]));
                 }
                 if(sizeof($_POST) == $j)
                 {
@@ -363,7 +367,7 @@ class Project extends CI_Controller
                     {
                         array_push($transaction_ids, $_POST['t_'.$i]);
                     }
-                    $result = $this->Transaction_material_model->create_PO($transaction_ids, $_POST['vendor'],$_SESSION['user']['id'], $_POST['date']);
+                    $result = $this->Transaction_model->create_PO($transaction_ids, $_POST['vendor'],$_SESSION['user']['id'], $_POST['date']);
                     if($result)
                     {
                         $data['sucess'] = true;
@@ -385,7 +389,7 @@ class Project extends CI_Controller
                 foreach ($_POST as $id)
                 {
                     $there_is_items = true;
-                    array_push($transactions, $this->Transaction_material_model->get_material_transaction_details($id));
+                    array_push($transactions, $this->Transaction_model->get_material_transaction_details($id));
                 }
                 if(!isset($there_is_items))
                 {
@@ -424,18 +428,18 @@ class Project extends CI_Controller
             $data['project_id'] = $project_id;
             if(isset($_POST['tab_pay_length']))
                     unset($_POST['tab_pay_length']);
-            $transaction_ids = $this->Transaction_material_model->get_PO_items($_POST['po_id']);
+            $transaction_ids = $this->Transaction_model->get_PO_items($_POST['po_id']);
             $transactions = array();
             foreach ($transaction_ids as $transaction)
             {
-                array_push($transactions, $this->Transaction_material_model->get_material_transaction_details($transaction->transaction_id));
+                array_push($transactions, $this->Transaction_model->get_material_transaction_details($transaction->transaction_id));
             }
             $data['transactions'] = $transactions;
-            $data['po'] = $this->Transaction_material_model->get_PO_details($_POST['po_id']);
+            $data['po'] = $this->Transaction_model->get_PO_details($_POST['po_id']);
             $data['po_id'] = $_POST['po_id'];
             if(isset($_POST['po_pay_form']))
             {
-                $result = $this->Transaction_material_model->pay_PO($transaction_ids, $_POST['po_id']);
+                $result = $this->Transaction_model->pay_PO($transaction_ids, $_POST['po_id']);
                 if($result)
                 {
                     $data['sucess'] = true;
@@ -482,7 +486,7 @@ class Project extends CI_Controller
                 $j = 3;
                 for ($i=0; $i < (sizeof($_POST)-$j)/2; $i++)
                 {
-                    array_push($transactions, $this->Transaction_material_model->get_material_transaction_details($_POST['t_'.$i]));
+                    array_push($transactions, $this->Transaction_model->get_material_transaction_details($_POST['t_'.$i]));
                 }
                 if(sizeof($_POST) == $j)
                 {
@@ -498,7 +502,7 @@ class Project extends CI_Controller
                         $transaction = array('state' => $_POST['t_state_'.$i], 'id' => $_POST['t_'.$i]);
                         array_push($transaction_ids, $transaction);
                     }
-                    $result = $this->Transaction_material_model->create_GR($transaction_ids, $project_id, $_SESSION['user']['id']);
+                    $result = $this->Transaction_model->create_GR($transaction_ids, $project_id, $_SESSION['user']['id']);
                     if($result)
                     {
                         $data['sucess'] = true;
@@ -517,7 +521,7 @@ class Project extends CI_Controller
                 foreach ($_POST as $id)
                 {
                     $there_is_items = true;
-                    array_push($transactions, $this->Transaction_material_model->get_material_transaction_details($id));
+                    array_push($transactions, $this->Transaction_model->get_material_transaction_details($id));
                 }
                 if(!isset($there_is_items))
                 {
@@ -567,7 +571,7 @@ class Project extends CI_Controller
             {
                 if(isset($_POST['budget_entry_id']))
                 {
-                    $result = $this->Transaction_material_model->create_transaction($_POST['budget_entry_id'], $_POST['ammount'], $_POST['type']);
+                    $result = $this->Transaction_model->create_transaction($_POST['budget_entry_id'], $_POST['ammount'], $_POST['type']);
                     if($result)
                     {
                         $data['sucess'] = true;
@@ -603,14 +607,14 @@ class Project extends CI_Controller
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
             $data['project_id'] = $project_id;
 
-            $transactions['to_be_approved'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_approved');
-            $transactions['to_be_purchased'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_purchased');
-            $transactions['to_be_recived'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_recived');
-            $transactions['to_be_transfered'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_transfered');
-            $transactions['to_be_paid'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'to_be_paid');
+            $transactions['to_be_approved'] = $this->Transaction_model->get_material_transaction_data_by_state($project_id, 'to_be_approved');
+            $transactions['to_be_purchased'] = $this->Transaction_model->get_material_transaction_data_by_state($project_id, 'to_be_purchased');
+            $transactions['to_be_recived'] = $this->Transaction_model->get_material_transaction_data_by_state($project_id, 'to_be_recived');
+            $transactions['to_be_transfered'] = $this->Transaction_model->get_material_transaction_data_by_state($project_id, 'to_be_transfered');
+            $transactions['to_be_paid'] = $this->Transaction_model->get_material_transaction_data_by_state($project_id, 'to_be_paid');
 
-            $transactions['to_be_approved_other'] = $this->Transaction_material_model->get_other_transaction_data_by_state($project_id, 'to_be_approved');
-            $transactions['to_be_paid_other'] = $this->Transaction_material_model->get_other_transaction_data_by_state($project_id, 'to_be_paid');
+            $transactions['to_be_approved_other'] = $this->Transaction_model->get_other_transaction_data_by_state($project_id, 'to_be_approved');
+            $transactions['to_be_paid_other'] = $this->Transaction_model->get_other_transaction_data_by_state($project_id, 'to_be_paid');
 
             $data['transactions'] = $transactions;
             $data['data_tables'] = array('table_pending_requesst');
@@ -634,13 +638,13 @@ class Project extends CI_Controller
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
             $data['project_id'] = $project_id;
 
-            $transactions['paid'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'paid');
-            $transactions['denied'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'denied');
-            $transactions['transfered'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'transfered');
-            $transactions['splitted'] = $this->Transaction_material_model->get_material_transaction_data_by_state($project_id, 'splitted');
+            $transactions['paid'] = $this->Transaction_model->get_material_transaction_data_by_state($project_id, 'paid');
+            $transactions['denied'] = $this->Transaction_model->get_material_transaction_data_by_state($project_id, 'denied');
+            $transactions['transfered'] = $this->Transaction_model->get_material_transaction_data_by_state($project_id, 'transfered');
+            $transactions['splitted'] = $this->Transaction_model->get_material_transaction_data_by_state($project_id, 'splitted');
 
-            $transactions['paid_other'] = $this->Transaction_material_model->get_other_transaction_data_by_state($project_id, 'paid');
-            $transactions['denied_other'] = $this->Transaction_material_model->get_other_transaction_data_by_state($project_id, 'denied');
+            $transactions['paid_other'] = $this->Transaction_model->get_other_transaction_data_by_state($project_id, 'paid');
+            $transactions['denied_other'] = $this->Transaction_model->get_other_transaction_data_by_state($project_id, 'denied');
 
             $data['transactions'] = $transactions;
             $data['data_tables'] = array('table_history_requesst');
