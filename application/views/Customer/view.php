@@ -1,6 +1,9 @@
+<div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">View Customer</h3>
 
-<h4>Personal Details</h4>
 <?php foreach($customers as $customer){ ?>
+<div class="box-body">
 <form class="form-horizontal">
     <div class="form-group">
         <label class="col-sm-3 control-label">Name : </label>
@@ -23,9 +26,14 @@
         <?php foreach ($projects as $project) { ?>
         <label class="col-sm-10 control-label"><?php echo $project->project_id ?></label>
     <?php } ?>
-    </div>
+</div>
+
 </form>
+</div>
 <?php } ?>
+</div>
+</div>
+
 
 
                 

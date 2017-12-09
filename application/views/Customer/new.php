@@ -21,7 +21,7 @@
         <!-- /.box-header -->
         <!-- form start -->
         <?php echo validation_errors(); ?>
-        <form role="form" action="<?= base_url(); ?>/Customer/opertion" method="post">
+        <form role="form" action="<?= base_url(); ?>/Customer/Addnewcustomer" method="post">
           <div class="box-body">
             <div class="form-group">
               <label for="exampleInputEmail1">Name</label>

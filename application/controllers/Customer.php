@@ -23,9 +23,10 @@ class Customer extends CI_Controller
             $tab3 = array('name'=>'Payment','link'=>base_url().'/Customer/makepayment', 'icon'=>'fa fa-circle-o');
             $data['tabs'] = array($tab1,$tab2,$tab3);
             $data['customers'] = $this->Customer_model->get_customer_data($_SESSION['user']['id']);
+            $data['data_tables'] = array('customer_details');
             $this->load->view('template/header',$data);
             $this->load->view('Customer/list_customer',$data);
-            $this->load->view('template/footer');
+            $this->load->view('template/footer',$data);
         }
         else
         {
@@ -72,12 +73,30 @@ class Customer extends CI_Controller
     {
         if(isset($_SESSION['user']))
         {
-           
-                    $this->Customer_model->set_customer_data();
-                    $data['page'] = array('header'=>'Customer New', 'description'=>'create a new customer','app_name'=>'CUSTOMER');
-                    $data['user'] = $_SESSION['user'];
-                    $data['apps'] = $_SESSION['apps'];
-
+            $this->load->library('form_validation');
+            $this->form_validation->set_rules('name', 'name', 'required');
+            if ($this->form_validation->run() == FALSE)
+                {
+                        $data['fail'] = true;
+                        $data['message'] = 'Validation Error';
+                }
+                else
+                {
+                        $result =$this->Customer_model->set_customer_data();
+                        if($result)
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = 'Failed to add Customer ';
+                        }
+                        else
+                        {
+                            $data['sucess'] = true;
+                            $data['message'] = 'Sucessfully added Customer ';
+                        }
+                }
+                $data['page'] = array('header'=>'Customers', 'description'=>'pick a customer or create new customer','app_name'=>'Customer');
+                $data['user'] = $_SESSION['user'];
+                $data['apps'] = $_SESSION['apps'];
                     
                     $this->load->view('template/header',$data);
                     $this->load->view('Customer/new',$data);
@@ -95,14 +114,16 @@ class Customer extends CI_Controller
             $data['page'] = array('header'=>'Customers', 'description'=>'pick a customer or create new customer','app_name'=>'Customer');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
+            
             $tab1 = array('name'=>'Customer List','link'=>base_url().'/Customer/listcustomer', 'icon'=>'fa fa-circle-o');
             $tab2 = array('name'=>'New Customer','link'=>base_url().'/Customer/new', 'icon'=>'fa fa-circle-o');
             $tab3 = array('name'=>'Payment','link'=>base_url().'/Customer/makepayment', 'icon'=>'fa fa-circle-o');
             $data['tabs'] = array($tab1,$tab2,$tab3);
+            $data['data_tables'] = array('customer_details');
             $data['customers']=$this->Customer_model->get_customer_data();
             $this->load->view('template/header',$data);
             $this->load->view('Customer/list_customer',$data);
-            $this->load->view('template/footer');
+            $this->load->view('template/footer',$data);
 
         }
 
