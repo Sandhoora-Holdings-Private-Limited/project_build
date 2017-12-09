@@ -339,13 +339,13 @@
         <h4 class="modal-title">Request Details</h4>
       </div>
       <div class="modal-body">
-        <p>One fine body…</p>
+            <canvas id="myChart" width="400" height="400"></canvas>
       </div>
       <div class="modal-footer">
         <a href="<?= base_url(); ?>/Project/operation_inbox/<?= $project_id ?>"><button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button></a>
-        <button type="button" class="btn btn-primary">Denie</button>
-        <button type="button" class="btn btn-primary">Split</button>
-        <button type="button" class="btn btn-primary">Approve</button>
+        <button type="button" class="btn btn-danger">Denie</button>
+        <button type="button" class="btn btn-warning">Split</button>
+        <button type="button" class="btn btn-success">Approve</button>
 
       </div>
     </div>

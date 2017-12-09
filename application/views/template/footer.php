@@ -112,10 +112,23 @@
 <script src="<?php echo base_url(); ?>/assets/js/dataTables.bootstrap.min.js"></script>
 <!-- Select2 -->
 <script src="<?php echo base_url(); ?>/assets/js/select2.full.min.js"></script>
+<!-- highcharts -- >
+<!--[if lt IE 9]>
+<script src="<?php echo base_url(); ?>/assets/js/oldie.js"></script>
+<![endif]-->
+<script src="<?php echo base_url(); ?>/assets/js/Chart.bundle.min.js"></script>
 <!-- Page script -->
 <script>
   $(document).ready(function () {
 
+    var colors = [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ]
     //Date picker
     $('#project_new_datepicker').datepicker({
       format: 'yyyy-mm-dd',
@@ -130,25 +143,86 @@
       autoclose: true
     })
 
-
+    //select2
     $('.select2').select2();
     <?php
-    if(isset($data_tables))
-    {
-      foreach ($data_tables as $data_table) {
-        echo "$('#".$data_table."').DataTable(";
-        // echo "'paging'      : true,";
-        // echo "'lengthChange'      : false,";
-        // echo "'searching'      : true,";
-        // echo "'ordering'      : true,";
-        // echo "'info'      : true,";
-        // echo "'autoWidth'      : false";
-        echo ");\n";
+      //data tables
+      echo "<!-- data tales --> \n";
+      if(isset($data_tables))
+      {
+        foreach ($data_tables as $data_table)
+        {
+          echo "$('#".$data_table."').DataTable(";
+          // echo "'paging'      : true,";
+          // echo "'lengthChange'      : false,";
+          // echo "'searching'      : true,";
+          // echo "'ordering'      : true,";
+          // echo "'info'      : true,";
+          // echo "'autoWidth'      : false";
+          echo ");\n";
+        }
       }
-    }
-      ?>
 
-  })
+      echo "\n \n <!-- data tales --> \n";
+      //donut charts
+      if(isset($donut_charts))
+      {
+        foreach ($donut_charts as $dc) {
+          echo "var ".$dc['id']."_lebels = [ \n";
+            foreach ($dc['items'] as $item) {
+              echo ' "'.$item['name'].'", ';
+            }
+            echo "]; \n";
+          echo "var ".$dc['id']."_dataSet = [ \n";
+            foreach ($dc['items'] as $item) {
+              echo $item['value'].", \n";
+            }
+            echo "]; \n";
+          echo "var ".$dc['id']."_color = [ \n";
+            for($i=0; $i<sizeof($dc['items']); $i++)
+            {
+              echo "colors[".$i."] , \n";
+            }
+            echo "]; \n";
+
+          echo "var ".$dc['id']."_data = { \n";
+          echo "datasets: [{ \n";
+            echo "data: ".$dc['id']."_dataSet , \n";
+            echo "backgroundColor : ".$dc['id']."_color \n";
+            echo "}], \n";
+          echo "labels: ".$dc['id']."_lebels \n";
+          echo "}; \n";
+
+
+            echo "var ".$dc['id'].'_ctx = document.getElementById("'.$dc['id'].'"); '."\n";
+            echo "var ".$dc['id']."_myDoughnutChart = new Chart(".$dc['id']."_ctx, { \n";
+              echo "type: 'doughnut', \n";
+              echo "data: ".$dc['id']."_data \n";
+            echo "}); \n";
+        }
+      }
+    ?>
+  });
+
+
+// var ctx = document.getElementById("myChart");
+//   data = {
+//     datasets: [{
+//         data: [10, 20, 30,]
+//     }],
+
+//     // These labels appear in the legend and in the tooltips when hovering different arcs
+//     labels: [
+//         'Red',
+//         'Yellow',
+//         'Blue',
+//     ]
+// };
+
+// var myDoughnutChart = new Chart(ctx, {
+//     type: 'doughnut',
+//     data: data,
+// });
 </script>
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.

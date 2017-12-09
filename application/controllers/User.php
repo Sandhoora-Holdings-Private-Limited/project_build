@@ -7,6 +7,7 @@ class User extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+<<<<<<< HEAD
         $this->load->model('User_model');
         $this->load->model('Role_model');
 
@@ -92,5 +93,7 @@ class User extends CI_Controller
             $this->load->view('template/footer');
 
         }
+=======
+>>>>>>> ad054f659ae14f3cb45b6a2cdee291c5ad3244dc
     }
 }
