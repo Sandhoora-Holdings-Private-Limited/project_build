@@ -66,7 +66,8 @@ class Customer_model extends CI_Model
 		$data = array(
 			'customer_id' => $this->input->post('customer_id'),
 			'project_id' => $this->input->post('project_id'),
-			'ammount' => $this->input->post('ammount')
+			'ammount' => $this->input->post('ammount'),
+			'memo'=>$this->input->post('memo')
 		);
 		$this->db->insert('customer_payment',$data);
 	}
@@ -74,8 +75,15 @@ class Customer_model extends CI_Model
 		$data = array(
 			'customer_id' => $id,
 			'project_id' => $this->input->post('project_id'),
-			'ammount' => $this->input->post('ammount')
+			'ammount' => $this->input->post('ammount'),
+			'memo'=>$this->input->post('memo')
 		);
 		$this->db->insert('customer_payment',$data);
 	}
+	public function getpaymentdetails($id){
+		$this->db->where('customer_id', $id);
+		$query = $this->db->get('customer_payment');
+		return $query->result();
+	}
+	
 }
