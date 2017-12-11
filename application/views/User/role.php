@@ -55,7 +55,7 @@
                           </td>';
 
                         echo '<td>
-                              <form action="'.base_url().'/User/editrole/'.$role->id.'" method="post">
+                              <form action="'.base_url().'/User/edit_role/'.$role->id.'" method="post">
                               <input hidden name="id" value="'.$role->id.'">
                               <button type="submit" class="btn btn-block btn-success" >Edit</button>
                               </form>

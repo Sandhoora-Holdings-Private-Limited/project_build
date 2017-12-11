@@ -92,7 +92,7 @@ class User extends CI_Controller
                 $this->load->view('template/header', $data);
                 $this->load->view('User/new', $data);
                 $this->load->view('template/footer');
-            
+
         }
         else
         {
@@ -291,7 +291,7 @@ class User extends CI_Controller
         }
     }
 
-    public function editrole($id)
+    public function edit_role($id)
     {
         if(isset($_SESSION['user'])){
             //$id = $this->input->post('id');
@@ -305,6 +305,7 @@ class User extends CI_Controller
         $tab3 = array('name'=>'New Role','link'=>base_url().'/User/newrole', 'icon'=>'fa fa-plus-square');
         $data['tabs'] = array($tab1,$tab2,$tab3);
         $data['roles']=$this->Role_model->editrole($id);
+        $data['accesses'] =$this->Role_model->get_object($id);
         //$data['projects'] =$this->Customer_model->get_project($id);
         $this->load->view('template/header',$data);
         $this->load->view('User/editrole',$data);
@@ -487,4 +488,3 @@ class User extends CI_Controller
 
     }
 }
-
