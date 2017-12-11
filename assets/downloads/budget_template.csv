@@ -1,0 +1,6 @@
+#stage,stage 1,,
+//material,item_id,price_list_id,ammount
+#material,1,20000,12312
+#material,100000,2,12312
+//paymnet,name,ammount,
+#payment,paymet 2,3000,
