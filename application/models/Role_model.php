@@ -41,4 +41,75 @@ class Role_model extends CI_Model {
 		return $ret;
 	}
 
+	public function set_role_data()
+	{
+		$data = array(
+
+			'id' => $this->input->post('id'),
+			'name' => $this->input->post('name'),
+		);
+		$this->db->insert('role',$data);
+	}
+
+	public function get_role_data($role_id)
+	{
+		//$this->db->where('active', '1');
+		$query = $this->db->get_where('role', array('id' => $role_id));
+		return $query->result();
+	}
+
+	public function get_all_roles()
+	{
+		$query = $this->db->get('role');
+		return $query->result();
+	}
+
+	public function editrole($id)
+	{
+
+		$this->db->where('id', $id);
+		$this->db->where('active', '1');
+		$query = $this->db->get('role');
+		return $query->result();
+	}
+
+	public function get_roles_by_user($user_id)
+	{
+		$query = $this->db->get_where('role', array('user_id' => $user_id));
+		return $query->results();
+	}
+
+	public function get_data_by_id($id)
+	{
+
+		$this->db->where('id', $id);
+		$this->db->where('active', '1');
+		$query = $this->db->get('role');
+		return $query->result();
+	}
+
+	public function get_user($id)
+	{
+		$this->db->where('role_id', $id);
+		$query = $this->db->get('user');
+		return $query->result();
+	}
+
+	public function delete($id){
+		$data = array(
+			'active' => '0'
+		);
+		$this->db->where('id', $id);
+		$this->db->update('role', $data);
+	}
+
+	public function update($id){
+		$data = array(
+		'id' => $this->input->post('id'),
+		'name'=> $this->input->post('name'),
+	);
+	$this->db->where('id', $id);
+	$this->db->update('role', $data);
+
+	}
 }
