@@ -56,14 +56,15 @@ class User_model extends CI_Model
     public function update($id)
     {
         $data = array(
-            'id' => $this->input->post('id'),
             'name' => $this->input->post('name'),
             'role_id' => $this->input->post('role_id'),
         );
+        var_dump($data);
         $this->db->where('id', $id);
         $this->db->update('user', $data);
 
     }
+
 
     public function delete($id)
     {

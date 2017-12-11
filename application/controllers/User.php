@@ -331,4 +331,64 @@ class User extends CI_Controller
         $this->load->view('User/viewrole',$data);
         $this->load->view('template/footer');}
     }
+    public function viewuser()
+    {
+
+       if(isset($_SESSION['user'])){
+            $data['page'] = array('header'=>'User Roles', 'description'=>'Edit a role or Add new role','app_name'=>'Role');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $tab1 = array('name'=>'User List','link'=>base_url().'/User/listuser', 'icon'=>'fa fa-circle-o');
+            $tab2 = array('name'=>'New User','link'=>base_url().'/User/new', 'icon'=>'fa fa-circle-o');
+            $tab3 = array('name'=>'Role','link'=>base_url().'/User/Role', 'icon'=>'fa fa-circle-o');
+            $tab4 = array('name'=>'New Role','link'=>base_url().'/User/newrole', 'icon'=>'fa fa-circle-o');
+            $data['tabs'] = array($tab1,$tab2,$tab3,$tab4);
+            $id = $this->input->post('id');
+            $data['users']= $this->User_model->get_data_by_id($id);
+            $this->load->view('template/header',$data);
+            $this->load->view('User/view',$data);
+            $this->load->view('template/footer');
+
+        }
+
+    }
+    public function updateuser(){
+        if(isset($_SESSION['user'])){
+            $data['page'] = array('header'=>'User Roles', 'description'=>'Edit a role or Add new role','app_name'=>'Role');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $tab1 = array('name'=>'User List','link'=>base_url().'/User/listuser', 'icon'=>'fa fa-circle-o');
+            $tab2 = array('name'=>'New User','link'=>base_url().'/User/new', 'icon'=>'fa fa-circle-o');
+            $tab3 = array('name'=>'Role','link'=>base_url().'/User/Role', 'icon'=>'fa fa-circle-o');
+            $tab4 = array('name'=>'New Role','link'=>base_url().'/User/newrole', 'icon'=>'fa fa-circle-o');
+
+            $newdata = array(
+                'id'  => $id = $this->input->post('id')
+            );
+
+            $this->session->set_userdata($newdata);
+            $data['tabs'] = array($tab1,$tab2,$tab3,$tab4);
+            $this->load->view('template/header',$data);
+            $this->load->view('User/edituser',$data);
+            $this->load->view('template/footer');
+
+
+        }
+    }
+    public function edituser(){
+        $id =$_SESSION['id'];
+        $data['users']= $this->User_model->update($id);
+        $data['page'] = array('header'=>'User Roles', 'description'=>'Edit a role or Add new role','app_name'=>'Role');
+        $data['user'] = $_SESSION['user'];
+        $data['apps'] = $_SESSION['apps'];
+        $tab1 = array('name'=>'User List','link'=>base_url().'/User/listuser', 'icon'=>'fa fa-circle-o');
+        $tab2 = array('name'=>'New User','link'=>base_url().'/User/new', 'icon'=>'fa fa-circle-o');
+        $tab3 = array('name'=>'Role','link'=>base_url().'/User/Role', 'icon'=>'fa fa-circle-o');
+        $tab4 = array('name'=>'New Role','link'=>base_url().'/User/newrole', 'icon'=>'fa fa-circle-o');
+        $data['tabs'] = array($tab1,$tab2,$tab3,$tab4);
+        $this->load->view('template/header',$data);
+        $this->load->view('User/edituser',$data);
+        $this->load->view('template/footer');
+    }
 }
+
