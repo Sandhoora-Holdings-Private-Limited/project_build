@@ -57,16 +57,42 @@ class User extends CI_Controller
     public function Addnewuser()
     {
         if (isset($_SESSION['user'])) {
+            $this->load->library('form_validation');
+            $this->form_validation->set_rules('id', 'id', 'required');
+            $this->form_validation->set_rules('name', 'name', 'required');
+            $this->form_validation->set_rules('role_id', 'role_id', 'required');
+            $this->form_validation->set_rules('password_hash', 'password_hash', 'required');
+            $this->form_validation->set_rules('password_salt', 'password_salt', 'required|matches[password_hash]');
+            if ($this->form_validation->run() == FALSE)
+            {
+                $data['fail'] = true;
+                $data['message'] = 'Validation Error';
+            }
+            else
+            {
+                $result =$this->User_model->set_user_data();
+                if($result)
+                {
+                    $data['fail'] = true;
+                    $data['message'] = 'Failed to add Customer ';
+                }
+                else
+                {
+                    $data['sucess'] = true;
+                    $data['message'] = 'Sucessfully added Customer ';
+                }
+            }
 
-            $this->User_model->set_user_data();
 
-            $data['page'] = array('header' => 'User New', 'description' => 'create a new user', 'app_name' => 'USER');
-            $data['user'] = $_SESSION['user'];
-            $data['apps'] = $_SESSION['apps'];
 
-            $this->load->view('template/header', $data);
-            $this->load->view('User/new', $data);
-            $this->load->view('template/footer');
+                $data['page'] = array('header' => 'User New', 'description' => 'create a new user', 'app_name' => 'USER');
+                $data['user'] = $_SESSION['user'];
+                $data['apps'] = $_SESSION['apps'];
+
+                $this->load->view('template/header', $data);
+                $this->load->view('User/new', $data);
+                $this->load->view('template/footer');
+            
         }
         else
         {
@@ -382,7 +408,7 @@ class User extends CI_Controller
     }
     public function edituser(){
         $id =$_SESSION['id'];
-        $data['users']= $this->User_model->update($id);
+        $this->User_model->update($id);
         $data['page'] = array('header'=>'User Roles', 'description'=>'Edit a role or Add new role','app_name'=>'Role');
         $data['user'] = $_SESSION['user'];
         $data['apps'] = $_SESSION['apps'];
@@ -394,6 +420,23 @@ class User extends CI_Controller
         $this->load->view('template/header',$data);
         $this->load->view('User/edituser',$data);
         $this->load->view('template/footer');
+    }
+    public function deleteuser(){
+        $id =$this->input->post('id');
+        $this->User_model->delete($id);
+        $data['page'] = array('header' => 'Users', 'description' => 'pick a user or create new user', 'app_name' => 'User');
+        $data['user'] = $_SESSION['user'];
+        $data['apps'] = $_SESSION['apps'];
+        $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-tasks');
+        $tab2 = array('name' => 'New User', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-plus');
+        $tab3 = array('name' =>  'User Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-circle-o');
+        $data['tabs'] = array($tab1, $tab2,$tab3);
+        $data['users'] = $this->User_model->get_all_users();
+        $data['data_tables'] = array('user_table');
+        $this->load->view('template/header', $data);
+        $this->load->view('User/listuser', $data);
+        $this->load->view('template/footer',$data);
+
     }
 }
 

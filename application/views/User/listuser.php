@@ -38,7 +38,11 @@
                                 <input hidden name="id" value="'.$user_->id.'">
                                   <button type="submit" class="btn btn-block btn-info" >Edit</button>
                                 </form> </td>';
-                        echo '<td><button type="button" class="btn btn-block btn-danger">Danger</button></td>';
+                        echo '<td><form action="'.base_url().'/User/deleteuser" method="post">
+                                <input hidden name="id" value="'.$user_->id.'">
+                                  <button type="submit" class="btn btn-block btn-danger" >Delete</button>
+                                </form> </td>';
+
                         echo '</tr>';
 
                     }

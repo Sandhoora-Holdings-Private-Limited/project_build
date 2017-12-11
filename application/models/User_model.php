@@ -59,7 +59,6 @@ class User_model extends CI_Model
             'name' => $this->input->post('name'),
             'role_id' => $this->input->post('role_id'),
         );
-        var_dump($data);
         $this->db->where('id', $id);
         $this->db->update('user', $data);
 
