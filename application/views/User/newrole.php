@@ -26,11 +26,6 @@
           <div class="box-body">
 
             <div class="form-group">
-                <label for="exampleInputid">Role ID</label>
-                <input type="text" class="form-control" id="id" placeholder="Enter ID" name="id">
-            </div>
-
-            <div class="form-group">
               <label for="exampleInputRole">Name</label>
               <input type="text" class="form-control" id="name" placeholder="Enter Role Name" name="name">
             </div>

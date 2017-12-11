@@ -7,12 +7,12 @@
     </div>
     <div class="form-group">
         <label class="col-sm-3 control-label">Role name : </label>
-        <label class="col-sm-7 control-label"><?php echo $customer->name ?></label>
+        <label class="col-sm-7 control-label"><?php echo $role->name ?></label>
     </div>
     <div class="form-group">
         <label class="col-sm-3 control-label">Users : </label>
         <?php foreach ($users as $user) { ?>
-        <label class="col-sm-10 control-label"><?php echo $id->role_id ?></label>
+        <label class="col-sm-10 control-label"><?php echo $user->name ?></label>
     <?php } ?>
     </div>
 </form>
