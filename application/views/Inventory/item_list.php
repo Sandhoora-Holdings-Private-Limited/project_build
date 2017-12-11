@@ -25,13 +25,15 @@
         <div class="box-body">
           <div class="form-group">
             <label for="name">Name</label>
-            <input class="form-control" id="name" placeholder="Stage 1" name="stage_name" type="text">
-            <input hidden name="new_stage_form" value="true">
+            <input class="form-control" id="name" placeholder="" name="item_name" type="text" required>
+            <label for="name">Unit</label>
+            <input class="form-control" id="name" placeholder="" name="item_unit" type="text" required>
+            <input hidden name="new_item_form" value="true">
           </div>
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-          <button type="submit" class="btn btn-primary">Add Stage</button>
+          <button type="submit" class="btn btn-primary pull-right">Add Item</button>
         </div>
       </form>
     </div>
@@ -43,37 +45,33 @@
   <div class="col-xs-12">
     <div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title">Pick a stage</h3>
+        <h3 class="box-title">Items</h3>
       </div>
       <div class="box-body">
-        <table id="table_stages_budget" class="table table-bordered table-striped">
+        <table id="table_items" class="table table-bordered table-striped">
           <thead>
             <tr>
-              <th>Stage ID</th>
-              <th>Stage name</th>
-              <th></th>
+              <th>Item ID</th>
+              <th>Item name</th>
+              <th>Item unite</th>
             </tr>
           </thead>
           <tbody>
             <?php
-              foreach ($stages as $stage) {
+              foreach ($items as $item) {
                 echo "<tr>";
-                echo '<td> #STG'.$stage->id.'</td>';
-                echo '<td> '.$stage->name.'</td>';
-                echo '<td>
-                        <form action="'.base_url().'/Project/budget/'.$project_id.'/'.$stage->id.'" method="post">
-                            <button type="submit" class="btn btn-block btn-info"> Pick </button>
-                          </form>
-                        </td>';
+                echo '<td> #ITM-'.$item->id.'</td>';
+                echo '<td> '.$item->name.'</td>';
+                echo '<td> '.$item->unit.'</td>';
                 echo "</tr>";
               }
             ?>
           </tbody>
           <tfoot>
             <tr>
-              <th>Stage ID</th>
-              <th>Stage name</th>
-              <th></th>
+              <th>Item ID</th>
+              <th>Item name</th>
+              <th>Item unite</th>
             </tr>
           </tfoot>
         </table>

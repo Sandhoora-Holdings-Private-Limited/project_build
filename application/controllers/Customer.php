@@ -239,23 +239,41 @@ class Customer extends CI_Controller
         }
 
     }
+<<<<<<< HEAD
+    //public function delete(){
+    public function deletecustomer($id){
+        if(isset($_SESSION['user']))
+        {
+            //$id = $_SESSION['id'];
+            $this->Customer_model->delete($id);
+            $data['page'] = array('header'=>'Customers', 'description'=>'pick a customer or create new customer','app_name'=>'Customer');
+=======
     public function delete($id)
     {
         if(isset($_SESSION['user']))
         {
             $this->Customer_model->delete($id);
              $data['page'] = array('header'=>'Customers', 'description'=>'list of the customers and pick one','app_name'=>'Customer');
+>>>>>>> 7ae5154f252af31a24f51d2c8ca4de461112a91b
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $tab1 = array('name'=>'Customer List','link'=>base_url().'/Customer/listcustomer', 'icon'=>'fa fa-circle-o');
             $tab2 = array('name'=>'New Customer','link'=>base_url().'/Customer/new', 'icon'=>'fa fa-circle-o');
             $tab3 = array('name'=>'Payment','link'=>base_url().'/Customer/makepayment', 'icon'=>'fa fa-circle-o');
             $data['tabs'] = array($tab1,$tab2,$tab3);
+<<<<<<< HEAD
+            $data['customers']=$this->Customer_model->get_customer_data();
+            $this->load->view('template/header',$data);
+            $this->load->view('Customer/list_customer',$data);
+            $this->load->view('template/footer');
+
+=======
             $data['customers'] = $this->Customer_model->get_customer_data($_SESSION['user']['id']);
             $data['data_tables'] = array('customer_details');
             $this->load->view('template/header',$data);
             $this->load->view('Customer/list_customer',$data);
             $this->load->view('template/footer',$data);
+>>>>>>> 7ae5154f252af31a24f51d2c8ca4de461112a91b
         }
     }
     public function makepayment()

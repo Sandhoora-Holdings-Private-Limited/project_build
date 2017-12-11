@@ -43,10 +43,14 @@ class Vendor_model extends CI_Model
 
 }
     public function delete($id){
-		$data = array(
-			'active' => '0'
-		);
-		$this->db->where('id', $id);
-		$this->db->update('vendor', $data);
+		//$data = array(
+			//'active' => '0'
+		//);
+
+        $this->db->where('active', '1');
+		$query = $this->db->get('vendor');
+		return $query->result();
+		//$this->db->where('id', $id);
+		//$this->db->update('vendor', $data);
 	}
 }

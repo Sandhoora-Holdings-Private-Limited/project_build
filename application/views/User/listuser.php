@@ -28,12 +28,21 @@
                         echo '<td>'.$user_->role_id.'</td>';
                         echo '<td>'.$user_->name.'</td>';
                         echo '<td>
-                                <form action="'.base_url().'/User/userbyid/'.$user_->id.'" method="post">
+                                <form action="'.base_url().'/User/viewuser" method="post">
+                                <input hidden name="id" value="'.$user_->id.'">
                                   <button type="submit" class="btn btn-block btn-info" >Info</button>
                                 </form>
+                                
                               </td>';
-                        echo '<td><button type="button" class="btn btn-block btn-success">Edit</button> </td>';
-                        echo '<td><button type="button" class="btn btn-block btn-danger">Danger</button></td>';
+                        echo '<td><form action="'.base_url().'/User/updateuser" method="post">
+                                <input hidden name="id" value="'.$user_->id.'">
+                                  <button type="submit" class="btn btn-block btn-info" >Edit</button>
+                                </form> </td>';
+                        echo '<td><form action="'.base_url().'/User/deleteuser" method="post">
+                                <input hidden name="id" value="'.$user_->id.'">
+                                  <button type="submit" class="btn btn-block btn-danger" >Delete</button>
+                                </form> </td>';
+
                         echo '</tr>';
 
                     }

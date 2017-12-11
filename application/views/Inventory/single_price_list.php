@@ -17,21 +17,38 @@
   <div class="col-xs-6">
     <div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title">Add price list</h3>
+        <h3 class="box-title">Add price</h3>
       </div>
       <!-- /.box-header -->
       <!-- form start -->
-      <form action="<?= base_url(); ?>/Inventory/price_list" method="post" role="form">
+      <form action="<?= base_url(); ?>/Inventory/price_list/<?= $list_id; ?>" method="post" role="form">
         <div class="box-body">
           <div class="form-group">
-            <label for="name">Name</label>
-            <input class="form-control" id="name" placeholder="" name="list_name" type="text" required>
-            <input hidden name="new_list_form" value="true">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td><label for="name">Unit Price</label></td>
+                  <td><input class="form-control" id="name" placeholder="" name="new_price" type="number" min=0 required></td>
+                </tr>
+                <tr>
+                  <td><label for="name">Item</label></td>
+                  <td><select style="width:100%" class="select2" name="new_item_id">';
+                        <?php
+                          foreach ($items as $item)
+                          {
+                            echo '<option value="'.$item->id.'">'.$item->name.'</option>';
+                          }
+                        ?>
+                      </select></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-          <button type="submit" class="btn btn-primary pull-right">Add Price List</button>
+          <input hidden name="new_price_form" value="true">
+          <button type="submit" class="btn btn-primary pull-right">Add/Update Price</button>
         </div>
       </form>
     </div>
@@ -43,37 +60,36 @@
   <div class="col-xs-12">
     <div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title">Price Lists</h3>
+        <h3 class="box-title">Price List</h3>
       </div>
       <div class="box-body">
         <table id="table_price_lists" class="table table-bordered table-striped">
           <thead>
             <tr>
-              <th>Price list ID</th>
-              <th>Price list name</th>
-              <th>Details</th>
+              <th>Item ID</th>
+              <th>Item name</th>
+              <th>Item unit</th>
+              <th>Unit price</th>
             </tr>
           </thead>
           <tbody>
             <?php
-              foreach ($lists as $list) {
+              foreach ($prices as $price) {
                 echo "<tr>";
-                echo '<td> #PL-'.$list->id.'</td>';
-                echo '<td> '.$list->name.'</td>';
-                echo '<td>
-                        <form action="'.base_url().'/Inventory/price_list/'.$list->id.'">
-                          <button type="submit" class="btn btn-block btn-info"> Pick </button>
-                        </form>
-                        </td>';
+                echo '<td> #ITM-'.$price->item_id.'</td>';
+                echo '<td> '.$price->name.'</td>';
+                echo '<td> '.$price->unit.'</td>';
+                echo '<td> '.$price->price.'</td>';
                 echo "</tr>";
               }
             ?>
           </tbody>
           <tfoot>
             <tr>
-              <th>Price list ID</th>
-              <th>Price list name</th>
-              <th>Details</th>
+              <th>Item ID</th>
+              <th>Item name</th>
+              <th>Item unit</th>
+              <th>Unit price</th>
             </tr>
           </tfoot>
         </table>

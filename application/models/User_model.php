@@ -56,7 +56,6 @@ class User_model extends CI_Model
     public function update($id)
     {
         $data = array(
-            'id' => $this->input->post('id'),
             'name' => $this->input->post('name'),
             'role_id' => $this->input->post('role_id'),
         );
@@ -64,6 +63,7 @@ class User_model extends CI_Model
         $this->db->update('user', $data);
 
     }
+
 
     public function delete($id)
     {
