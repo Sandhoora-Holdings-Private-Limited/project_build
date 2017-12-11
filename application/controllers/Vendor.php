@@ -21,7 +21,7 @@ class Vendor extends CI_Controller
             $tab1 = array('name'=>'Vendor List','link'=>base_url().'/Vendor/listvendor', 'icon'=>'fa fa-circle-o');
             $tab2 = array('name'=>'New Vendor','link'=>base_url().'/Vendor/new', 'icon'=>'fa fa-circle-o');
             $data['tabs'] = array($tab1,$tab2);
-            $data['vendors'] = $this->Vendor_model->get_vendor_data($_SESSION['user']['id']);
+            $data['vendors'] = $this->Vendor_model->get_vendor_data();
             $this->load->view('template/header',$data);
             $this->load->view('Vendor/list_vendor',$data);
             $this->load->view('template/footer');
@@ -130,7 +130,7 @@ class Vendor extends CI_Controller
     public function vendorbyidview()
     {
         if(isset($_SESSION['user'])){
-            $data['page'] = array('header'=>'Vendors', 'description'=>'pick a vendor or create new vendor','app_name'=>'Customer');
+            $data['page'] = array('header'=>'Vendors', 'description'=>'pick a vendor or create new vendor','app_name'=>'Vendor');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
         $id = $this->input->post('id');
@@ -201,9 +201,9 @@ class Vendor extends CI_Controller
     }
      public function maketab($access, $id){
         //info
-        $tab1 = array('name'=>'Info', 'link'=>base_url().'/Customer/customerbyidview/'.$id,'icon'=>'fa fa-briefcase');
+        $tab1 = array('name'=>'Info', 'link'=>base_url().'/Vendor/vendorbyidview/'.$id,'icon'=>'fa fa-briefcase');
         //Update Details
-        $tab2 = array('name'=>'Update Details', 'link'=>base_url().'/Customer/edit/'.$id, 'icon'=>'fa fa-briefcase');
+        $tab2 = array('name'=>'Update Details', 'link'=>base_url().'/Vendor/edit/'.$id, 'icon'=>'fa fa-briefcase');
         
 
         return array($tab1,$tab2);

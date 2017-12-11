@@ -20,7 +20,7 @@ class Vendor_model extends CI_Model
 	}
 	public function get_vendor_data()
 	{
-		$query = $this->db->get('vendor');
+		$query = $this->db->get_where('vendor',array('active'=>1));
 		return $query->result();
 	}
 	public function get_data_by_id($id)
@@ -43,14 +43,14 @@ class Vendor_model extends CI_Model
 
 }
     public function delete($id){
-		//$data = array(
-			//'active' => '0'
-		//);
+		$data = array(
+			'active' => '0'
+		);
 
-        $this->db->where('active', '1');
-		$query = $this->db->get('vendor');
-		return $query->result();
-		//$this->db->where('id', $id);
-		//$this->db->update('vendor', $data);
+        //$this->db->where('active', '1');
+		//$query = $this->db->get('vendor');
+		//return $query->result();
+		$this->db->where('id', $id);
+		$this->db->update('vendor', $data);
 	}
 }
