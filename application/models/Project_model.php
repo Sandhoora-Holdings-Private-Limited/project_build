@@ -15,6 +15,13 @@ class Project_model extends CI_Model {
 		return $query->result();
 	}
 
+	public function get_all_projects()
+	{
+		$query = 'SELECT `id`,`name`,`address`,`start_date`,`end_date` from project as p WHERE p.active = 1 ';
+		$query = $this->db->query($query);
+		return $query->result();
+	}
+
 	public function add_user($user_id, $project_id)
 	{
 		@$this->db->insert('team_member', $data);
@@ -24,7 +31,7 @@ class Project_model extends CI_Model {
 	{
 		$data = array('name'=>$name, 'address'=>$address, 'start_date'=>$start_date, 'end_date'=>$end_date);
 		$query = $this->db->insert('project', $data);
-		var_dump($query);
+		return $this->db->affected_rows();
 	}
 
 	public function get_project_details($project_id)

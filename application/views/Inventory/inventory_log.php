@@ -31,24 +31,24 @@
                   {
                     echo '<td> <small class="label pull-right bg-red"> OUT </small> </td>';
                     echo '<td> - </td>';
-                    echo '<td> #PR-'.$project_id.' </td>';
+                    echo '<td> MAIN </td>';
                   }
                   elseif($log->from_project_id == NULL)
                   {
                     echo '<td> <small class="label pull-right bg-green"> IN </small> </td>';
-                    echo '<td> #PR-'.$project_id.' </td>';
+                    echo '<td> MAIN </td>';
                     echo '<td> - </td>';
                   }
                   elseif($log->to_project_id == 1)
                   {
                     echo '<td> <small class="label pull-right bg-navy"> TRANSFER OUT </small> </td>';
                     echo '<td> MAIN </td>';
-                    echo '<td> #PR-'.$project_id.' </td>';
+                    echo '<td> #PR-'.$log->from_project_id.' </td>';
                   }
                   elseif($log->from_project_id == 1)
                   {
                     echo '<td> <small class="label pull-right bg-yellow"> TRANSFER IN </small> </td>';
-                    echo '<td> #PR-'.$project_id.' </td>';
+                    echo '<td> #PR-'.$log->to_project_id.' </td>';
                     echo '<td> MAIN </td>';
                   }
                   else
