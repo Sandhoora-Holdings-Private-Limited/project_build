@@ -1,21 +1,52 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Vendor_model extends CI_Model {
+class Vendor_model extends CI_Model 
+{
 
 	public function __construct()
 	{
-	}
 
-	public function get_all_vendors()
+	}
+	public function set_vendor_data()
 	{
-		$query = $this->db->get_where('vendor',array('active' => 1));
+		$data = array(
+			'name' => $this->input->post('name'),
+			'address'=> $this->input->post('address'),
+			'email' => $this->input->post('email'),
+			'phone_number' => $this->input->post('phone_number')
+		);
+		$this->db->insert('vendor',$data);
+	}
+	public function get_vendor_data()
+	{
+		$query = $this->db->get('vendor');
 		return $query->result();
 	}
-
-	public function get_vendor_details_by_id($id)
+	public function get_data_by_id($id)
 	{
-		$query = $this->db->get_where('vendor', array('id'=>$id));
-		return $query->row();
+		
+		$this->db->where('id', $id);
+		$query = $this->db->get('vendor');
+		return $query->result();
+
+	}
+	public function update($id){
+		$data = array(
+        'name' => $this->input->post('name'),
+		'address'=> $this->input->post('address'),
+		'email' => $this->input->post('email'),
+		'phone_number' => $this->input->post('phone_number')
+);
+	$this->db->where('id', $id);
+	$this->db->update('vendor', $data);
+
+}
+    public function delete($id){
+		$data = array(
+			'active' => '0'
+		);
+		$this->db->where('id', $id);
+		$this->db->update('vendor', $data);
 	}
 }

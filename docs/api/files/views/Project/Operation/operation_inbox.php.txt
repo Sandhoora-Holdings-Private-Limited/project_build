@@ -339,14 +339,95 @@
         <h4 class="modal-title">Request Details</h4>
       </div>
       <div class="modal-body">
-            <div class="chart" id="s-chart" style="height: 300px; position: relative;"></div>
+        <div class="row">
+          <div class="col-xs-4">
+          </div>
+          <div class="col-xs-4">
+            <canvas id="budet_detail" width="150" height="150"></canvas>
+          </div>
+          <div class="col-xs-4">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-1">
+          </div>
+          <div class="col-xs-10">
+            <br>
+            <big class="center"> Statisics on Stage <?= $modal_data['stage_name'] ?> </big>
+            <form action="<?= base_url(); ?>/Project/operation_inbox/<?= $project_id; ?>" method="post">
+              <table class="table">
+                <tr>
+                  <td> Budgeted no of units : </td>
+                  <td> <?= $modal_data['budgeted_ammount_on_stage'] ?>  <?= $modal_data['item_unit'] ?></td>
+                </tr>
+                <tr>
+                  <td> Remaning Budgeted no of units : </td>
+                  <td> <?php echo ($modal_data['budgeted_ammount_on_stage'] - $modal_data['spent_on_stage']); ?>  <?= $modal_data['item_unit'] ?> </td>
+                </tr>
+                <tr>
+                  <td> Project Inventroy stock : </td>
+                  <td> <?= $modal_data['in_project_stock'] ?>  <?= $modal_data['item_unit'] ?> </td>
+                </tr>
+                <tr>
+                  <td> To be recived : </td>
+                  <td> <?= $modal_data['pending_on_stage'] ?>  <?= $modal_data['item_unit'] ?> </td>
+                </tr>
+                <tr>
+                  <td> Used : </td>
+                  <td> <?= $modal_data['spent_on_stage'] ?>  <?= $modal_data['item_unit'] ?> </td>
+                </tr>
+                <tr>
+                  <td> Main Inventory stock : </td>
+                  <td> <?= $modal_data['in_main_stock'] ?>  <?= $modal_data['item_unit'] ?> </td>
+                </tr>
+                <tr>
+                  <td> Requested no of units : </td>
+                  <td> <?= $modal_data['requested_ammount'] ?>  <?= $modal_data['item_unit'] ?> </td>
+                </tr>
+                <tr>
+                  <td>
+                    Transfer from main stock:
+                  </td>
+                  <td>
+                    <input type="number" min=1 max=<?php echo min($modal_data['requested_ammount'], $modal_data['in_main_stock']); ?> name="split_ammount">
+                    <input name="type" value="split" hidden>
+                    <input hidden name="transaction_id" value="<?php if(isset($transaction_id)) echo $transaction_id ;?>" >
+              <input hidden name="transaction_type" value="material">
+
+                  </td>
+                </tr>
+              </table>
+                <input name="request_ammount" value="<?= $modal_data['requested_ammount']; ?>" hidden>
+                <button type="submit" class="btn btn-block btn-warning">Split and Approve</button>
+              </form>
+            </div>
+          <div class="col-xs-1">
+          </div>
+        </div>
+
       </div>
       <div class="modal-footer">
-        <a href="<?= base_url(); ?>/Project/operation_inbox/<?= $project_id ?>"><button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button></a>
-        <button type="button" class="btn btn-danger">Denie</button>
-        <button type="button" class="btn btn-warning">Split</button>
-        <button type="button" class="btn btn-success">Approve</button>
-
+        <div class="row">
+          <div class="col-xs-6">
+            <a href="<?= base_url(); ?>/Project/operation_inbox/<?= $project_id ?>"><button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button></a>
+          </div>
+          <div class="col-xs-3">
+            <form action="<?= base_url(); ?>/Project/operation_inbox/<?= $project_id; ?>" method="post">
+              <input hidden name="transaction_id" value="<?php if(isset($transaction_id)) echo $transaction_id ;?>" >
+              <input hidden name="transaction_type" value="material">
+              <input name="type" value="denie" hidden>
+              <button type="submit" class="btn btn-block btn-danger">Denie</button>
+            </form>
+          </div>
+          <div class="col-xs-3">
+            <form action="<?= base_url(); ?>/Project/operation_inbox/<?= $project_id; ?>" method="post">
+              <input name="type" value="approve" hidden>
+              <input hidden name="transaction_id" value="<?php if(isset($transaction_id)) echo $transaction_id ;?>" >
+              <input hidden name="transaction_type" value="material">
+              <button type="submit" class="btn btn-block btn-success">Approve</button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
     <!-- /.modal-content -->

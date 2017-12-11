@@ -153,12 +153,6 @@
         foreach ($data_tables as $data_table)
         {
           echo "$('#".$data_table."').DataTable(";
-          // echo "'paging'      : true,";
-          // echo "'lengthChange'      : false,";
-          // echo "'searching'      : true,";
-          // echo "'ordering'      : true,";
-          // echo "'info'      : true,";
-          // echo "'autoWidth'      : false";
           echo ");\n";
         }
       }
@@ -203,26 +197,6 @@
       }
     ?>
   });
-
-
-// var ctx = document.getElementById("myChart");
-//   data = {
-//     datasets: [{
-//         data: [10, 20, 30,]
-//     }],
-
-//     // These labels appear in the legend and in the tooltips when hovering different arcs
-//     labels: [
-//         'Red',
-//         'Yellow',
-//         'Blue',
-//     ]
-// };
-
-// var myDoughnutChart = new Chart(ctx, {
-//     type: 'doughnut',
-//     data: data,
-// });
 </script>
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
