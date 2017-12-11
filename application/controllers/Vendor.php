@@ -14,7 +14,6 @@ class Vendor extends CI_Controller
     public function index()
     {
         if(isset($_SESSION['user']))
-            $data['page'] = array('header'=>'Vendors', 'description'=>'pick a project or create new one','app_name'=>'PROJECTS');
          {
             $data['page'] = array('header'=>'Vendors', 'description'=>'pick a Vendor or create new customer','app_name'=>'Vendor');
             $data['user'] = $_SESSION['user'];

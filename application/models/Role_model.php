@@ -48,10 +48,10 @@ class Role_model extends CI_Model {
 		$this->db->insert('role',$data);
 	}
 
-	public function get_role_data($role_id)
+	public function get_role_data()
 	{
 		$this->db->where('active', '1');
-		$query = $this->db->get_where('role', array('id' => $role_id));
+		$query = $this->db->get('role');
 		return $query->result();
 	}
 
@@ -93,7 +93,14 @@ class Role_model extends CI_Model {
 		return $query->result();
 	}
 
-	public function delete($id){
+	public function get_object($id)
+	{
+		$this->db->where('role_id', $id);
+		$query = $this->db->get('access');
+		return $query->result();
+	}
+
+	public function delete_role($id){
 		$data = array(
 			'active' => '0'
 		);
