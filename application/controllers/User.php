@@ -102,7 +102,7 @@ class User extends CI_Controller
             $tab2 = array('name' => 'New User', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-circle-o');
             $data['tabs'] = array($tab1, $tab2, );
             $data['users'] = $this->User_model->get_all_users();
-            var_dump($data['users']);
+            
             $this->load->view('template/header', $data);
             $this->load->view('User/listuser', $data);
             $this->load->view('template/footer');
@@ -161,6 +161,7 @@ class User extends CI_Controller
             $tab3 = array('name'=>'Role','link'=>base_url().'/User/role', 'icon'=>'fa fa-circle-o');
             $tab4 = array('name'=>'New Role','link'=>base_url().'/User/newrole', 'icon'=>'fa fa-circle-o');
             $data['tabs'] = array($tab1,$tab2,$tab3,$tab4);
+            $data['data_tables'] = array('role_table');
             $data['roles'] = $this->Role_model->get_all_roles();
             $this->load->view('template/header',$data);
             $this->load->view('User/role',$data);

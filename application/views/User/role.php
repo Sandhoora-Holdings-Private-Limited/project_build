@@ -27,22 +27,11 @@
     <div class="box">
       <div class="box-header">
         <h3 class="box-title">User Role List</h3>
-
-        <div class="box-tools">
-          <?php  echo form_open('http://localhost/group-project-1.1/index.php/User/rolebyid'); ?>
-          <div class="input-group input-group-sm" style="width: 150px;">
-            <input name="table_search" class="form-control pull-right" placeholder="Search" type="text">
-
-            <div class="input-group-btn">
-              <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-            </div>
-          </div>
-        </div>
       </div>
             <!-- /.box-header -->
-            <div class="box-body table-responsive no-padding">
-                <table class="table table-hover">
-                    <tbody><tr>
+            <div class="box-body table-responsive with-padding">
+                <table id="user_table" class="table table-hover">
+                    <thead><tr>
                         <th>ID</th>
                         <th>Name</th>
                         <th></th>
@@ -50,6 +39,8 @@
                         <th></th>
                         <th></th>
                     </tr>
+                  </thead>
+                  <tbody>
                     <?php
                     foreach ($roles as $role) {
                         echo '<tr>';
@@ -69,43 +60,23 @@
                             <button type="submit" class="btn btn-block btn-success" >Edit</button>
                           </form> </td>';
 
-                      /*  echo '<td><form action="'.base_url().'/User/deleterole/'.$customer->id.'" method="post">
-                            <input hidden name="id" value="'.$customer->id.'">
-                            <button type="submit" class="btn btn-block btn-danger" >Delete</button>
-                        </form></td>';*/
-
-                        //<a href="<?php echo base_url('index.php/Admin/editRingPost/'.$row['ringId']);
-
 
                         echo '</tr>';
-                    //</form>
                   }
                     ?>
+                  </tbody>
+                  <tfoot>
+                      <tr>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                      </tr>
+                  </tfoot>
+              </table>
 
-
-
-                    <!--<tr>
-                      <td>219</td>
-                      <td>Alexander Pierce</td>
-                      <td>11-7-2014</td>
-                      <td><span class="label label-warning">Pending</span></td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
-                    <tr>
-                      <td>657</td>
-                      <td>Bob Doe</td>
-                      <td>11-7-2014</td>
-                      <td><span class="label label-primary">Approved</span></td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
-                    <tr>
-                      <td>175</td>
-                      <td>Mike Doe</td>
-                      <td>11-7-2014</td>
-                      <td><span class="label label-danger">Denied</span></td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>-->
-                    </tbody></table>
             </div>
             <!-- /.box-body -->
         </div>
