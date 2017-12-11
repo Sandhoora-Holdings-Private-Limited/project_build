@@ -10,22 +10,26 @@ class Project extends CI_Controller
         $this->load->model('Transaction_model');
         $this->load->model('Vendor_model');
         $this->load->model('Budget_model');
+        $this->load->model('User_model');
+        $this->load->model('Inventory_model');
     }
 
     public function index()
     {
         if(isset($_SESSION['user']))
         {
+
             $data['page'] = array('header'=>'Projects', 'description'=>'pick a project or create new one','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
-            $tab1 = array('name'=>'Project List','link'=>base_url().'/Project', 'icon'=>'fa fa-circle-o');
-            $tab2 = array('name'=>'New Project','link'=>base_url().'/Project/new', 'icon'=>'fa fa-circle-o');
+            $tab1 = array('name'=>'Project List','link'=>base_url().'/Project', 'icon'=>'fa fa-tasks');
+            $tab2 = array('name'=>'New Project','link'=>base_url().'/Project/new', 'icon'=>'fa fa-plus');
             $data['tabs'] = array($tab1,$tab2);
             $data['projects'] = $this->Project_model->get_projects_by_user($_SESSION['user']['id']);
+            $data['data_tables'] = array('table_projects');
             $this->load->view('template/header',$data);
             $this->load->view('Project/main',$data);
-            $this->load->view('template/footer');
+            $this->load->view('template/footer',$data);
         }
         else
         {
@@ -39,15 +43,31 @@ class Project extends CI_Controller
         {
             if(isset($_POST['form']))
             {
-                $this->Project_model->new_project($_POST['name'], $_POST['address'], $_POST['start_date'], $_POST['end_date']);
-                $data['sucess'] = true;
-                $data['error'] = false;
+                if($_POST['name'] != "")
+                {
+                    $result = $this->Project_model->new_project($_POST['name'], $_POST['address'], $_POST['start_date'], $_POST['end_date']);
+                    if($result)
+                    {
+                        $data['sucess'] = true;
+                        $data['message'] = 'Sucessfully created the project';
+                    }else
+                    {
+                        $data['fail'] = true;
+                        $data['message'] = 'Failed to create the project';
+                    }
+                }
+                else
+                {
+                    $data['fail'] = true;
+                    $data['message'] = 'Please enter a project name';
+                }
+
             }
             $data['page'] = array('header'=>'Project New', 'description'=>'create a new project','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
-            $tab1 = array('name'=>'Project List','link'=>base_url().'/Project', 'icon'=>'fa fa-circle-o');
-            $tab2 = array('name'=>'New Project','link'=>base_url().'/Project/new', 'icon'=>'fa fa-circle-o');
+            $tab1 = array('name'=>'Project List','link'=>base_url().'/Project', 'icon'=>'fa fa-tasks');
+            $tab2 = array('name'=>'New Project','link'=>base_url().'/Project/new', 'icon'=>'fa fa-plus');
             $data['tabs'] = array($tab1,$tab2);
             $this->load->view('template/header',$data);
             $this->load->view('Project/new',$data);
@@ -68,6 +88,8 @@ class Project extends CI_Controller
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
+            $data['access'] = $_SESSION['access'];
+            $data['project_id'] = $project_id;
             $this->load->view('template/header',$data);
             $this->load->view('Project/view',$data);
             $this->load->view('template/footer');
@@ -82,13 +104,47 @@ class Project extends CI_Controller
     {
         if(isset($_SESSION['user']))
         {
+            if(isset($_POST['type']))
+            {
+                switch($_POST['type'])
+                {
+                    case 'remove':
+                        $result = $this->User_model->remove_team_member($project_id, $_POST['user_id']);
+                        if($result)
+                        {
+                            $data['sucess'] = true;
+                            $data['message'] = "Sucessfully removed team member";
+                        }
+                        else
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = "Failed to remove team member";
+                        }
+                    case 'add':
+                        $result = $this->User_model->add_team_member($project_id, $_POST['user_id']);
+                        if($result)
+                        {
+                            $data['sucess'] = true;
+                            $data['message'] = "Sucessfully added team member";
+                        }
+                        else
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = "Failed to add team member";
+                        }
+                }
+            }
             $data['page'] = array('header'=>'Project team', 'description'=>'pick project team members here','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
+            $data['project_id'] = $project_id;
+            $data['data_tables'] = array('team_members','non_team_users');
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
+            $data['team_members'] = $this->User_model->get_team_members($project_id);
+            $data['non_team_users'] = $this->User_model->get_non_team_users($project_id);
             $this->load->view('template/header',$data);
             $this->load->view('Project/Team/team_members.php',$data);
-            $this->load->view('template/footer');
+            $this->load->view('template/footer',$data);
         }
         else
         {
@@ -100,13 +156,30 @@ class Project extends CI_Controller
     {
         if(isset($_SESSION['user']))
         {
-            $data['page'] = array('header'=>'Projects team authorization', 'description'=>'pick who calls the shots in this project','app_name'=>'PROJECTS');
+            if(isset($_POST['id']))
+            {
+                 $result = $this->User_model->create_approving_user((int)$project_id, $_POST);
+                if($result)
+                {
+                    $data['sucess'] = true;
+                    $data['message'] = "Sucessfully updated authorization";
+                }
+                else
+                {
+                    $data['fail'] = true;
+                    $data['message'] = "Failed to update authorization";
+                }
+            }
+            $data['page'] = array('header'=>'Project team', 'description'=>'pick project team members here','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
+            $data['project_id'] = $project_id;
+            $data['data_tables'] = array('team_members');
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
+            $data['team_members'] = $this->User_model->get_team_members($project_id);
             $this->load->view('template/header',$data);
             $this->load->view('Project/Team/team_authority',$data);
-            $this->load->view('template/footer');
+            $this->load->view('template/footer',$data);
         }
         else
         {
@@ -118,13 +191,46 @@ class Project extends CI_Controller
     {
         if(isset($_SESSION['user']))
         {
-            $data['page'] = array('header'=>'Projects Inventory', 'description'=>'move items in and out from here','app_name'=>'PROJECTS');
+            if(isset($_POST['item_id']))
+            {
+
+                if($_POST['no_of_units']!="")
+                {
+                    if(isset($_POST['out']))
+                    {//transfer out
+                        $result = $this->Inventory_model->stock_out($project_id, $_POST['item_id'], $_POST['no_of_units'], $_SESSION['user']['id']);
+                    }
+                    else
+                    {//transfer to main
+                        $result = $this->Inventory_model->stock_transfer($_POST['item_id'],$_POST['no_of_units'],$project_id,1,$_SESSION['user']['id']);
+                    }
+                    if($result)
+                    {
+                        $data['sucess'] = true;
+                        $data['message'] = 'Sucessfully transfered';
+                    }
+                    else
+                    {
+                        $data['fail'] = true;
+                        $data['message'] = 'Failed to transfer';
+                    }
+                }
+                else
+                {
+                    $data['fail'] = true;
+                    $data['message'] = 'Please enter an ammount to transfer';
+                }
+            }
+            $data['page'] = array('header'=>'Projects inventory stock', 'description'=>'inventory stock','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
+            $data['project_id'] = $project_id;
+            $data['data_tables'] = array('table_stock_log');
+            $data['stocks'] = $this->Inventory_model->get_stock($project_id);
             $this->load->view('template/header',$data);
             $this->load->view('Project/Inventory/inventory_dashboard',$data);
-            $this->load->view('template/footer');
+            $this->load->view('template/footer',$data);
         }
         else
         {
@@ -136,13 +242,16 @@ class Project extends CI_Controller
     {
         if(isset($_SESSION['user']))
         {
-            $data['page'] = array('header'=>'Projects inventory stock', 'description'=>'get details of current stock','app_name'=>'PROJECTS');
+            $data['page'] = array('header'=>'Projects inventory stock', 'description'=>'inventory stock','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
+            $data['project_id'] = $project_id;
+            $data['data_tables'] = array('table_stock_log');
+            $data['stocks'] = $this->Inventory_model->get_stock($project_id);
             $this->load->view('template/header',$data);
             $this->load->view('Project/Inventory/inventory_stock',$data);
-            $this->load->view('template/footer');
+            $this->load->view('template/footer',$data);
         }
         else
         {
@@ -158,9 +267,12 @@ class Project extends CI_Controller
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
+            $data['project_id'] = $project_id;
+            $data['data_tables'] = array('table_stock_log');
+            $data['logs'] = $this->Inventory_model->get_stock_log($project_id);
             $this->load->view('template/header',$data);
             $this->load->view('Project/Inventory/inventory_log',$data);
-            $this->load->view('template/footer');
+            $this->load->view('template/footer',$data);
         }
         else
         {
@@ -176,11 +288,72 @@ class Project extends CI_Controller
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
-            $data['data_tables'] = array('table1');
             $data['project_id'] = $project_id;
-            $this->load->view('template/header',$data);
-            $this->load->view('Project/Budget/budget',$data);
-            $this->load->view('template/footer');
+            $data['data_tables'] = array('table_stages_budget');
+            if($stage_id == NULL)
+            {
+                if(isset($_POST['new_stage_form']))
+                {
+                    $result = $this->Budget_model->add_new_stage($project_id, $_POST['stage_name']);
+                    if($result)
+                    {
+                        $data['sucess'] = true;
+                        $data['message'] = 'Sucessfully created new stage';
+                    }
+                    else
+                    {
+                        $data['fail'] = true;
+                        $data['message'] = 'Failed to create new stage';
+                    }
+                }
+                $data['stages'] = $this->Budget_model->get_stages_by_project($project_id);
+                $this->load->view('template/header',$data);
+                $this->load->view('Project/Budget/budget',$data);
+                $this->load->view('template/footer', $data);
+            }
+            else
+            {
+                if(isset($_POST['new_entry_form']))
+                {
+                    if($_POST['new_ammount'] != "")
+                    {
+                        var_dump($_POST);
+                        switch($_POST['type'])
+                        {
+                            case 'material':
+                                $result = $this->Budget_model->create_new_entry($stage_id, $_POST['new_ammount'], $_POST['type'], $_POST['item'], $_POST['price']);
+                                break;
+                            case 'payment':
+                                $result = $this->Budget_model->create_new_entry($stage_id, $_POST['new_ammount'], $_POST['type'], $_POST['name']);
+                                break;
+                        }
+                        if($result)
+                        {
+                            $data['sucess'] = true;
+                            $data['message'] = "Sucessfully created new entry";
+                        }
+                        else
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = "Failed to create new entry";
+                        }
+                    }
+                    else
+                    {
+                        $data['fail'] = true;
+                        $data['message'] = "Please enter ammount";
+                    }
+                }
+                $data['form_items'] = $this->Budget_model->get_items_not_in_stage($stage_id);
+                $data['form_prices'] = $this->Budget_model->get_price_list();
+                $data['items'] = $this->Budget_model->get_entries_material_by_stage($stage_id);
+                $data['payments'] = $this->Budget_model->get_entries_payments_by_stage($stage_id);
+                $data['stage_id'] = $stage_id;
+                $this->load->view('template/header',$data);
+                $this->load->view('Project/Budget/budget_stage',$data);
+                $this->load->view('template/footer',$data);
+            }
+
         }
         else
         {
@@ -248,24 +421,62 @@ class Project extends CI_Controller
                     case 'view' :
                     {
                         $data['view_transaction_details'] = true;
+                        $modal_data = $this->Transaction_model->get_material_transaction_budegte_datails($_POST['transaction_id'],$project_id);
+                        $data['transaction_id'] = $_POST['transaction_id'];
+                        $data['modal_data'] = $modal_data;
+                        $remaining = $modal_data['budgeted_ammount_on_stage'] - $modal_data['spent_on_stage'];
+                        if($remaining < 0)
+                        {
+                            $remaining = 0 - $remaining;
+                            $d_items = $d_items = array(
+                                array('name'=>'Remaining','value'=>$remaining),
+                                array('name'=>'To be recived','value'=>$modal_data['pending_on_stage']),
+                                array('name'=>'In stock','value'=>$modal_data['in_project_stock']) );
+                        }
+                        else
+                        {
+                            $d_items = array(
+                                array('name'=>'To be recived','value'=>$modal_data['pending_on_stage']),
+                                array('name'=>'In stock','value'=>$modal_data['in_project_stock']),
+                                array('name'=>'Remaining','value'=>$remaining));
+                        }
 
-                        $donut_chart['id'] = 'myChart';
-                        $donut_chart['items'] = array( array('name'=>'a', 'value'=> 1),array('name'=>'b', 'value'=>2) );
+
+                        $donut_chart['id'] = 'budet_detail';
+                        $donut_chart['items'] = $d_items;
+
                         $data['donut_charts'] = array($donut_chart);
                         break;
                     }
                     case 'split':
                     {
-                        $data['fail'] = true;
-                        $data['sucess'] = true;
-                        $data['message'] = 'some message';
-                        break;
-                    }
-                    case 'transfer':
-                    {
-                        $data['fail'] = true;
-                        $data['sucess'] = true;
-                        $data['message'] = 'some message';
+                        if($_POST['split_ammount'] != "" )
+                        {
+                            if($_POST['split_ammount'] == $_POST['request_ammount'])
+                            {
+                                $result = $this->Transaction_model->approve_and_transfer_material_transaction($_POST['transaction_id'], $_SESSION['user']['id'], $project_id);
+                            }
+                            else
+                            {
+                                $result = $this->Transaction_model->split_transaction($_POST['transaction_id'], $_SESSION['user']['id'],$_POST['split_ammount'], $project_id);
+                            }
+                            if($result)
+                            {
+                                $data['sucess'] = true;
+                                $data['message'] = 'Sucessfully splited transaction and approved';
+                            }
+                            else
+                            {
+                                $data['fail'] = true;
+                                $data['message'] = 'Failed to split transaction';
+                            }
+                        }
+                        else
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = 'Please insert transfer ammount to split tranaction';
+                        }
+
                         break;
                     }
                     case 'pay':
@@ -559,9 +770,9 @@ class Project extends CI_Controller
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
             $data['project_id'] = $project_id;
+            $data['data_tables'] = array('table_stages_material_request','table_stages_material_request');
             if($stage_id == NULL)
             {
-                $data['data_tables'] = array('table_stages_material_request');
                 $data['stages'] = $this->Budget_model->get_stages_by_project($project_id);
                 $this->load->view('template/header',$data);
                 $this->load->view('Project/Operation/operation_request',$data);
@@ -659,7 +870,7 @@ class Project extends CI_Controller
     }
 
 
-    public function analytics($project_id)
+    public function analytics($project_id, $stage_id=NULL)
     {
         if(isset($_SESSION['user']))
         {
@@ -667,9 +878,123 @@ class Project extends CI_Controller
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
-            $this->load->view('template/header',$data);
-            $this->load->view('Project/Team/team_authority',$data);
-            $this->load->view('template/footer');
+            $data['project_id'] = $project_id;
+            if($stage_id == NULL)
+            {
+                $project_data = $this->Budget_model->get_project_budget_details($project_id);
+                if($project_data['remaining'] < 0)
+                {//over spent
+                    $remaining = 0 - $project_data['remaining'];
+                    $project_dc = array(
+                        array('name'=>'Spent','value'=>$project_data['spent']),
+                        array('name'=>'Pending', 'value'=>$project_data['pending']),
+                        array('name'=>'Over spent', 'value'=>$remaining));
+                }
+                else
+                {
+                    $project_dc = array(
+                        array('name'=>'Spent','value'=>$project_data['spent']),
+                        array('name'=>'Pending', 'value'=>$project_data['pending']),
+                        array('name'=>'Remaining', 'value'=>$project_data['remaining']));
+                }
+                $donut_charts = array(
+                    array('id' => 'project', 'items' => $project_dc));
+
+                $stages = $this->Budget_model->get_stages_by_project($project_id);
+                $stages_data= array();
+                foreach ($stages as $stage) {
+                    $stage_data = $this->Budget_model->get_stage_budget_details($stage->id);
+                    $stage_data['id'] = $stage->id;
+                    array_push($stages_data, $stage_data);
+                    if($stage_data['remaining'] < 0)
+                    {//over spent
+                        $remaining = 0 - $stage_data['remaining'];
+                        $stage_dc = array(
+                            array('name'=>'Spent','value'=>$stage_data['spent']),
+                            array('name'=>'Pending', 'value'=>$stage_data['pending']),
+                            array('name'=>'Over spent', 'value'=>$remaining));
+                    }
+                    else
+                    {
+                        $stage_dc = array(
+                            array('name'=>'Spent','value'=>$stage_data['spent']),
+                            array('name'=>'Pending', 'value'=>$stage_data['pending']),
+                            array('name'=>'Remaining', 'value'=>$stage_data['remaining']));
+                    }
+                    $stage_push = array('id'=>'stage_'.$stage->id, 'items'=>$stage_dc);
+                    array_push($donut_charts, $stage_push);
+                }
+
+                $data['stages'] = $stages_data;
+                $data['donut_charts'] = $donut_charts;
+                $data['data_tables'] = array('table_stage_anayltics');
+                $this->load->view('template/header',$data);
+                $this->load->view('Project/Analytics/analytics_project',$data);
+                $this->load->view('template/footer', $data);
+            }
+            else
+            {
+                $donut_charts = array();
+                //material budget entries
+                $items = $this->Budget_model->get_entries_material_by_stage($stage_id);
+                $items_data= array();
+                foreach ($items as $item)
+                {
+                    $item_data = $this->Budget_model->get_entry_material_budget_details($item->item_id);
+                    array_push($items_data, $item_data);
+                    if($item_data['remaining'] < 0)
+                    {//over spent
+                        $remaining = 0 - $item_data['remaining'];
+                        $item_dc = array(
+                            array('name'=>'Spent','value'=>$item_data['spent']),
+                            array('name'=>'Pending', 'value'=>$item_data['pending']),
+                            array('name'=>'Over spent', 'value'=>$remaining));
+                    }
+                    else
+                    {
+                        $item_dc = array(
+                            array('name'=>'Spent','value'=>$item_data['spent']),
+                            array('name'=>'Pending', 'value'=>$item_data['pending']),
+                            array('name'=>'Remaining', 'value'=>$item_data['remaining']));
+                    }
+                    $item_push = array('id'=>'item_'.$item_data['id'], 'items'=>$item_dc);
+                    array_push($donut_charts, $item_push);
+                }
+
+                //payments budget entries
+                $payments = $this->Budget_model->get_entries_payments_by_stage($stage_id);
+                $payments_data= array();
+                foreach ($payments as $payment)
+                {
+                    $payment_data = $this->Budget_model->get_entry_other_budget_details($payment->budget_entry_id);
+                    array_push($payments_data, $payment_data);
+                    if($payment_data['remaining'] < 0)
+                    {//over spent
+                        $remaining = 0 - $payment_data['remaining'];
+                        $payment_dc = array(
+                            array('name'=>'Spent','value'=>$payment_data['spent']),
+                            array('name'=>'Pending', 'value'=>$payment_data['pending']),
+                            array('name'=>'Over spent', 'value'=>$remaining));
+                    }
+                    else
+                    {
+                        $payment_dc = array(
+                            array('name'=>'Spent','value'=>$payment_data['spent']),
+                            array('name'=>'Pending', 'value'=>$payment_data['pending']),
+                            array('name'=>'Remaining', 'value'=>$payment_data['remaining']));
+                    }
+                    $payment_push = array('id'=>'payment_'.$payment_data['id'], 'items'=>$payment_dc);
+                    array_push($donut_charts, $payment_push);
+                }
+                $data['payments'] = $payments_data;
+                $data['items'] = $items_data;
+                $data['donut_charts'] = $donut_charts;
+                $data['data_tables'] = array('table_stage_anayltics');
+                $this->load->view('template/header',$data);
+                $this->load->view('Project/Analytics/analytics_stage',$data);
+                $this->load->view('template/footer', $data);
+            }
+
         }
         else
         {

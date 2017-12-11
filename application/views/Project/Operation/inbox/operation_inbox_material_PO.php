@@ -43,11 +43,10 @@
                   }
                   else
                   {
-                    echo '<select class="select2" name="vendor">';
+                    echo '<select style="width:100%" class="select2" name="vendor">';
                     foreach ($vendors as $vendor) {
                       echo '<option value="'.$vendor->id.'">'.$vendor->name.'</option>';
                     }
-                    //echo '<option value="'.$vendor->id.'">ads asd as da sd a sd asd as das</option>';
                     echo '</select>';
                   }
 

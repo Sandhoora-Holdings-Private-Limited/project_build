@@ -9,6 +9,13 @@ class Budget_model extends CI_Model
 
 	}
 
+	public function add_new_stage($project_id, $name)
+	{
+		$query = 'INSERT INTO budget_stage(project_id,name) VALUES ('.$project_id.',"'.$name.'")';
+		$query = $this->db->query($query);
+		return $this->db->affected_rows();
+	}
+
 	public function get_stages_by_project($project_id)
 	{
 		$query = $this->db->get_where('budget_stage', array("project_id"=>$project_id));
@@ -21,7 +28,8 @@ class Budget_model extends CI_Model
 			i.name as item_name,
 			i.id as item_id,
 			i.unit as item_unit,
-			be.id as budget_entry_id
+			be.id as budget_entry_id,
+			be.no_of_units as ammount
 			FROM
 			budget_entry_material as be JOIN
 			inventory_item as i
@@ -31,17 +39,66 @@ class Budget_model extends CI_Model
 		$query = $this->db->query($query);
 		return $query->result();
 	}
+
 	public function get_entries_payments_by_stage($stage_id)
 	{
 		$query = 'SELECT
 			be.name as name,
-			be.id as budget_entry_id
+			be.id as budget_entry_id,
+			be.ammount as ammount
 			FROM
 			budget_entry_other as be
 
 			WHERE be.budget_stage_id = '.$stage_id;
 		$query = $this->db->query($query);
 		return $query->result();
+	}
+
+	public function get_items_not_in_stage($stage_id)
+	{
+		$query = 'SELECT b.inventory_item_id as item_id FROM budget_stage as bs JOIN budget_entry_material as b on bs.id = b.budget_stage_id WHERE bs.id = '.$stage_id;
+		$query = $this->db->query($query);
+		$items = $query->result();
+		if($query->num_rows())
+		{
+			$query = 'SELECT * FROM inventory_item WHERE NOT (';
+			for($i=0; $i<sizeof($items)-1; $i++)
+			{
+				$query = $query.' id = '.$items[$i]->item_id.' OR ';
+			}
+			$query = $query.' id = '.$items[$i]->item_id.')';
+			$query = $this->db->query($query);
+			return $query->result();
+		}
+		else
+		{
+			$query = 'SELECT * FROM inventory_item';
+			$query = $this->db->query($query);
+			return $query->result();
+		}
+	}
+
+	public function get_price_list()
+	{
+		$query = 'SELECT * FROM inventory_item_price_list';
+		$query = $this->db->query($query);
+		return $query->result();
+	}
+
+	public function create_new_entry($stage_id, $ammount, $type, $name, $price_list_id=NULL)
+	{
+		switch($type)
+		{
+			case 'material':
+			$query = 'INSERT INTO budget_entry_material(budget_stage_id,inventory_item_id,no_of_units,inventory_item_price_list_id) VALUES ('.$stage_id.', '.$name.' ,'.$ammount.','.$price_list_id.')';
+			break;
+			case 'payment':
+			$query = 'INSERT INTO budget_entry_other(budget_stage_id,ammount,name) VALUES ('.$stage_id.','.$ammount.', "'.$name.'")';
+			break;
+		}
+		echo $query;
+		$query = $this->db->query($query);
+		return $this->db->affected_rows();
 	}
 }
 

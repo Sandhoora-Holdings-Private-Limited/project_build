@@ -13,7 +13,7 @@ class Role_model extends CI_Model {
 		$query = $this->db->get_where('access', array('role_id' => $role_id));
 		foreach($query->result() as $row)
 		{
-			$nice_rows[$row->object] = array('create' => ($row->create == '1'? true: false) ,'read' => ($row->read == '1'? true: false),'update' => ($row->update == '1'? true: false) ,'delete' => ($row->delete == '1'? true: false));
+			$nice_rows[$row->object] = $row->read == '1'? true: false;
 			$can_read = $row->read;
 			switch($row->object)
 			{
@@ -35,20 +35,38 @@ class Role_model extends CI_Model {
 
 			}
 		}
-
 		$ret = array('access'=>$nice_rows,'apps'=>$apps);
 
 		return $ret;
 	}
+
+	public function set_role_data()
+	{
+		$data = array(
+			'name' => $this->input->post('name'),
+		);
+		$this->db->insert('role',$data);
+	}
+
 	public function get_role_data($role_id)
 	{
-		//$this->db->where('active', '1');
+		$this->db->where('active', '1');
 		$query = $this->db->get_where('role', array('id' => $role_id));
 		return $query->result();
 	}
 
 	public function get_all_roles()
 	{
+		$this->db->where('active', '1');
+		$query = $this->db->get('role');
+		return $query->result();
+	}
+
+	public function editrole($id)
+	{
+
+		$this->db->where('id', $id);
+		$this->db->where('active', '1');
 		$query = $this->db->get('role');
 		return $query->result();
 	}
@@ -59,4 +77,37 @@ class Role_model extends CI_Model {
 		return $query->results();
 	}
 
+	public function get_data_by_id($id)
+	{
+
+		$this->db->where('id', $id);
+		$this->db->where('active', '1');
+		$query = $this->db->get('role');
+		return $query->result();
+	}
+
+	public function get_user($id)
+	{
+		$this->db->where('role_id', $id);
+		$query = $this->db->get('user');
+		return $query->result();
+	}
+
+	public function delete($id){
+		$data = array(
+			'active' => '0'
+		);
+		$this->db->where('id', $id);
+		$this->db->update('role', $data);
+	}
+
+	public function update_role($id){
+		$data = array(
+		'id' => $this->input->post('id'),
+		'name'=> $this->input->post('name'),
+	);
+	$this->db->where('id', $id);
+	$this->db->update('role', $data);
+
+	}
 }

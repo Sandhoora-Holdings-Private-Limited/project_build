@@ -23,7 +23,7 @@
         <table id="table_stages_material_request" class="table table-bordered table-striped">
           <thead>
             <tr>
-              <th>Type</th>>
+              <th>Type</th>
               <th>Item ID</th>
               <th>Item name</th>
               <th>Units</th>
