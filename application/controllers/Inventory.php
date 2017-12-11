@@ -109,16 +109,95 @@ class Inventory extends CI_Controller
     {
         if(isset($_SESSION['user']))
         {
-            $project_id = 1;
+            if(isset($_POST['new_item_form']))
+            {
+                $result = $this->Inventory_model->add_new_item($_POST['item_name'],$_POST['item_unit']);
+                if($result)
+                {
+                    $data['sucess'] = true;
+                    $data['message'] = 'Sucessfully added the item';
+                }
+                else
+                {
+                    $data['fail'] = true;
+                    $data['message'] = 'Failed to add the item';
+                }
+            }
             $data['page'] = array('header'=>'Inventory Items', 'description'=>'add , edite  ypur items here','app_name'=>'INVENTORY');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access']);
-            $data['data_tables'] = array('table_stock_log');
-            $data['stocks'] = $this->Inventory_model->get_stock($project_id);
+            $data['data_tables'] = array('table_items');
+            $data['items'] = $this->Inventory_model->get_all_items();
             $this->load->view('template/header',$data);
             $this->load->view('Inventory/item_list',$data);
             $this->load->view('template/footer',$data);
+        }
+        else
+        {
+            redirect('/Main/login', 'refresh');
+        }
+    }
+
+    public function price_list($list_id=NULL)
+    {
+        if(isset($_SESSION['user']))
+        {
+            if($list_id==NULL)
+            {
+                if(isset($_POST['new_list_form']))
+                {
+                    $result = $this->Inventory_model->add_new_price_list($_POST['list_name']);
+                    if($result)
+                    {
+                        $data['sucess'] = true;
+                        $data['message'] = 'Sucessfully added the item';
+                    }
+                    else
+                    {
+                        $data['fail'] = true;
+                        $data['message'] = 'Failed to add the item';
+                    }
+                }
+                $data['page'] = array('header'=>'Inventory Price Lists', 'description'=>'manage your price lists here','app_name'=>'INVENTORY');
+                $data['user'] = $_SESSION['user'];
+                $data['apps'] = $_SESSION['apps'];
+                $data['tabs'] = $this->make_tabs($_SESSION['access']);
+                $data['data_tables'] = array('table_price_lists');
+                $data['lists'] = $this->Inventory_model->get_all_price_lists();
+                $this->load->view('template/header',$data);
+                $this->load->view('Inventory/price_lists',$data);
+                $this->load->view('template/footer',$data);
+            }
+            else
+            {
+                if(isset($_POST['new_price_form']))
+                {
+                    var_dump($_POST);
+                    $result = $this->Inventory_model->add_new_price($_POST['new_item_id'],$list_id,$_POST['new_price']);
+                    if($result)
+                    {
+                        $data['sucess'] = true;
+                        $data['message'] = 'Sucessfully added the item';
+                    }
+                    else
+                    {
+                        $data['fail'] = true;
+                        $data['message'] = 'Failed to add the item';
+                    }
+                }
+                $data['page'] = array('header'=>'Inventory Price List ', 'description'=>'manage your price lists here','app_name'=>'INVENTORY');
+                $data['user'] = $_SESSION['user'];
+                $data['apps'] = $_SESSION['apps'];
+                $data['tabs'] = $this->make_tabs($_SESSION['access']);
+                $data['data_tables'] = array('table_prices');
+                $data['prices'] = $this->Inventory_model->get_all_prices($list_id);
+                $data['items'] = $this->Inventory_model->get_all_items();
+                $data['list_id'] = $list_id;
+                $this->load->view('template/header',$data);
+                $this->load->view('Inventory/single_price_list',$data);
+                $this->load->view('template/footer',$data);
+            }
         }
         else
         {

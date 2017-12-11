@@ -9,6 +9,52 @@ class Inventory_model extends CI_Model
         parent::__construct();
     }
 
+    public function add_new_price($item_id, $list_id, $ammount)
+    {
+    	$query = 'SELECT * FROM inventory_item_price WHERE inventory_item_price_list_id = '.$list_id.' AND inventory_item_id = '.$item_id;
+    	$query = $this->db->query($query);
+    	if($query->num_rows())
+    	{
+    		$query = 'UPDATE inventory_item_price SET price = '.$ammount.' WHERE inventory_item_price_list_id = '.$list_id.' AND inventory_item_id = '.$item_id;
+    		$this->db->query($query);
+    	}
+    	else
+    	{
+    		$query = 'INSERT INTO inventory_item_price(inventory_item_price_list_id,inventory_item_id,price) VALUES ('.$list_id.','.$item_id.','.$ammount.')';
+    		$this->db->query($query);
+    	}
+    	return $this->db->affected_rows();
+    }
+    public function get_all_prices($list_id)
+    {
+    	$query = 'SELECT i.name, i.unit, i.id as item_id, p.price FROM inventory_item_price as p JOIN inventory_item as i on i.id = p.inventory_item_id WHERE p.inventory_item_price_list_id = '.$list_id;
+    	$query = $this->db->query($query);
+    	return $query->result();
+    }
+	public function get_all_price_lists()
+	{
+    	$query = $this->db->get('inventory_item_price_list');
+    	return $query->result();
+    }
+    public function add_new_price_list($name)
+    {
+    	$data = array('name'=>$name);
+    	$this->db->insert('inventory_item_price_list',$data);
+    	return $this->db->affected_rows();
+    }
+
+    public function add_new_item($name, $unit)
+    {
+    	$data = array('name'=>$name, 'unit'=>$unit);
+    	$this->db->insert('inventory_item',$data);
+    	return $this->db->affected_rows();
+    }
+
+    public function get_all_items()
+    {
+    	$query = $this->db->get('inventory_item');
+    	return $query->result();
+    }
     public function get_stock_log($project_id)
 	{
 		$query = 'SELECT i.name, i.id, i.unit, sl.user_id, sl.time, sl.to_project_id, sl.from_project_id, sl.no_of_units FROM inventory_item_stock_log as sl JOIN inventory_item as i on i.id = sl.inventory_item_id  WHERE from_project_id = '.$project_id.' OR to_project_id = '.$project_id;
