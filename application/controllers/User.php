@@ -9,6 +9,7 @@ class User extends CI_Controller
         parent::__construct();
 
         $this->load->model('User_model');
+        $this->load->model('Role_model');
 
     }
 
@@ -20,7 +21,8 @@ class User extends CI_Controller
             $data['apps'] = $_SESSION['apps'];
             $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-circle-o');
             $tab2 = array('name' => 'New User', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-circle-o');
-            $data['tabs'] = array($tab1, $tab2,);
+            $tab3 = array('name' =>  'User Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-circle-o');
+            $data['tabs'] = array($tab1, $tab2,$tab3);
             $data['users'] = $this->User_model->get_all_users();
             $data['data_tables'] = array('user_table');
             $this->load->view('template/header', $data);
