@@ -1,5 +1,8 @@
-
-<h4>Personal Details</h4>
+<div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Make Payment</h3>
+        </div>
+<div class="box-body">
 <?php foreach($customers as $customer){ ?>
 <form class="form-horizontal">
     <div class="form-group">
@@ -26,6 +29,8 @@
     </div>
 </form>
 <?php } ?>
+</div>
+</div>
 
 
                 

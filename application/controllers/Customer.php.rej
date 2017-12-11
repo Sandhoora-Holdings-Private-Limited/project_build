@@ -1,0 +1,13 @@
+diff a/application/controllers/Customer.php b/application/controllers/Customer.php	(rejected hunks)
+@@ -23,9 +23,10 @@
+             $tab3 = array('name'=>'Payment','link'=>base_url().'/Customer/makepayment', 'icon'=>'fa fa-circle-o');
+             $data['tabs'] = array($tab1,$tab2,$tab3);
+             $data['customers'] = $this->Customer_model->get_customer_data($_SESSION['user']['id']);
++            $data['data_tables'] = array('customer_details');
+             $this->load->view('template/header',$data);
+             $this->load->view('Customer/list_customer',$data);
+-            $this->load->view('template/footer');
++            $this->load->view('template/footer',$data);
+         }
+         else
+         {
