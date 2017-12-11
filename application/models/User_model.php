@@ -22,15 +22,17 @@ class User_model extends CI_Model
 
 	public function get_all_users()
 	{
+        $this->db->where('active', '1');
 		$query = $this->db->get('user');
 		return $query->result();
 	}
 
-    public function get_user_data()
+    public function get_user_data($user_id)
     {
         $this->db->where('active', '1');
+        $this->db->where('id', $user_id);
         $query = $this->db->get('user');
-        return $query->result();
+        return $query->row_array();
     }
 
     public function get_data_by_id($id)

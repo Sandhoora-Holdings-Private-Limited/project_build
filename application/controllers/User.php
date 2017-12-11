@@ -21,10 +21,11 @@ class User extends CI_Controller
             $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-circle-o');
             $tab2 = array('name' => 'New User', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-circle-o');
             $data['tabs'] = array($tab1, $tab2,);
-            $data['users'] = $this->User_model->get_user_data($_SESSION['user']['id']);
+            $data['users'] = $this->User_model->get_all_users();
+            $data['data_tables'] = array('user_table');
             $this->load->view('template/header', $data);
             $this->load->view('User/listuser', $data);
-            $this->load->view('template/footer');
+            $this->load->view('template/footer',$data);
         } else {
             redirect('/Main/login', 'refresh');
         }
@@ -88,7 +89,6 @@ class User extends CI_Controller
         }
     }
 
-
     public function listuser()
     {
         if (isset($_SESSION['user']))
@@ -99,7 +99,8 @@ class User extends CI_Controller
             $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-circle-o');
             $tab2 = array('name' => 'New User', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-circle-o');
             $data['tabs'] = array($tab1, $tab2, );
-            $data['user'] = $this->User_model->get_user_data();
+            $data['users'] = $this->User_model->get_all_users();
+            var_dump($data['users']);
             $this->load->view('template/header', $data);
             $this->load->view('User/listuser', $data);
             $this->load->view('template/footer');
@@ -112,25 +113,20 @@ class User extends CI_Controller
 
     }
 
-
-    public function userbyid()
+    public function userbyid($user_id)
     {
         if (isset($_SESSION['user'])) {
             $data['page'] = array('header' => 'Users', 'description' => 'pick a user or create new user', 'app_name' => 'User');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
-            $id = $this->input->post('id');
             $this->load->model('User_model');
-            $data['users'] = $this->User_model->get_data_by_id($id);
+            $data['users'] = $this->User_model->get_data_by_id($user_id);
             $this->load->view('template/header', $data);
-            $this->load->view('User/listuser', $data);
+            $this->load->view('User/view', $data);
         } else {
             redirect('/Main/login', 'refresh');
         }
     }
-
-
-
 
     public function newrole()
       {
@@ -276,7 +272,7 @@ class User extends CI_Controller
         }
     }
 
-    public function update($id){
+    public function update_role($id){
         if(isset($_SESSION['user']))
         {
             //$id = $_SESSION['id'];
@@ -332,6 +328,5 @@ class User extends CI_Controller
         $this->load->view('template/header',$data);
         $this->load->view('User/viewrole',$data);
         $this->load->view('template/footer');}
->>>>>>> f2861112fab84533951956221425678771997717
     }
 }

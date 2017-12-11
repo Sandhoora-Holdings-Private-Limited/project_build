@@ -1,34 +1,15 @@
 
 <h4>Personal Details</h4>
-<<<<<<< HEAD
-<?php foreach($users as $user){ ?>
-    <form class="form-horizontal">
         <div class="form-group">
             <label class="col-sm-3 control-label">Name : </label>
-            <label class="col-sm-7 control-label"><?php echo $user->name ?></label>
+            <label class="col-sm-7 control-label"><?php echo $users->name ?></label>
         </div>
         <div class="form-group">
             <label class="col-sm-3 control-label">RoleID : </label>
-            <label class="col-sm-7 control-label"><?php echo $user->role_id ?></label>
-=======
-<?php foreach($user as $user){ ?>
-    <form class="form-horizontal">
-        <div class="form-group">
-            <label class="col-sm-3 control-label">Name : </label>
-            <label class="col-sm-7 control-label"><?php echo $customer->name ?></label>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">RoleID : </label>
-            <label class="col-sm-7 control-label"><?php echo $customer->address ?></label>
->>>>>>> f2861112fab84533951956221425678771997717
-        </div>
-            <?php } ?>
+            <label class="col-sm-7 control-label"><?php echo $users->role_id ?></label>
         </div>
     </form>
 
-
-
-<<<<<<< HEAD
 
 <h4>Personal Details</h4>
 <?php foreach($users as $user){ ?>
@@ -49,7 +30,3 @@
         </div>
     </form>
 <?php } ?>
-
-
-=======
->>>>>>> f2861112fab84533951956221425678771997717
