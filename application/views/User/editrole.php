@@ -3,8 +3,6 @@
           <div class="box">
             <div class="box-header">
               <h3 class="box-title">Role Names</h3><br>
-
-        <?php  echo form_open('http://localhost/group-project-1.1/index.php/User/editrole'); ?>
         <class="sidebar-form">
         <div>
 
@@ -13,9 +11,6 @@
             <table class="table table-hover">
               <form>
                 <tbody>
-                  <tr>
-                    <th>Pick a Role</th>
-                  </tr>
                   <tr>
                     <td> <input type="radio" name="role" value="purchasing officer"> purchasing officer<br> </td>
                 </tr>

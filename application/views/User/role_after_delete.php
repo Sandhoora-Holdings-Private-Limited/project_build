@@ -1,4 +1,11 @@
 <div class="row">
+    <div class="col-xs-12">
+      <div class="alert alert-info alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-ban"></i> Done!</h4>
+        Delete the Role !
+      </div>
+  </div>
 
   <div class="col-lg-3 col-xs-6">
   <a href="<?=base_url();?>/User/newrole" class="small-box-footer">
@@ -61,7 +68,7 @@
                               </form>
                               </td>';
                         echo '<td>
-                              <form action="'.base_url().'/User/delete_role/'.$role->id.'" method="post">
+                              <form action="'.base_url().'/User/role_after_delete/'.$role->id.'" method="post">
                               <input hidden name="id" value="'.$role->id.'">
                               <button type="submit" class="btn btn-block btn-danger" >Delete</button>
                               </form>
