@@ -40,7 +40,7 @@
             </form>
           </td>';
                         echo '<td> <button type="button" class="btn btn-block btn-success">Edit</button> </td>';
-                        echo '<td><button type="button" class="btn btn-block btn-danger">Delete</button></td>';
+                        echo '<td><button type="button" class="btn btn-block btn-danger">Danger</button></td>';
 
                         //<a href="<?php echo base_url('index.php/Admin/editRingPost/'.$row['ringId']);
 
@@ -86,5 +86,9 @@
  * Date: 12/7/2017
  * Time: 3:32 PM
 <<<<<<< HEAD
+<<<<<<< HEAD
  */
 
+=======
+ */
+>>>>>>> f2861112fab84533951956221425678771997717
