@@ -271,4 +271,6 @@ class Budget_model extends CI_Model
 
 		return array('id'=>$id ,'name'=>$name, 'spent'=>$spent, 'pending'=>$pending, 'budgeted'=>$budgeted, 'remaining'=>($budgeted-$pending-$spent));
 	}
+
+
 }

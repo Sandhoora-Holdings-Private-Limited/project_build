@@ -365,6 +365,45 @@ class Project extends CI_Controller
     {
         if(isset($_SESSION['user']))
         {
+
+            if(isset($_POST['upload']))
+            {
+                var_dump($_FILES["budget_file"]);
+                $target_dir = dirname(dirname(__FILE__))."/uploads/budgets/";
+                $target_file = $target_dir . basename("project_".$project_id.".cvs");
+                $uploadOk = 1;
+                $cvsFileType = $_FILES["budget_file"]["type"];
+                // Check if file already exists
+                if (file_exists($target_file))
+                {
+                    unlink($target_file);
+                }
+                // Check file size
+                if ($_FILES["budget_file"]["size"] > 500000)
+                {
+                    $data['fail'] = true;
+                    $data['message'] = "Sorry, your file is too large.";
+                    $uploadOk = 0;
+                }
+                // Allow certain file formats
+                if($cvsFileType != "cvs" && $cvsFileType !=  "text/csv" && $cvsFileType !=  "text" && $cvsFileType !=  "csv/text")
+                {
+                    $data['fail'] = true;
+                    $data['message'] = "Sorry, only cvs allowed.";
+                    $uploadOk = 0;
+                }
+                //upload file
+                if ($uploadOk != 0)
+                {
+                    if(move_uploaded_file($_FILES["budget_file"]["tmp_name"], $target_file)) {
+                        $data['sucess'] = true;
+                        $data['message'] = "The file ". basename( $_FILES["budget_file"]["name"]). " has been uploaded.";
+                    } else {
+                        $data['fail'] = true;
+                        $data['message'] = "Sorry, there was an error uploading your file.";
+                    }
+                }
+            }
             $data['page'] = array('header'=>'Projects budget', 'description'=>'add or change you buget here upload a CSV','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
@@ -1032,9 +1071,5 @@ class Project extends CI_Controller
         $tab6 = array('name'=>'Operation','link'=>base_url().'/Project/operation/'.$project_id, 'icon'=>'fa fa-fw fa-inbox','next_level'=>array($tab6_1,$tab6_2,$tab6_3,$tab6_4));
 
         return array($tab1,$tab2,$tab3,$tab4,$tab5,$tab6);
-    }
-
-    function make_project_apps($access, $project_id)
-    {
     }
 }
