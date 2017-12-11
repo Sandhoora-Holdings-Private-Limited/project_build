@@ -35,7 +35,6 @@ class Role_model extends CI_Model {
 
 			}
 		}
-
 		$ret = array('access'=>$nice_rows,'apps'=>$apps);
 
 		return $ret;
