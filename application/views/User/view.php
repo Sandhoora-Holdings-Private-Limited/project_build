@@ -29,7 +29,7 @@
             <label class="col-sm-7 control-label"><?php echo $user->name ?></label>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label">RoleID : </label>
+            <label class="col-sm-3 control-label">Role : </label>
             <?php foreach ($roles as $role) { ?>
                 <label class="col-sm-10 control-label"><?php echo $role->project_id ?></label>
             <?php } ?>

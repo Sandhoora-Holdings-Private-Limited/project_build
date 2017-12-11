@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+
 class User_model extends CI_Model
 {
 
@@ -8,21 +9,24 @@ class User_model extends CI_Model
     {
 
     }
+
     public function set_user_data()
     {
         $data = array(
             'id' => $this->input->post('id'),
-            'name'=> $this->input->post('name'),
+            'name' => $this->input->post('name'),
             'role_id' => $this->input->post('role_id')
         );
-        $this->db->insert('user',$data);
+        $this->db->insert('user', $data);
     }
-   public function get_user_data()
+
+    public function get_user_data()
     {
         $this->db->where('active', '1');
         $query = $this->db->get('user');
         return $query->result();
     }
+
     public function get_data_by_id($id)
     {
 
@@ -32,25 +36,29 @@ class User_model extends CI_Model
         return $query->result();
 
 
-
     }
+
     public function get_role($id)
     {
         $this->db->where('id', $id);
         $query = $this->db->get('user_has_role');
         return $query->result();
     }
-    public function update($id){
+
+    public function update($id)
+    {
         $data = array(
             'id' => $this->input->post('id'),
-            'name'=> $this->input->post('name'),
+            'name' => $this->input->post('name'),
             'role_id' => $this->input->post('role_id'),
         );
         $this->db->where('id', $id);
         $this->db->update('user', $data);
 
     }
-    public function delete($id){
+
+    public function delete($id)
+    {
         $data = array(
             'active' => '0'
         );
@@ -59,3 +67,7 @@ class User_model extends CI_Model
     }
 
 }
+
+
+
+

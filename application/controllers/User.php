@@ -70,7 +70,7 @@ class User extends CI_Controller
             $data['apps'] = $_SESSION['apps'];
 
             $this->load->view('template/header', $data);
-            $this->load->view('Customer/new', $data);
+            $this->load->view('User/new', $data);
             $this->load->view('template/footer');
 
 
@@ -88,9 +88,9 @@ class User extends CI_Controller
             $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-circle-o');
             $tab2 = array('name' => 'New User', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-circle-o');
             $data['tabs'] = array($tab1, $tab2, );
-            $data['customers'] = $this->User_model->get_user_data();
+            $data['user'] = $this->User_model->get_user_data();
             $this->load->view('template/header', $data);
-            $this->load->view('Customer/list_customer', $data);
+            $this->load->view('User/listuser', $data);
             $this->load->view('template/footer');
 
         }
@@ -107,14 +107,14 @@ class User extends CI_Controller
             $this->load->model('User_model');
             $data['users'] = $this->User_model->get_data_by_id($id);
             $this->load->view('template/header', $data);
-            $this->load->view('Customer/list_customer', $data);
+            $this->load->view('User/listuser', $data);
             $this->load->view('template/footer');
         }
 
 
     }
 
-    public function customerbyidview($id)
+    public function userbyidview($id)
     {
         if (isset($_SESSION['user'])) {
             //$id = $this->input->post('id');
@@ -126,7 +126,7 @@ class User extends CI_Controller
             $data['users'] = $this->User_model->get_data_by_id($id);
             $data['roles'] = $this->User_model->get_role($id);
             $this->load->view('template/header', $data);
-            $this->load->view('Customer/view', $data);
+            $this->load->view('User/view', $data);
             $this->load->view('template/footer');
         }
     }
@@ -144,7 +144,7 @@ class User extends CI_Controller
 
 
             $this->load->view('template/header', $data);
-            $this->load->view('Customer/edit', $data);
+            $this->load->view('User/edit', $data);
             $this->load->view('template/footer');
 
         }

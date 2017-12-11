@@ -40,5 +40,23 @@ class Role_model extends CI_Model {
 
 		return $ret;
 	}
+	public function get_role_data($role_id)
+	{
+		//$this->db->where('active', '1');
+		$query = $this->db->get_where('role', array('id' => $role_id));
+		return $query->result();
+	}
+
+	public function get_all_roles()
+	{
+		$query = $this->db->get('role');
+		return $query->result();
+	}
+
+	public function get_roles_by_user($user_id)
+	{
+		$query = $this->db->get_where('role', array('user_id' => $user_id));
+		return $query->results();
+	}
 
 }
