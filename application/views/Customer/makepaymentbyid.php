@@ -9,7 +9,6 @@
         <!-- /.box-header -->
         <!-- form start -->
         <form role="form" action="<?= base_url(); ?>/Customer/paymentbyid/<?= $id ?>" method="post">
-          
           <div class="box-body">
             <div class="form-group">
               <label for="exampleInputEmail1">Project Id</label>
@@ -19,7 +18,10 @@
               <label for="exampleInputEmail1">Amount</label>
               <input type="text" class="form-control" id="ammount"  name="ammount">
             </div>
-             
+            <div class="form-group">
+              <label for="exampleInputEmail1">Memo</label>
+              <input type="text" class="form-control" id="ammount"  name="memo">
+            </div>
             
           </div>
           

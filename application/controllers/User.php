@@ -20,17 +20,38 @@ class User extends CI_Controller
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-circle-o');
-            $tab2 = array('name' => 'New user', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-circle-o');
-            $tab3 = array('name' => 'Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-circle-o');
-            $data['tabs'] = array($tab1, $tab2, $tab3);
+            $tab2 = array('name' => 'New User', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-circle-o');
+            $tab3 = array('name' =>  'User Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-circle-o');
+            $data['tabs'] = array($tab1, $tab2,$tab3);
             $data['users'] = $this->User_model->get_all_users();
+            $data['data_tables'] = array('user_table');
             $this->load->view('template/header', $data);
-            $this->load->view('User/listuser');
-            $this->load->view('template/footer');
+            $this->load->view('User/listuser', $data);
+            $this->load->view('template/footer',$data);
         } else {
             redirect('/Main/login', 'refresh');
         }
 
+    }
+
+    public function new()
+    {
+        if (isset($_SESSION['user'])) {
+            $data['page'] = array('header' => 'User New', 'description' => 'create a new user', 'app_name' => 'New User');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-circle-o');
+            $tab2 = array('name' => 'New user', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-circle-o');
+            $tab3 = array('name' => 'Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-circle-o');
+            $data['tabs'] = array($tab1, $tab2, $tab3);
+
+            $this->load->view('template/header', $data);
+            $this->load->view('User/new', $data);
+            $this->load->view('template/footer');
+        }
+        else {
+            redirect('/Main/login', 'refresh');
+        }
     }
 
     public function Addnewuser()
@@ -38,17 +59,19 @@ class User extends CI_Controller
         if (isset($_SESSION['user'])) {
 
             $this->User_model->set_user_data();
-            $data['page'] = array('header' => 'User New', 'description' => 'create a new user', 'app_name' => 'New User');
+
+            $data['page'] = array('header' => 'User New', 'description' => 'create a new user', 'app_name' => 'USER');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
 
             $this->load->view('template/header', $data);
             $this->load->view('User/new', $data);
             $this->load->view('template/footer');
-
-
         }
-
+        else
+        {
+            redirect('/Main/login', 'refresh');
+        }
     }
 
     public function Addnewrole()
@@ -63,31 +86,48 @@ class User extends CI_Controller
             $this->load->view('template/header', $data);
             $this->load->view('User/newrole', $data);
             $this->load->view('template/footer');
+        } else {
+            redirect('/Main/login', 'refresh');
+        }
+    }
 
+    public function listuser()
+    {
+        if (isset($_SESSION['user']))
+        {
+            $data['page'] = array('header' => 'Users', 'description' => 'pick a user or create new user', 'app_name' => 'User');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-circle-o');
+            $tab2 = array('name' => 'New User', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-circle-o');
+            $data['tabs'] = array($tab1, $tab2, );
+            $data['users'] = $this->User_model->get_all_users();
+            var_dump($data['users']);
+            $this->load->view('template/header', $data);
+            $this->load->view('User/listuser', $data);
+            $this->load->view('template/footer');
 
+        }
+        else
+        {
+            redirect('/Main/login', 'refresh');
         }
 
     }
 
-
-public function new()
-  {
-      if (isset($_SESSION['user'])) {
-          $data['page'] = array('header' => 'User New', 'description' => 'create a new user', 'app_name' => 'New User');
-          $data['user'] = $_SESSION['user'];
-          $data['apps'] = $_SESSION['apps'];
-          $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-circle-o');
-          $tab2 = array('name' => 'New user', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-circle-o');
-          $tab3 = array('name' => 'Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-circle-o');
-          $data['tabs'] = array($tab1, $tab2, $tab3);
-
-          $this->load->view('template/header', $data);
-          $this->load->view('User/new', $data);
-          $this->load->view('template/footer');
-      }
-      else {
-          redirect('/Main/login', 'refresh');
-      }
+    public function userbyid($user_id)
+    {
+        if (isset($_SESSION['user'])) {
+            $data['page'] = array('header' => 'Users', 'description' => 'pick a user or create new user', 'app_name' => 'User');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $this->load->model('User_model');
+            $data['users'] = $this->User_model->get_data_by_id($user_id);
+            $this->load->view('template/header', $data);
+            $this->load->view('User/view', $data);
+        } else {
+            redirect('/Main/login', 'refresh');
+        }
     }
 
     public function newrole()
@@ -125,25 +165,83 @@ public function new()
             $this->load->view('template/header',$data);
             $this->load->view('User/role',$data);
             $this->load->view('template/footer');
-
+        }
+        else {
+            redirect('/Main/login', 'refresh');
         }
 
+
     }
-    public function listuser()
+
+    public function userbyidview($id)
     {
         if (isset($_SESSION['user'])) {
+            //$id = $this->input->post('id');
             $data['page'] = array('header' => 'Users', 'description' => 'pick a user or create new user', 'app_name' => 'User');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
-            $tab1 = array('name'=>'User List','link'=>base_url().'/User/listuser', 'icon'=>'fa fa-circle-o');
-            $tab2 = array('name'=>'New User','link'=>base_url().'/User/new', 'icon'=>'fa fa-circle-o');
-            $tab3 = array('name'=>'Role','link'=>base_url().'/User/Role', 'icon'=>'fa fa-circle-o');
-            $data['tabs'] = array($tab1,$tab2,$tab3);
-            $data['users'] = $this->User_model->get_all_users();
-            $this->load->view('template/header',$data);
-            $this->load->view('User/listuser',$data);
+            $data['tabs'] = $this->maketab($_SESSION['access'], $id);
+            //$id = $this->input->post('id');
+            $data['users'] = $this->User_model->get_data_by_id($id);
+            $data['roles'] = $this->User_model->get_role($id);
+            $this->load->view('template/header', $data);
+            $this->load->view('User/view', $data);
+            $this->load->view('template/footer');
+        }
+        else {
+            redirect('/Main/login', 'refresh');
+        }
+    }
+
+    public function edit($id)
+    {
+        if (isset($_SESSION['user'])) {
+            //$id = $this->input->post('id');
+            $data['page'] = array('header' => 'Users', 'description' => 'pick a user or create new user', 'app_name' => 'User');
+            //$id = $this->input->post('id');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $data['id'] = $id;
+            //$_SESSION['id'] = $id;
+
+
+            $this->load->view('template/header', $data);
+            $this->load->view('User/edit', $data);
             $this->load->view('template/footer');
 
+        }else {
+            redirect('/Main/login', 'refresh');
+        }
+
+
+    }
+
+    public function update($id)
+    {
+        if (isset($_SESSION['user'])) {
+            //$id = $_SESSION['id'];
+            $this->User_model->update($id);
+            $data['page'] = array('header' => 'Users', 'description' => 'pick a user or create new user', 'app_name' => 'User');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $data['users'] = $this->User_model->get_user_data();
+            $data['tabs'] = $this->maketab($_SESSION['access'], $id);
+            $this->load->view('template/header', $data);
+            $this->load->view('User/listuser', $data);
+            $this->load->view('template/footer');
+
+
+        }else {
+            redirect('/Main/login', 'refresh');
+        }
+
+    }
+
+    public function delete_user()
+    {
+        if (isset($_SESSION['user'])) {
+            $id = $_SESSION['id'];
+            $this->User_model->delete($id);
         }
     }
 
@@ -176,7 +274,7 @@ public function new()
         }
     }
 
-    public function update($id){
+    public function update_role($id){
         if(isset($_SESSION['user']))
         {
             //$id = $_SESSION['id'];

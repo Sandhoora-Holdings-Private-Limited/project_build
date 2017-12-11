@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+﻿<div class="row">
+=======
 <div class="row">
+>>>>>>> f2861112fab84533951956221425678771997717
     <div class="col-xs-12">
         <div class="alert alert-success alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>

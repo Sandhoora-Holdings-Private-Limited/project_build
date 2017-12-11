@@ -1,30 +1,78 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class User_model extends CI_Model {
 
-	public function __construct()
-	{
+class User_model extends CI_Model
+{
 
-	}
+    public function __construct()
+    {
 
-	public function get_user_data($user_id)
-	{
-		$query = $this->db->get_where('user', array('id' => $user_id));
-		return $query->row_array();
-	}
+    }
+
+    public function set_user_data()
+    {
+        $data = array(
+            'id' => $this->input->post('id'),
+            'name' => $this->input->post('name'),
+            'role_id' => $this->input->post('role_id')
+        );
+        $this->db->insert('user', $data);
+    }
 
 	public function get_all_users()
 	{
+        $this->db->where('active', '1');
 		$query = $this->db->get('user');
-		return $query->results();
+		return $query->result();
 	}
 
-	public function get_users_by_project($project_id)
-	{
-		$query = $this->db->get_where('user', array('project_id' => $project_id));
-		return $query->results();
-	}
+    public function get_user_data($user_id)
+    {
+        $this->db->where('active', '1');
+        $this->db->where('id', $user_id);
+        $query = $this->db->get('user');
+        return $query->row_array();
+    }
+
+    public function get_data_by_id($id)
+    {
+
+        $this->db->where('id', $id);
+        $this->db->where('active', '1');
+        $query = $this->db->get('user');
+        return $query->result();
+
+
+    }
+
+    public function get_role($id)
+    {
+        $this->db->where('id', $id);
+        $query = $this->db->get('user_has_role');
+        return $query->result();
+    }
+
+    public function update($id)
+    {
+        $data = array(
+            'id' => $this->input->post('id'),
+            'name' => $this->input->post('name'),
+            'role_id' => $this->input->post('role_id'),
+        );
+        $this->db->where('id', $id);
+        $this->db->update('user', $data);
+
+    }
+
+    public function delete($id)
+    {
+        $data = array(
+            'active' => '0'
+        );
+        $this->db->where('id', $id);
+        $this->db->update('user', $data);
+    }
 
 	public function get_team_members($project_id)
 	{
@@ -84,6 +132,7 @@ class User_model extends CI_Model {
 		        return 1;
 		}
 	}
+
 
 	public function create_approving_user($project_id, $data_ary)
 	{
@@ -166,3 +215,7 @@ class User_model extends CI_Model {
 		}
 	}
 }
+
+
+
+
