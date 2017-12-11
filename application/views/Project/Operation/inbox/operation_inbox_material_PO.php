@@ -47,7 +47,6 @@
                     foreach ($vendors as $vendor) {
                       echo '<option value="'.$vendor->id.'">'.$vendor->name.'</option>';
                     }
-                    //echo '<option value="'.$vendor->id.'">ads asd as da sd a sd asd as das</option>';
                     echo '</select>';
                   }
 

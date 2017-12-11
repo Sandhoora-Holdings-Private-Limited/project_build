@@ -18,6 +18,7 @@ class Project extends CI_Controller
     {
         if(isset($_SESSION['user']))
         {
+
             $data['page'] = array('header'=>'Projects', 'description'=>'pick a project or create new one','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
@@ -25,9 +26,10 @@ class Project extends CI_Controller
             $tab2 = array('name'=>'New Project','link'=>base_url().'/Project/new', 'icon'=>'fa fa-plus');
             $data['tabs'] = array($tab1,$tab2);
             $data['projects'] = $this->Project_model->get_projects_by_user($_SESSION['user']['id']);
+            $data['data_tables'] = array('table_projects');
             $this->load->view('template/header',$data);
             $this->load->view('Project/main',$data);
-            $this->load->view('template/footer');
+            $this->load->view('template/footer',$data);
         }
         else
         {
@@ -41,9 +43,25 @@ class Project extends CI_Controller
         {
             if(isset($_POST['form']))
             {
-                $this->Project_model->new_project($_POST['name'], $_POST['address'], $_POST['start_date'], $_POST['end_date']);
-                $data['sucess'] = true;
-                $data['error'] = false;
+                if($_POST['name'] != "")
+                {
+                    $result = $this->Project_model->new_project($_POST['name'], $_POST['address'], $_POST['start_date'], $_POST['end_date']);
+                    if($result)
+                    {
+                        $data['sucess'] = true;
+                        $data['message'] = 'Sucessfully created the project';
+                    }else
+                    {
+                        $data['fail'] = true;
+                        $data['message'] = 'Failed to create the project';
+                    }
+                }
+                else
+                {
+                    $data['fail'] = true;
+                    $data['message'] = 'Please enter a project name';
+                }
+
             }
             $data['page'] = array('header'=>'Project New', 'description'=>'create a new project','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];

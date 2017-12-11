@@ -35,7 +35,6 @@ class Role_model extends CI_Model {
 
 			}
 		}
-
 		$ret = array('access'=>$nice_rows,'apps'=>$apps);
 
 		return $ret;
@@ -44,8 +43,6 @@ class Role_model extends CI_Model {
 	public function set_role_data()
 	{
 		$data = array(
-
-			'id' => $this->input->post('id'),
 			'name' => $this->input->post('name'),
 		);
 		$this->db->insert('role',$data);
@@ -53,13 +50,14 @@ class Role_model extends CI_Model {
 
 	public function get_role_data($role_id)
 	{
-		//$this->db->where('active', '1');
+		$this->db->where('active', '1');
 		$query = $this->db->get_where('role', array('id' => $role_id));
 		return $query->result();
 	}
 
 	public function get_all_roles()
 	{
+		$this->db->where('active', '1');
 		$query = $this->db->get('role');
 		return $query->result();
 	}
@@ -103,7 +101,7 @@ class Role_model extends CI_Model {
 		$this->db->update('role', $data);
 	}
 
-	public function update($id){
+	public function update_role($id){
 		$data = array(
 		'id' => $this->input->post('id'),
 		'name'=> $this->input->post('name'),
