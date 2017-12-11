@@ -13,7 +13,7 @@ class Role_model extends CI_Model {
 		$query = $this->db->get_where('access', array('role_id' => $role_id));
 		foreach($query->result() as $row)
 		{
-			$nice_rows[$row->object] = array('create' => ($row->create == '1'? true: false) ,'read' => ($row->read == '1'? true: false),'update' => ($row->update == '1'? true: false) ,'delete' => ($row->delete == '1'? true: false));
+			$nice_rows[$row->object] = $row->read == '1'? true: false;
 			$can_read = $row->read;
 			switch($row->object)
 			{
