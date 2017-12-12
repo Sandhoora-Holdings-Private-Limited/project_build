@@ -24,7 +24,7 @@
     <div class="form-group">
         <label class="col-sm-3 control-label">Projects : </label>
         <?php foreach ($projects as $project) { ?>
-        <label class="col-sm-10 control-label"><?php echo $project->project_id ?></label>
+        <label class="col-sm-10 control-label"><?php echo $project->name ?></label>
     <?php } ?>
     </div>
 </form>
