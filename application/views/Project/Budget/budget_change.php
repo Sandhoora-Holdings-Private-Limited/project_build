@@ -35,7 +35,8 @@
 
 	      <div class="box-footer">
 	        <button name="upload" type="submit"  class="btn btn-primary">Submit</button>
-	        <button name="download_template" type="submit" class="btn pull-right btn-success">Download CVS template</button>
+	        <a href="<?= base_url(); ?>/assets/downloads/budget_template.csv" download class="btn pull-right btn-success">Download CVS template
+	        </a>
 	      </div>
 	    </form>
 	  </div>
