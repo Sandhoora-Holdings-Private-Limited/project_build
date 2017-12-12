@@ -25,17 +25,20 @@ class Inventory_model extends CI_Model
     	}
     	return $this->db->affected_rows();
     }
+
     public function get_all_prices($list_id)
     {
     	$query = 'SELECT i.name, i.unit, i.id as item_id, p.price FROM inventory_item_price as p JOIN inventory_item as i on i.id = p.inventory_item_id WHERE p.inventory_item_price_list_id = '.$list_id;
     	$query = $this->db->query($query);
     	return $query->result();
     }
+
 	public function get_all_price_lists()
 	{
     	$query = $this->db->get('inventory_item_price_list');
     	return $query->result();
     }
+
     public function add_new_price_list($name)
     {
     	$data = array('name'=>$name);
@@ -155,6 +158,113 @@ class Inventory_model extends CI_Model
 		$query = 'INSERT INTO inventory_item_stock_log(inventory_item_id,to_project_id, from_project_id,no_of_units,user_id) VALUES ('.$item_id.', '.$to_project_id.', '.$from_project_id.', '.$no_of_units.' , "'.$user_id.'")';
 		$this->db->query($query);
 
+		if ($this->db->trans_status() === FALSE)
+		{
+		        $this->db->trans_rollback();
+		        return 0;
+		}
+		else
+		{
+		        $this->db->trans_commit();
+		        return 1;
+		}
+	}
+
+	public function create_price_list_cvs($price_list_id)
+	{
+		$query = "SELECT name from inventory_item_price_list WHERE id = ".$price_list_id;
+		$query = $this->db->query($query);
+		$name = $query->row()->name;
+		$my_file = dirname(dirname(dirname(__FILE__))).'/assets/downloads/price_list.csv';
+	      $query = "SELECT i.id, i.name, i.unit, p.price  from inventory_item as i JOIN inventory_item_price as p on i.id = p.inventory_item_id WHERE p.inventory_item_price_list_id = ".$price_list_id;
+	      $query = $this->db->query($query);
+	      $data = $query->result_array();
+	      $file = fopen($my_file, 'w') or die('Cannot open file:  '.$my_file);
+	      fputcsv($file, array($name));
+	      fputcsv($file, array('Item ID', 'Item', 'Item unit', 'Unit price'));
+	      foreach($data as $row)
+	      {
+	        fputcsv($file, $row);
+	      }
+	}
+
+	public function create_item_list_cvs()
+	{
+		$my_file = dirname(dirname(dirname(__FILE__))).'/assets/downloads/item_list.csv';
+	      $query = "SELECT id, name, unit  from inventory_item ";
+	      $query = $this->db->query($query);
+	      $data = $query->result_array();
+	      $file = fopen($my_file, 'w') or die('Cannot open file:  '.$my_file);
+	      fputcsv($file, array("Item List"));
+	      fputcsv($file, array('Item ID', 'Item', 'Item unit'));
+	      foreach($data as $row)
+	      {
+	        fputcsv($file, $row);
+	      }
+	}
+
+	public function process_cvs_item_list($file_target)
+	{
+
+		$file = fopen($file_target,"r");
+
+		$this->db->trans_begin();
+
+		while(! feof($file))
+		{
+			$row = fgetcsv($file);
+			switch($row[0])
+			{
+				case '#material':
+				$query = 'INSERT INTO inventory_item(name, unit) VALUES ("'.$row[1].'", "'.$row[2].'")';
+				$this->db->query($query);
+					break;
+			}
+		}
+
+		fclose($file);
+
+		if ($this->db->trans_status() === FALSE)
+		{
+		        $this->db->trans_rollback();
+		        return 0;
+		}
+		else
+		{
+		        $this->db->trans_commit();
+		        return 1;
+		}
+	}
+
+	public function process_cvs_price_list($file_target, $name)
+	{
+		$file = fopen($file_target,"r");
+
+		$this->db->trans_begin();
+
+		$query = 'INSERT INTO inventory_item_price_list(name) VALUES ("'.$name.'")';
+		$this->db->query($query);
+
+		$query = 'SELECT LAST_INSERT_ID() as result';
+		$query = $this->db->query($query);
+		$pricel_list_id = $query->row()->result;
+
+		while(! feof($file))
+		{
+			$row = fgetcsv($file);
+			switch($row[0])
+			{
+
+				case '#price':
+					$query = 'INSERT INTO inventory_item_price(inventory_item_id, price, inventory_item_price_list_id) VALUES ('.$row[1].', '.$row[2].', '.$pricel_list_id.')';
+					echo $query;
+					echo '<br>';
+					$this->db->query($query);
+					break;
+			}
+		}
+
+		fclose($file);
 		if ($this->db->trans_status() === FALSE)
 		{
 		        $this->db->trans_rollback();

@@ -53,7 +53,6 @@ class Main extends CI_Controller
         if(isset($_POST['clicked'])) $data['error'] = true;
         else $data['error'] = false;
         $this->load->view('Main/login',$data);
-        echo 'USE username : user1@user , password : password';
     }
 
     public function logout()

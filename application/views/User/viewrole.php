@@ -15,5 +15,11 @@
         <label class="col-sm-10 control-label"><?php echo $user->name ?></label>
     <?php } ?>
     </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Objects : </label>
+        <?php foreach ($accesses as $access) { ?>
+        <label class="col-sm-10 control-label"><?php echo $access->object ?></label>
+    <?php } ?>
+    </div>
 </form>
 <?php } ?>

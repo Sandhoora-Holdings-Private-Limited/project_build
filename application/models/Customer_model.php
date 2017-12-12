@@ -36,12 +36,17 @@ class Customer_model extends CI_Model
 		$query = $this->db->get('customer');
 		return $query->result();
 	}
+	
 
 	public function get_project($id)
 	{
-		$this->db->where('customer_id', $id);
-		$query = $this->db->get('customer_has_project');
+		$query ="SELECT p.name, p.id from customer_has_project as c join project as p on p.id=c.project_id WHERE c.customer_id = ".$id." AND p.active = 1";
+		$query = $this->db->query($query);
+
+
 		return $query->result();
+		
+
 	}
 	
 	public function update($id){
@@ -85,5 +90,7 @@ class Customer_model extends CI_Model
 		$query = $this->db->get('customer_payment');
 		return $query->result();
 	}
-	
+	public function getcustomerID(){
+		
+	}
 }

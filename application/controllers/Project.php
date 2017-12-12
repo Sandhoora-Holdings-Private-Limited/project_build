@@ -14,9 +14,10 @@ class Project extends CI_Controller
         $this->load->model('Inventory_model');
     }
 
+    //project CRUD pages
     public function index()
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project'])
         {
 
             $data['page'] = array('header'=>'Projects', 'description'=>'pick a project or create new one','app_name'=>'PROJECTS');
@@ -39,7 +40,7 @@ class Project extends CI_Controller
 
     public function new()
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project'])
         {
             if(isset($_POST['form']))
             {
@@ -81,7 +82,7 @@ class Project extends CI_Controller
 
     public function view($project_id)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project'])
         {
             $project = $this->Project_model->get_project_details($project_id);
             $data['page'] = array('header'=>'Project '.$project->name, 'description'=>'manage your project here','app_name'=>'PROJECTS');
@@ -100,9 +101,10 @@ class Project extends CI_Controller
         }
     }
 
+    //project_team pages
     public function team_members($project_id)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project_team'])
         {
             if(isset($_POST['type']))
             {
@@ -154,7 +156,7 @@ class Project extends CI_Controller
 
     public function team_authority($project_id)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project_operation_hierachy'])
         {
             if(isset($_POST['id']))
             {
@@ -187,9 +189,10 @@ class Project extends CI_Controller
         }
     }
 
+    //project_inventory pages
     public function inventory_dashboard($project_id)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project_inventory'])
         {
             if(isset($_POST['item_id']))
             {
@@ -240,7 +243,7 @@ class Project extends CI_Controller
 
     public function inventory_stock($project_id)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project_inventory'])
         {
             $data['page'] = array('header'=>'Projects inventory stock', 'description'=>'inventory stock','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
@@ -261,7 +264,7 @@ class Project extends CI_Controller
 
     public function inventory_log($project_id)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project_inventory'])
         {
             $data['page'] = array('header'=>'Projects inventory log', 'description'=>'log of all inventory tansactions','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
@@ -280,9 +283,10 @@ class Project extends CI_Controller
         }
     }
 
+    //project_budget pages
     public function budget($project_id, $stage_id=NULL)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project_budget'])
         {
             $data['page'] = array('header'=>'Projects budget', 'description'=>'view and edite your budget here','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
@@ -363,12 +367,64 @@ class Project extends CI_Controller
 
     public function budget_change($project_id)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project_budget'])
         {
+
+            if(isset($_POST['upload']))
+            {
+                $target_dir = dirname(dirname(__FILE__))."/uploads/budgets/";
+                $target_file = $target_dir . basename("project_".$project_id.".cvs");
+                $uploadOk = 1;
+                $cvsFileType = $_FILES["budget_file"]["type"];
+                // Check if file already exists
+                if (file_exists($target_file))
+                {
+                    unlink($target_file);
+                }
+                // Check file size
+                if ($_FILES["budget_file"]["size"] > 500000)
+                {
+                    $data['fail'] = true;
+                    $data['message'] = "Sorry, your file is too large.";
+                    $uploadOk = 0;
+                }
+                // Allow certain file formats
+                if($cvsFileType != "cvs" && $cvsFileType !=  "text/csv" && $cvsFileType !=  "text" && $cvsFileType !=  "csv/text")
+                {
+                    $data['fail'] = true;
+                    $data['message'] = "Sorry, only cvs allowed.";
+                    $uploadOk = 0;
+                }
+                //upload file
+                if ($uploadOk != 0)
+                {
+                    if(move_uploaded_file($_FILES["budget_file"]["tmp_name"], $target_file)) {
+                        $result = $this->Budget_model->process_cvs($project_id, $target_file);
+                        if($result)
+                        {
+                            $data['sucess'] = true;
+                            $data['message'] = "The file ". basename( $_FILES["budget_file"]["name"]). " has been processed.";
+                        }
+                        else
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = "Failed to process file ". basename( $_FILES["budget_file"]["name"]). " .";
+                        }
+                    } else {
+                        $data['fail'] = true;
+                        $data['message'] = "Sorry, there was an error uploading your file.";
+                    }
+                }
+            }
+            if(isset($_POST['download_price_list']))
+            {
+                redirect(base_url().'/Project/get_price_list_cvs/'.$_POST['price_list_id'],'_blank');
+            }
             $data['page'] = array('header'=>'Projects budget', 'description'=>'add or change you buget here upload a CSV','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
+            $data['price_lists'] = $this->Inventory_model->get_all_price_lists();
             $data['project_id'] = $project_id;
             $this->load->view('template/header',$data);
             $this->load->view('Project/Budget/budget_change',$data);
@@ -380,9 +436,24 @@ class Project extends CI_Controller
         }
     }
 
+    public function get_price_list_cvs($price_list_id)
+    {
+        $this->Inventory_model->create_price_list_cvs($price_list_id);
+        echo 'done';
+        redirect(base_url().'/assets/downloads/price_list.csv','download');
+    }
+
+    public function get_item_list_cvs()
+    {
+        $this->Inventory_model->create_item_list_cvs();
+        echo 'done';
+        redirect(base_url().'/assets/downloads/item_list.csv','download');
+    }
+
+    //project_operation_pages
     public function operation_inbox($project_id, $active_tab='tab_approvals')
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project'])
         {
             if(isset($_POST['type']))
             {
@@ -523,7 +594,7 @@ class Project extends CI_Controller
 
     public function operation_inbox_create_purchase_order($project_id)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project'])
         {
             $data['page'] = array('header'=>'Inbox', 'description'=>'Requests need your approval','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
@@ -630,7 +701,7 @@ class Project extends CI_Controller
 
     public function operation_inbox_pay_purchase_order($project_id)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project'])
         {
             $data['page'] = array('header'=>'Inbox', 'description'=>'Requests need your approval','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
@@ -682,7 +753,7 @@ class Project extends CI_Controller
 
     public function operation_inbox_confirm_goods_recived($project_id)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project'])
         {
             $data['page'] = array('header'=>'Inbox', 'description'=>'Requests need your approval','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
@@ -763,7 +834,7 @@ class Project extends CI_Controller
 
     public function operation_request($project_id, $stage_id=NULL)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project'])
         {
             $data['page'] = array('header'=>'Create requests', 'description'=>'Create requests for material and other payments','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
@@ -810,7 +881,7 @@ class Project extends CI_Controller
 
     public function operation_pending($project_id)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project'])
         {
             $data['page'] = array('header'=>'Pending requests', 'description'=>'Your pending requests','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
@@ -841,7 +912,7 @@ class Project extends CI_Controller
 
     public function operation_history($project_id)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project'])
         {
             $data['page'] = array('header'=>'Pending requests', 'description'=>'Your pending requests','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
@@ -869,10 +940,10 @@ class Project extends CI_Controller
         }
     }
 
-
+    //operation_analytics pages
     public function analytics($project_id, $stage_id=NULL)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['project_customer'])
         {
             $data['page'] = array('header'=>'Projects Analytics', 'description'=>'cost analysis on your project','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
@@ -1002,6 +1073,7 @@ class Project extends CI_Controller
         }
     }
 
+    //private functions
     function make_tabs($access, $project_id)
     {
         //Dashboard
@@ -1031,10 +1103,29 @@ class Project extends CI_Controller
         $tab6_4 = array('name'=>'Request history','link'=>base_url().'/Project/operation_history/'.$project_id, 'icon'=>'fa fa-fw fa-circle-o');
         $tab6 = array('name'=>'Operation','link'=>base_url().'/Project/operation/'.$project_id, 'icon'=>'fa fa-fw fa-inbox','next_level'=>array($tab6_1,$tab6_2,$tab6_3,$tab6_4));
 
-        return array($tab1,$tab2,$tab3,$tab4,$tab5,$tab6);
-    }
+        $return_ary = array();
+        if($access['project'])
+        {
+            array_push($return_ary, $tab1);
+            array_push($return_ary, $tab6);
+        }
+        if($access['project_customer'])
+        {
+            array_push($return_ary, $tab2);
+        }
+        if($access['project_inventory'])
+        {
+            array_push($return_ary, $tab3);
+        }
+        if($access['project_team'])
+        {
+            array_push($return_ary, $tab4);
+        }
+        if($access['project_budget'])
+        {
+            array_push($return_ary, $tab5);
+        }
 
-    function make_project_apps($access, $project_id)
-    {
+        return $return_ary;
     }
 }

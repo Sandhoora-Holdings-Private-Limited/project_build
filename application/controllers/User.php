@@ -20,7 +20,7 @@ class User extends CI_Controller
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-tasks');
-            $tab2 = array('name' => 'New User', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-plus');
+            $tab2 = array('name' => 'New User', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-user-plus');
             $tab3 = array('name' =>  'User Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-circle-o');
             $data['tabs'] = array($tab1, $tab2,$tab3);
             $data['users'] = $this->User_model->get_all_users();
@@ -41,7 +41,7 @@ class User extends CI_Controller
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-tasks');
-            $tab2 = array('name' => 'New user', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-plus');
+            $tab2 = array('name' => 'New user', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-user-plus');
             $tab3 = array('name' => 'Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-circle-o');
             $data['tabs'] = array($tab1, $tab2, $tab3);
             $data['roles'] = $this->User_model->getrole();
@@ -106,16 +106,53 @@ class User extends CI_Controller
     {
         if (isset($_SESSION['user'])) {
 
+          $this->load->library('form_validation');
+          $this->form_validation->set_rules('name', 'name', 'required|is_unique[role.name]');
+
+            if ($this->form_validation->run() == FALSE)
+                {
+                        $data['fail'] = true;
+                        $data['message'] = 'Validation Error';
+                }
+                else
+                {
+                        $result =$this->Role_model->set_role_data();
+                        if($result)
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = 'Failed to add Role ';
+                        }
+                        else
+                        {
+                            $data['sucess'] = true;
+                            $data['message'] = 'Sucessfully added ';
+                        }
+                }
+            $data['page'] = array('header' => 'Role New', 'description' => 'create a new Role', 'app_name' => 'New Role');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $tab1 = array('name' => 'Back', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-arrow-circle-left');
+            $data['tabs'] = array($tab1);
+            $this->load->view('template/header', $data);
+            $this->load->view('User/newrole_success', $data);
+            $this->load->view('template/footer');
+        } else {
+            redirect('/Main/login', 'refresh');
+        }
+    }
+
+    public function Addnewrole_after_success()
+    {
+        if (isset($_SESSION['user'])) {
+
             $this->Role_model->set_role_data();
             $data['page'] = array('header' => 'Role New', 'description' => 'create a new Role', 'app_name' => 'New Role');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
-            $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-circle-o');
-            $tab2 = array('name' => 'Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-circle-o');
-            $data['tabs'] = array($tab1, $tab2);
-
+            $tab1 = array('name' => 'Back', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-arrow-circle-left');
+            $data['tabs'] = array($tab1);
             $this->load->view('template/header', $data);
-            $this->load->view('User/newrole', $data);
+            $this->load->view('User/newrole_success', $data);
             $this->load->view('template/footer');
         } else {
             redirect('/Main/login', 'refresh');
@@ -130,7 +167,7 @@ class User extends CI_Controller
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-tasks');
-            $tab2 = array('name' => 'New User', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-plus');
+            $tab2 = array('name' => 'New User', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-user-plus');
             $tab3 = array('name' =>  'User Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-circle-o');
             $data['tabs'] = array($tab1, $tab2,$tab3);
             $data['users'] = $this->User_model->get_all_users();
@@ -168,11 +205,10 @@ class User extends CI_Controller
               $data['page'] = array('header' => 'Role New', 'description' => 'create a new role', 'app_name' => 'New Role');
               $data['user'] = $_SESSION['user'];
               $data['apps'] = $_SESSION['apps'];
-              $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-circle-o');
-              $tab2 = array('name' => 'New user', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-circle-o');
-              $tab3 = array('name' => 'Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-circle-o');
-              $tab4 = array('name' => 'New Role', 'link' => base_url() . '/User/newrole', 'icon' => 'fa fa-circle-o');
-              $data['tabs'] = array($tab1, $tab2, $tab3,$tab4);
+              $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-tasks');
+              $tab2 = array('name' => 'New user', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-user-plus');
+              $tab3 = array('name' => 'Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-gears');
+              $data['tabs'] = array($tab1, $tab2, $tab3);
 
               $this->load->view('template/header', $data);
               $this->load->view('User/newrole', $data);
@@ -189,9 +225,9 @@ class User extends CI_Controller
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $tab1 = array('name'=>'User List','link'=>base_url().'/User/listuser', 'icon'=>'fa fa-tasks');
-            $tab2 = array('name'=>'New User','link'=>base_url().'/User/new', 'icon'=>'fa fa-plus');
-            $tab3 = array('name'=>'Role','link'=>base_url().'/User/role', 'icon'=>'fa fa-circle-o');
-            $tab4 = array('name'=>'New Role','link'=>base_url().'/User/newrole', 'icon'=>'fa fa-plus');
+            $tab2 = array('name'=>'New User','link'=>base_url().'/User/new', 'icon'=>'fa fa-user-plus');
+            $tab3 = array('name'=>'Role','link'=>base_url().'/User/role', 'icon'=>'fa fa-gears');
+            $tab4 = array('name'=>'New Role','link'=>base_url().'/User/newrole', 'icon'=>'fa fa-plus-square');
             $data['tabs'] = array($tab1,$tab2,$tab3,$tab4);
             $data['data_tables'] = array('role_table');
             $data['roles'] = $this->Role_model->get_all_roles();
@@ -278,7 +314,7 @@ class User extends CI_Controller
         }
     }
 
-    public function editrole($id)
+    public function edit_role($id)
     {
         if(isset($_SESSION['user'])){
             //$id = $this->input->post('id');
@@ -287,24 +323,56 @@ class User extends CI_Controller
             $data['apps'] = $_SESSION['apps'];
             //$data['tabs'] = $this->maketab($_SESSION['access'],$id);
         //$id = $this->input->post('id');
-        $tab1 = array('name'=>'User List','link'=>base_url().'/User/listuser', 'icon'=>'fa fa-circle-o');
-        $tab2 = array('name'=>'Role','link'=>base_url().'/User/Role', 'icon'=>'fa fa-tasks');
-        $tab3 = array('name'=>'New Role','link'=>base_url().'/User/newrole', 'icon'=>'fa fa-plus');
+        $tab1 = array('name'=>'User List','link'=>base_url().'/User/listuser', 'icon'=>'fa fa-tasks');
+        $tab2 = array('name'=>'Role','link'=>base_url().'/User/Role', 'icon'=>'fa fa-gears');
+        $tab3 = array('name'=>'New Role','link'=>base_url().'/User/newrole', 'icon'=>'fa fa-plus-square');
         $data['tabs'] = array($tab1,$tab2,$tab3);
         $data['roles']=$this->Role_model->editrole($id);
+        $data['accesses'] =$this->Role_model->get_object($id);
         //$data['projects'] =$this->Customer_model->get_project($id);
         $this->load->view('template/header',$data);
         $this->load->view('User/editrole',$data);
         $this->load->view('template/footer');}
     }
 
-    public function delete(){
+    public function delete_role($id){
         if(isset($_SESSION['user']))
         {
-            $id = $_SESSION['id'];
-            $this->Role_model->delete($id);
+            //$id = $_SESSION['id'];
+            $this->Role_model-> delete_role($id);
+            $data['page'] = array('header'=>'User Roles', 'description'=>'Edit a role or Add new role','app_name'=>'Role');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $tab1 = array('name' => 'Back', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-arrow-circle-left');
+            $data['tabs'] = array($tab1);
+            $data['roles']=$this->Role_model->get_role_data($_SESSION['user']['id']);
+            //$data['data_tables'] = array('role_details');
+            //$data['tabs'] = $this->maketab($_SESSION['access'],$id);
+            $this->load->view('template/header',$data);
+            $this->load->view('User/role_after_delete',$data);
+            $this->load->view('template/footer');
+
         }
     }
+
+    public function role_after_delete($id){
+        if(isset($_SESSION['user']))
+        {
+            //$id = $_SESSION['id'];
+            $this->Role_model-> delete_role($id);
+            $data['page'] = array('header'=>'User Roles', 'description'=>'Edit a role or Add new role','app_name'=>'Role');
+            $data['user'] = $_SESSION['user'];
+            $data['apps'] = $_SESSION['apps'];
+            $tab1 = array('name' => 'Back', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-arrow-circle-left');
+            $data['tabs'] = array($tab1);
+            $data['roles']=$this->Role_model->get_role_data($_SESSION['user']['id']);
+            //$data['data_tables'] = array('role_details');
+            //$data['tabs'] = $this->maketab($_SESSION['access'],$id);
+            $this->load->view('template/header',$data);
+            $this->load->view('User/role_after_delete',$data);
+            $this->load->view('template/footer');
+
+          }}
 
     public function update_role($id){
         if(isset($_SESSION['user']))
@@ -315,9 +383,10 @@ class User extends CI_Controller
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-tasks');
-            $tab2 = array('name' => 'New User', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-plus');
-            $tab3 = array('name' =>  'User Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-circle-o');
-            $data['tabs'] = array($tab1, $tab2,$tab3);
+            $tab2 = array('name' => 'New User', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-user-plus');
+            $tab3 = array('name' =>  'User Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-gears');
+            $tab4 = array('name'=>'New Role','link'=>base_url().'/User/newrole', 'icon'=>'fa fa-plus-square');
+            $data['tabs'] = array($tab1,$tab2,$tab3,$tab4);
             $data['roles']=$this->Role_model->get_role_data();
             //$data['tabs'] = $this->maketab($_SESSION['access'],$id);
             $this->load->view('template/header',$data);
@@ -332,10 +401,10 @@ class User extends CI_Controller
             $data['page'] = array('header'=>'User Roles', 'description'=>'Edit a role or Add new role','app_name'=>'Role');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
-            $tab1 = array('name'=>'User List','link'=>base_url().'/User/listuser', 'icon'=>'fa fa-circle-o');
-            $tab2 = array('name'=>'New User','link'=>base_url().'/User/new', 'icon'=>'fa fa-circle-o');
-            $tab3 = array('name'=>'Role','link'=>base_url().'/User/Role', 'icon'=>'fa fa-circle-o');
-            $tab4 = array('name'=>'New Role','link'=>base_url().'/User/newrole', 'icon'=>'fa fa-circle-o');
+            $tab1 = array('name'=>'User List','link'=>base_url().'/User/listuser', 'icon'=>'fa fa-tasks');
+            $tab2 = array('name'=>'New User','link'=>base_url().'/User/new', 'icon'=>'fa fa-user-plus');
+            $tab3 = array('name'=>'Role','link'=>base_url().'/User/Role', 'icon'=>'fa fa-gears');
+            $tab4 = array('name'=>'New Role','link'=>base_url().'/User/newrole', 'icon'=>'fa fa-plus-square');
             $data['tabs'] = array($tab1,$tab2,$tab3,$tab4);
         $id = $this->input->post('id');
         $this->load->model('Role_model');
@@ -354,12 +423,13 @@ class User extends CI_Controller
             $data['page'] = array('header'=>'User Roles', 'description'=>'Edit a role or Add new role','app_name'=>'Role');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
-            $tab1 = array('name'=>'Role','link'=>base_url().'/User/Role', 'icon'=>'fa fa-circle-o');
+            $tab1 = array('name'=>'Role','link'=>base_url().'/User/Role', 'icon'=>'fa fa-gears');
             $data['tabs'] = array($tab1);
             //$data['tabs'] = $this->maketab($_SESSION['access'],$id);
         //$id = $this->input->post('id');
         $data['roles']=$this->Role_model->get_data_by_id($id);
         $data['users'] =$this->Role_model->get_user($id);
+        $data['accesses'] =$this->Role_model->get_object($id);
         $this->load->view('template/header',$data);
         $this->load->view('User/viewrole',$data);
         $this->load->view('template/footer');}
@@ -441,4 +511,3 @@ class User extends CI_Controller
 
     }
 }
-

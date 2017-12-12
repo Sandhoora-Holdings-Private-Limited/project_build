@@ -1,16 +1,17 @@
 
 <div class="row">
     <div class="col-xs-12">
-        <div style="display:<?php if(isset($fail)) echo"block"; else echo "none"; ?>;" class="alert alert-danger alert-dismissible">
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-check"></i> Success </h4>
+            User succefully added.
+        </div>
+        <div class="alert alert-danger alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <h4><i class="icon fa fa-ban"></i> Failed!</h4>
-            <?php if(isset($message)) echo $message; ?>
+            Failed to add to user !
         </div>
-        <div style="display:<?php if(isset($sucess)) echo"block"; else echo "none"; ?>;"  class="alert alert-success alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <h4><i class="icon fa fa-check"></i> Sucess!</h4>
-            <?php if(isset($message)) echo $message; ?>
-        </div>
+
     </div>
 </div>
 <div class="row">
@@ -45,7 +46,7 @@
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="password_hash" placeholder="Password" name="password_hash">
+                        <input type="password" class="form-control" id="password_hash" placeholder="Password" name="	password_hash">
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Confirm Password</label>
