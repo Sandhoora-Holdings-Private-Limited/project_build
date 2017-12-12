@@ -18,8 +18,8 @@ class Vendor extends CI_Controller
             $data['page'] = array('header'=>'Vendors', 'description'=>'pick a Vendor or create new customer','app_name'=>'Vendor');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
-            $tab1 = array('name'=>'Vendor List','link'=>base_url().'/Vendor/listvendor', 'icon'=>'fa fa-circle-o');
-            $tab2 = array('name'=>'New Vendor','link'=>base_url().'/Vendor/new', 'icon'=>'fa fa-circle-o');
+            $tab1 = array('name'=>'Vendor List','link'=>base_url().'/Vendor/listvendor', 'icon'=>'fa fa-server');
+            $tab2 = array('name'=>'New Vendor','link'=>base_url().'/Vendor/new', 'icon'=>'fa fa-plus');
             $data['tabs'] = array($tab1,$tab2);
             $data['vendors'] = $this->Vendor_model->get_vendor_data();
             $this->load->view('template/header',$data);
