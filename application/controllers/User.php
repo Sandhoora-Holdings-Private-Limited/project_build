@@ -104,7 +104,28 @@ class User extends CI_Controller
     {
         if (isset($_SESSION['user'])) {
 
-            $this->Role_model->set_role_data();
+          $this->load->library('form_validation');
+          $this->form_validation->set_rules('name', 'name', 'required|is_unique[role.name]');
+
+            if ($this->form_validation->run() == FALSE)
+                {
+                        $data['fail'] = true;
+                        $data['message'] = 'Validation Error';
+                }
+                else
+                {
+                        $result =$this->Role_model->set_role_data();
+                        if($result)
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = 'Failed to add Role ';
+                        }
+                        else
+                        {
+                            $data['sucess'] = true;
+                            $data['message'] = 'Sucessfully added ';
+                        }
+                }
             $data['page'] = array('header' => 'Role New', 'description' => 'create a new Role', 'app_name' => 'New Role');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];

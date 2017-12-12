@@ -1,6 +1,6 @@
 <div class="row">
   <?php
-    if($access['project_customer']['read'])
+    if($access['project_customer'])
     {
       echo '
             <div class="col-md-3 col-sm-6 col-xs-12">
@@ -15,7 +15,7 @@
               </div>';
     }
 
-    if($access['project_inventory']['read'])
+    if($access['project_inventory'])
     {
       echo '
       <div class="col-md-3 col-sm-6 col-xs-12">
@@ -30,7 +30,7 @@
       </div>';
     }
 
-    if($access['project_team']['update'])
+    if($access['project_team'])
     {
       echo '
       <div class="col-md-3 col-sm-6 col-xs-12">
@@ -45,7 +45,7 @@
       </div>';
     }
 
-    if($access['project_budget']['read'])
+    if($access['project_budget'])
     {
       echo '
       <div class="col-md-3 col-sm-6 col-xs-12">
@@ -60,7 +60,7 @@
       </div>';
     }
 
-    if($access['project']['read'])
+    if($access['project'])
     {
       echo '
       <div class="col-md-3 col-sm-6 col-xs-12">

@@ -11,9 +11,10 @@ class Inventory extends CI_Controller
         $this->load->model('Project_model');
     }
 
+    //inventory_stock pages
     public function index()
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['inventory'])
         {
             $project_id = 1;
             $data['page'] = array('header'=>'Inventory stock', 'description'=>'inventory stock','app_name'=>'INVENTORY');
@@ -35,7 +36,7 @@ class Inventory extends CI_Controller
      public function inventory_dashboard()
     {
     	$project_id = 1;
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['inventory_stock'])
         {
             if(isset($_POST['item_id']))
             {
@@ -86,7 +87,7 @@ class Inventory extends CI_Controller
     public function inventory_log()
     {
     	$project_id = 1;
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['inventory'])
         {
             $data['page'] = array('header'=>'Inventory log', 'description'=>'log of all inventory tansactions','app_name'=>'INVENTORY');
             $data['user'] = $_SESSION['user'];
@@ -105,9 +106,10 @@ class Inventory extends CI_Controller
         }
     }
 
+    //item_list pages
     public function item_list()
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['inventory_item'])
         {
             if(isset($_POST['new_item_form']))
             {
@@ -139,9 +141,10 @@ class Inventory extends CI_Controller
         }
     }
 
+    //price_list pages
     public function price_list($list_id=NULL)
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) && $_SESSION['access']['inventory_price'])
         {
             if($list_id==NULL)
             {
@@ -205,6 +208,7 @@ class Inventory extends CI_Controller
         }
     }
 
+    //private functions
     function make_tabs($access)
     {
         //Inventory
@@ -216,6 +220,20 @@ class Inventory extends CI_Controller
         $tab2 = array('name'=>'Item list','link'=>base_url().'/Inventory/item_list/' , 'icon'=>'fa fa-fw fa-cube');
         //Price list
         $tab3 = array('name'=>'Price list','link'=>base_url().'/Inventory/price_list/' , 'icon'=>'fa fa-fw fa-money');
-        return array($tab1,$tab2,$tab3);
+
+        $return_ary = array();
+        if($access['inventory_stock'])
+        {
+            array_push($return_ary, $tab1);
+        }
+        if($access['inventory_item'])
+        {
+            array_push($return_ary, $tab2);
+        }
+        if($access['inventory_price'])
+        {
+            array_push($return_ary, $tab3);
+        }
+        return $return_ary;
     }
 }
