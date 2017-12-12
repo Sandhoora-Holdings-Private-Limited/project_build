@@ -38,6 +38,33 @@
       </form>
     </div>
   </div>
+  <div class="col-xs-6">
+    <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Upload Item List CVS File</h3>
+        </div>
+      <!-- /.box-header -->
+      <!-- form start -->
+        <form role="form" action="<?= base_url(); ?>/Inventory/item_list" method="post" enctype="multipart/form-data">
+          <div class="box-body">
+            <div class="form-group">
+              <label for="exampleInputFile">File input</label>
+              <input name="item_list_file" id="item_list_file" type="file">
+
+              <p class="help-block">Upload your cvs file here.</p>
+            </div>
+            </div>
+
+          <!-- /.box-body -->
+
+          <div class="box-footer">
+            <button name="upload" type="submit"  class="btn btn-primary">Submit</button>
+            <a href="<?= base_url(); ?>/assets/downloads/item_list_template.csv" download class="btn pull-right btn-success">Download CVS template
+            </a>
+          </div>
+        </form>
+    </div>
+  </div>
 </div>
 
 

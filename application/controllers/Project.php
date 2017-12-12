@@ -416,10 +416,15 @@ class Project extends CI_Controller
                     }
                 }
             }
+            if(isset($_POST['download_price_list']))
+            {
+                redirect(base_url().'/Project/get_price_list_cvs/'.$_POST['price_list_id'],'_blank');
+            }
             $data['page'] = array('header'=>'Projects budget', 'description'=>'add or change you buget here upload a CSV','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
+            $data['price_lists'] = $this->Inventory_model->get_all_price_lists();
             $data['project_id'] = $project_id;
             $this->load->view('template/header',$data);
             $this->load->view('Project/Budget/budget_change',$data);
@@ -429,6 +434,20 @@ class Project extends CI_Controller
         {
             redirect('/Main/login', 'refresh');
         }
+    }
+
+    public function get_price_list_cvs($price_list_id)
+    {
+        $this->Inventory_model->create_price_list_cvs($price_list_id);
+        echo 'done';
+        redirect(base_url().'/assets/downloads/price_list.csv','download');
+    }
+
+    public function get_item_list_cvs()
+    {
+        $this->Inventory_model->create_item_list_cvs();
+        echo 'done';
+        redirect(base_url().'/assets/downloads/item_list.csv','download');
     }
 
     //project_operation_pages

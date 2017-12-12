@@ -21,23 +21,31 @@
       </div>
       <!-- /.box-header -->
       <!-- form start -->
-      <form action="<?= base_url(); ?>/Inventory/price_list" method="post" role="form">
+      <form action="<?= base_url(); ?>/Inventory/price_list" method="post" enctype="multipart/form-data">
         <div class="box-body">
           <div class="form-group">
             <label for="name">Name</label>
             <input class="form-control" id="name" placeholder="" name="list_name" type="text" required>
             <input hidden name="new_list_form" value="true">
+            <div class="form-group">
+              <label for="exampleInputFile">File input</label>
+              <input name="price_list_file" id="price_list_file" type="file">
+
+              <p class="help-block">Upload your cvs file here.</p>
+            </div>
           </div>
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-          <button type="submit" class="btn btn-primary pull-right">Add Price List</button>
+          <button type="submit" class="btn btn-primary">Add Price List</button>
+          <button name="upload" type="submit"  class="btn btn-primary">Upload CVS</button>
+            <a href="<?= base_url(); ?>/assets/downloads/price_list_template.csv" download class="btn pull-right btn-success">Download CVS template
+            </a>
         </div>
       </form>
     </div>
   </div>
 </div>
-
 
 <div class="row">
   <div class="col-xs-12">

@@ -290,18 +290,18 @@ class Budget_model extends CI_Model
 			{
 				case '#stage':
 					$query = 'INSERT INTO budget_stage(project_id,name) VALUES ('.$project_id.', "'.$row[1].'")';
-					@$this->db->query($query);
+					$this->db->query($query);
 					$query = 'SELECT LAST_INSERT_ID() as result';
-					$query = @$this->db->query($query);
+					$query = $this->db->query($query);
 					$stage_id = $query->row()->result;
 					break;
 				case '#material':
 					$query = 'INSERT INTO budget_entry_material(budget_stage_id, inventory_item_id, inventory_item_price_list_id, no_of_units) VALUES ('.$stage_id.', '.$row[1].', '.$row[2].', '.$row[3].')';
-					@$this->db->query($query);
+					$this->db->query($query);
 					break;
 				case '#payment':
 					$query = 'INSERT INTO budget_entry_other(budget_stage_id, name, ammount) VALUES ('.$stage_id.', "'.$row[1].'" , '.$row[2].' )';
-					@$this->db->query($query);
+					$this->db->query($query);
 					break;
 			}
 		}

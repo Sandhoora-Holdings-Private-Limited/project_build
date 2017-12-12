@@ -125,6 +125,52 @@ class Inventory extends CI_Controller
                     $data['message'] = 'Failed to add the item';
                 }
             }
+            if(isset($_POST['upload']))
+            {
+                $target_dir = dirname(dirname(__FILE__))."/uploads/";
+                $target_file = $target_dir . basename("uploaded_item_list.cvs");
+                $uploadOk = 1;
+                $cvsFileType = $_FILES["item_list_file"]["type"];
+                // Check if file already exists
+                if (file_exists($target_file))
+                {
+                    unlink($target_file);
+                }
+                // Check file size
+                if ($_FILES["item_list_file"]["size"] > 500000)
+                {
+                    $data['fail'] = true;
+                    $data['message'] = "Sorry, your file is too large.";
+                    $uploadOk = 0;
+                }
+                // Allow certain file formats
+                if($cvsFileType != "cvs" && $cvsFileType !=  "text/csv" && $cvsFileType !=  "text" && $cvsFileType !=  "csv/text")
+                {
+                    $data['fail'] = true;
+                    $data['message'] = "Sorry, only cvs allowed.";
+                    $uploadOk = 0;
+                }
+                //upload file
+                if ($uploadOk != 0)
+                {
+                    if(move_uploaded_file($_FILES["item_list_file"]["tmp_name"], $target_file)) {
+                        $result = $this->Inventory_model->process_cvs_item_list($target_file);
+                        if($result)
+                        {
+                            $data['sucess'] = true;
+                            $data['message'] = "The file ". basename( $_FILES["item_list_file"]["name"]). " has been processed.";
+                        }
+                        else
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = "Failed to process file ". basename( $_FILES["item_list_file"]["name"]). " .";
+                        }
+                    } else {
+                        $data['fail'] = true;
+                        $data['message'] = "Sorry, there was an error uploading your file.";
+                    }
+                }
+            }
             $data['page'] = array('header'=>'Inventory Items', 'description'=>'add , edite  ypur items here','app_name'=>'INVENTORY');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
@@ -150,16 +196,65 @@ class Inventory extends CI_Controller
             {
                 if(isset($_POST['new_list_form']))
                 {
-                    $result = $this->Inventory_model->add_new_price_list($_POST['list_name']);
-                    if($result)
+                    if(isset($_POST['upload']))
                     {
-                        $data['sucess'] = true;
-                        $data['message'] = 'Sucessfully added the item';
+                        $target_dir = dirname(dirname(__FILE__))."/uploads/";
+                        $target_file = $target_dir . basename("uploaded_price_list.cvs");
+                        $uploadOk = 1;
+                        $cvsFileType = $_FILES["price_list_file"]["type"];
+                        // Check if file already exists
+                        if (file_exists($target_file))
+                        {
+                            unlink($target_file);
+                        }
+                        // Check file size
+                        if ($_FILES["price_list_file"]["size"] > 500000)
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = "Sorry, your file is too large.";
+                            $uploadOk = 0;
+                        }
+                        // Allow certain file formats
+                        if($cvsFileType != "cvs" && $cvsFileType !=  "text/csv" && $cvsFileType !=  "text" && $cvsFileType !=  "csv/text")
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = "Sorry, only cvs allowed.";
+                            $uploadOk = 0;
+                        }
+                        //upload file
+                        if ($uploadOk != 0)
+                        {
+                            if(move_uploaded_file($_FILES["price_list_file"]["tmp_name"], $target_file)) {
+                                $result = $this->Inventory_model->process_cvs_price_list($target_file,$_POST['list_name']);
+                                if($result)
+                                {
+                                    $data['sucess'] = true;
+                                    $data['message'] = "The file ". basename( $_FILES["price_list_file"]["name"]). " has been processed.";
+                                }
+                                else
+                                {
+                                    $data['fail'] = true;
+                                    $data['message'] = "Failed to process file ". basename( $_FILES["price_list_file"]["name"]). " .";
+                                }
+                            } else {
+                                $data['fail'] = true;
+                                $data['message'] = "Sorry, there was an error uploading your file.";
+                            }
+                        }
                     }
                     else
                     {
-                        $data['fail'] = true;
-                        $data['message'] = 'Failed to add the item';
+                        $result = $this->Inventory_model->add_new_price_list($_POST['list_name']);
+                        if($result)
+                        {
+                            $data['sucess'] = true;
+                            $data['message'] = 'Sucessfully added the item';
+                        }
+                        else
+                        {
+                            $data['fail'] = true;
+                            $data['message'] = 'Failed to add the item';
+                        }
                     }
                 }
                 $data['page'] = array('header'=>'Inventory Price Lists', 'description'=>'manage your price lists here','app_name'=>'INVENTORY');
