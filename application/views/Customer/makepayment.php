@@ -24,15 +24,24 @@
         <form role="form" action="<?= base_url(); ?>/Customer/payment" method="post">
           
           <div class="box-body">
-            
-            <div class="form-group">
-              <label for="exampleInputEmail1">Customer Id</label>
-              <input type="text" class="form-control" id="customer_id" name="customer_id">
-            </div>
-            <div class="form-group">
-              <label for="exampleInputEmail1">Project Id</label>
-              <input type="text" class="form-control" id="project_id"  name="project_id">
-            </div>
+
+              <div class="form-group">
+                <label>Customer ID</label>
+                <select class="form-control select1 select1-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="customer_id"  name="customer_id">
+                  <?php foreach ($customers as $customer) {
+                     echo '<option>' .$customer->id. '</option> '  ;               
+                   } ?>
+
+                </select>
+              </div>
+                <div class="form-group">
+                <label>Customer ID</label>
+                <select class="form-control select1 select1-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="project_id"  name="project_id">
+                  <?php foreach ($projects as $project) {
+                     echo '<option>' .$project->project_id. '</option> '  ;               
+                   } ?>
+                </select>
+              </div>
             <div class="form-group">
               <label for="exampleInputEmail1">Amount</label>
               <input type="text" class="form-control" id="ammount"  name="ammount">
@@ -56,3 +65,4 @@
       </div>
   </div>
 </div>
+
