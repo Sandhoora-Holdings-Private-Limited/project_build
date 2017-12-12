@@ -32,9 +32,16 @@
                         <label for="exampleInputname">Name</label>
                         <input type="text" class="form-control" id="name" placeholder="Enter Name" name="name">
                     </div>
+
                     <div class="form-group">
-                        <label for="exampleInputroleId">Role ID</label>
-                        <input type="text" class="form-control" id="role_id" placeholder="Enter Role ID" name="role_id">
+                        <label>Role ID</label>
+
+                        <select class="select2" style="width: 100%;" id="role_id"  name="role_id">
+                            <?php foreach ($roles as $role) {
+                                echo '<option >' .$role->id. '</option> '  ;
+                            } ?>
+
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Password</label>

@@ -44,7 +44,7 @@ class User extends CI_Controller
             $tab2 = array('name' => 'New user', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-plus');
             $tab3 = array('name' => 'Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-circle-o');
             $data['tabs'] = array($tab1, $tab2, $tab3);
-
+            $data['roles'] = $this->User_model->getrole();
             $this->load->view('template/header', $data);
             $this->load->view('User/new', $data);
             $this->load->view('template/footer');
@@ -88,11 +88,13 @@ class User extends CI_Controller
                 $data['page'] = array('header' => 'User New', 'description' => 'create a new user', 'app_name' => 'USER');
                 $data['user'] = $_SESSION['user'];
                 $data['apps'] = $_SESSION['apps'];
-
+                $tab1 = array('name' => 'User List', 'link' => base_url() . '/User/listuser', 'icon' => 'fa fa-tasks');
+                $tab2 = array('name' => 'New User', 'link' => base_url() . '/User/new', 'icon' => 'fa fa-plus');
+                $tab3 = array('name' =>  'User Role', 'link' => base_url() . '/User/role', 'icon' => 'fa fa-circle-o');$data['tabs'] = array($tab1, $tab2,$tab3);
                 $this->load->view('template/header', $data);
                 $this->load->view('User/new', $data);
                 $this->load->view('template/footer');
-            
+
         }
         else
         {
