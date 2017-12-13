@@ -214,6 +214,10 @@ class User_model extends CI_Model
 		        return 1;
 		}
 	}
+	public function getrole(){
+        $query = $this->db->get('role');
+        return $query->result();
+    }
 }
 
 

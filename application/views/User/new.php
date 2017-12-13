@@ -1,17 +1,15 @@
-
 <div class="row">
     <div class="col-xs-12">
-        <div class="alert alert-success alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <h4><i class="icon fa fa-check"></i> Success </h4>
-            User succefully added.
-        </div>
-        <div class="alert alert-danger alert-dismissible">
+        <div style="display:<?php if(isset($fail)) echo"block"; else echo "none"; ?>;" class="alert alert-danger alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <h4><i class="icon fa fa-ban"></i> Failed!</h4>
-            Failed to add to user !
+            <?php if(isset($message)) echo $message; ?>
         </div>
-
+        <div style="display:<?php if(isset($sucess)) echo"block"; else echo "none"; ?>;"  class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-check"></i> Sucess!</h4>
+            <?php if(isset($message)) echo $message; ?>
+        </div>
     </div>
 </div>
 <div class="row">
@@ -33,9 +31,16 @@
                         <label for="exampleInputname">Name</label>
                         <input type="text" class="form-control" id="name" placeholder="Enter Name" name="name">
                     </div>
+
                     <div class="form-group">
-                        <label for="exampleInputroleId">Role ID</label>
-                        <input type="text" class="form-control" id="role_id" placeholder="Enter Role ID" name="role_id">
+                        <label>Role ID</label>
+
+                        <select class="select2" style="width: 100%;" id="role_id"  name="role_id">
+                            <?php foreach ($roles as $role) {
+                                echo '<option >' .$role->id. '</option> '  ;
+                            } ?>
+
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Password</label>
