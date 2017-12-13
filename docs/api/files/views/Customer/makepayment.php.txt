@@ -1,4 +1,17 @@
-
+<div class="row">
+  <div class="col-xs-12">
+    <div style="display:<?php if(isset($fail)) echo"block"; else echo "none"; ?>;" class="alert alert-danger alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <h4><i class="icon fa fa-ban"></i> Failed!</h4>
+      <?php if(isset($message)) echo $message; ?>
+    </div>
+    <div style="display:<?php if(isset($sucess)) echo"block"; else echo "none"; ?>;"  class="alert alert-success alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <h4><i class="icon fa fa-check"></i> Sucess!</h4>
+      <?php if(isset($message)) echo $message; ?>
+    </div>
+  </div>
+</div>
 <div class="row">
   <div class="col-xs-12">
     <div class="box box-primary">
@@ -11,18 +24,31 @@
         <form role="form" action="<?= base_url(); ?>/Customer/payment" method="post">
           
           <div class="box-body">
-            
-            <div class="form-group">
-              <label for="exampleInputEmail1">Customer Id</label>
-              <input type="text" class="form-control" id="customer_id" name="customer_id">
-            </div>
-            <div class="form-group">
-              <label for="exampleInputEmail1">Project Id</label>
-              <input type="text" class="form-control" id="project_id"  name="project_id">
-            </div>
+
+              <div class="form-group">
+                <label>Customer ID</label>
+                <select class="form-control select1 select1-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="customer_id"  name="customer_id">
+                  <?php foreach ($customers as $customer) {
+                     echo '<option>' .$customer->id. '</option> '  ;               
+                   } ?>
+
+                </select>
+              </div>
+                <div class="form-group">
+                <label>Customer ID</label>
+                <select class="form-control select1 select1-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="project_id"  name="project_id">
+                  <?php foreach ($projects as $project) {
+                     echo '<option>' .$project->project_id. '</option> '  ;               
+                   } ?>
+                </select>
+              </div>
             <div class="form-group">
               <label for="exampleInputEmail1">Amount</label>
               <input type="text" class="form-control" id="ammount"  name="ammount">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Memo</label>
+              <input type="text" class="form-control" id="memo"  name="memo">
             </div>
              
             
@@ -39,4 +65,5 @@
       </div>
   </div>
 </div>
+
 

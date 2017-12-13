@@ -1,22 +1,71 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Vendor_model extends CI_Model {
+class Vendor_model extends CI_Model 
+{
 
 	public function __construct()
 	{
+
+
 	}
 
-	public function get_all_vendors()
+	public function  get_all_vendors()
 	{
-		$query = $this->db->get_where('vendor',array('active' => 1));
+		$query = $this->db->get('vendor');
 		return $query->result();
 	}
 
 	public function get_vendor_details_by_id($id)
 	{
-		$query = $this->db->get_where('vendor', array('id'=>$id));
+		$query = $this->db->get_where('vendor', array('id'=>(int)$id));
 		return $query->row();
+	}
+
+	public function set_vendor_data()
+	{
+		$data = array(
+			'name' => $this->input->post('name'),
+			'address'=> $this->input->post('address'),
+			'email' => $this->input->post('email'),
+			'phone_number' => $this->input->post('phone_number')
+		);
+		$this->db->insert('vendor',$data);
+	}
+	public function get_vendor_data()
+	{
+		$query = $this->db->get_where('vendor',array('active'=>1));
+		return $query->result();
+	}
+	public function get_data_by_id($id)
+	{
+
+		$this->db->where('id', $id);
+		$query = $this->db->get('vendor');
+		return $query->result();
+
+	}
+	public function update($id){
+		$data = array(
+        'name' => $this->input->post('name'),
+		'address'=> $this->input->post('address'),
+		'email' => $this->input->post('email'),
+		'phone_number' => $this->input->post('phone_number')
+);
+	$this->db->where('id', $id);
+	$this->db->update('vendor', $data);
+
+}
+    public function delete($id){
+		$data = array(
+			'active' => '0'
+		);
+
+        //$this->db->where('active', '1');
+		//$query = $this->db->get('vendor');
+		//return $query->result();
+		$this->db->where('id', $id);
+		$this->db->update('vendor', $data);
 	}
 }
 

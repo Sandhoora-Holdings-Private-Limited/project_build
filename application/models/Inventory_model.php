@@ -9,6 +9,12 @@ class Inventory_model extends CI_Model
         parent::__construct();
     }
 
+    /**
+     * add or update price of an item in a price list
+     * @param [type] $item_id [description]
+     * @param [type] $list_id [description]
+     * @param [type] $ammount [description]
+     */
     public function add_new_price($item_id, $list_id, $ammount)
     {
     	$query = 'SELECT * FROM inventory_item_price WHERE inventory_item_price_list_id = '.$list_id.' AND inventory_item_id = '.$item_id;
@@ -26,6 +32,11 @@ class Inventory_model extends CI_Model
     	return $this->db->affected_rows();
     }
 
+    /**
+     * get all prices in a price list
+     * @param  [type] $list_id [description]
+     * @return [type]          [description]
+     */
     public function get_all_prices($list_id)
     {
     	$query = 'SELECT i.name, i.unit, i.id as item_id, p.price FROM inventory_item_price as p JOIN inventory_item as i on i.id = p.inventory_item_id WHERE p.inventory_item_price_list_id = '.$list_id;
@@ -33,6 +44,10 @@ class Inventory_model extends CI_Model
     	return $query->result();
     }
 
+    /**
+     * get all prices
+     * @return [type] [description]
+     */
 	public function get_all_price_lists()
 	{
     	$query = $this->db->get('inventory_item_price_list');
@@ -58,6 +73,7 @@ class Inventory_model extends CI_Model
     	$query = $this->db->get('inventory_item');
     	return $query->result();
     }
+
     public function get_stock_log($project_id)
 	{
 		$query = 'SELECT i.name, i.id, i.unit, sl.user_id, sl.time, sl.to_project_id, sl.from_project_id, sl.no_of_units FROM inventory_item_stock_log as sl JOIN inventory_item as i on i.id = sl.inventory_item_id  WHERE from_project_id = '.$project_id.' OR to_project_id = '.$project_id;
@@ -72,6 +88,14 @@ class Inventory_model extends CI_Model
 		return $query->result();
 	}
 
+	/**
+	 * get stock in as a transaction
+	 * @param  [type] $project_id  [description]
+	 * @param  [type] $item_id     [description]
+	 * @param  [type] $no_of_units [description]
+	 * @param  [type] $user_id     [description]
+	 * @return [type]              [description]
+	 */
 	public function stock_in($project_id, $item_id, $no_of_units, $user_id)
 	{
 		$this->db->trans_begin();
@@ -106,6 +130,14 @@ class Inventory_model extends CI_Model
 		}
 	}
 
+	/**
+	 * get stock out as a transaction
+	 * @param  [type] $project_id  [description]
+	 * @param  [type] $item_id     [description]
+	 * @param  [type] $no_of_units [description]
+	 * @param  [type] $user_id     [description]
+	 * @return [type]              [description]
+	 */
 	public function stock_out($project_id, $item_id, $no_of_units, $user_id)
 	{
 		$this->db->trans_begin();
@@ -130,6 +162,15 @@ class Inventory_model extends CI_Model
 		}
 	}
 
+	/**
+	 * transfer stock from project to project
+	 * @param  [type] $item_id         [description]
+	 * @param  [type] $no_of_units     [description]
+	 * @param  [type] $from_project_id [description]
+	 * @param  [type] $to_project_id   [description]
+	 * @param  [type] $user_id         [description]
+	 * @return [type]                  [description]
+	 */
 	public function stock_transfer($item_id,$no_of_units,$from_project_id,$to_project_id,$user_id)
 	{
 		$this->db->trans_begin();
@@ -170,6 +211,11 @@ class Inventory_model extends CI_Model
 		}
 	}
 
+	/**
+	 * create a cvs for a price list
+	 * @param  [type] $price_list_id [description]
+	 * @return [type]                [description]
+	 */
 	public function create_price_list_cvs($price_list_id)
 	{
 		$query = "SELECT name from inventory_item_price_list WHERE id = ".$price_list_id;
@@ -188,6 +234,10 @@ class Inventory_model extends CI_Model
 	      }
 	}
 
+	/**
+	 * create cvs for items
+	 * @return [type] [description]
+	 */
 	public function create_item_list_cvs()
 	{
 		$my_file = dirname(dirname(dirname(__FILE__))).'/assets/downloads/item_list.csv';
@@ -203,6 +253,11 @@ class Inventory_model extends CI_Model
 	      }
 	}
 
+	/**
+	 * insert items from  a cvs file
+	 * @param  [type] $file_target [description]
+	 * @return [type]              [description]
+	 */
 	public function process_cvs_item_list($file_target)
 	{
 
@@ -236,6 +291,12 @@ class Inventory_model extends CI_Model
 		}
 	}
 
+	/**
+	 * create price list from a cvs
+	 * @param  [type] $file_target [description]
+	 * @param  [type] $name        [description]
+	 * @return [type]              [description]
+	 */
 	public function process_cvs_price_list($file_target, $name)
 	{
 		$file = fopen($file_target,"r");

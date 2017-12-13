@@ -211,7 +211,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </form>
     </section>
     <script type="text/javascript">
-      win = window.open("<?= base_url(); ?>/Project/operation_inbox/<?= $project_id; ?>", '_blank');
+      win = window.open("<?= base_url(); ?>/Project/operation_inbox/<?= $project_id; ?>/tab_purchases", '_blank');
       win.focus();
     </script>>
 </body>

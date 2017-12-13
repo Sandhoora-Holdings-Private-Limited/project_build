@@ -39,6 +39,12 @@
                   if(isset($vendor))
                   {
                     echo $vendor->name;
+                    echo '<br>';
+                    echo $vendor->email;
+                    echo '<br>';
+                    echo $vendor->phone_number;
+                    echo '<br>';
+                    echo $vendor->address;
                     echo '<input name="vendor" value="'.$vendor->id.'" hidden>';
                   }
                   else
@@ -47,7 +53,6 @@
                     foreach ($vendors as $vendor) {
                       echo '<option value="'.$vendor->id.'">'.$vendor->name.'</option>';
                     }
-                    //echo '<option value="'.$vendor->id.'">ads asd as da sd a sd asd as das</option>';
                     echo '</select>';
                   }
 
@@ -197,7 +202,7 @@
                 echo '</button>';
               }
             ?>
-          <a style="margin-right: 5px;" href="<?= base_url(); ?>/Project/operation_inbox/<?= $project_id ?>" class="btn btn-danger pull-left" >
+          <a style="margin-right: 5px;" href="<?= base_url(); ?>/Project/operation_inbox/<?= $project_id ?>/tab_purchases" class="btn btn-danger pull-left" >
             Go back
           </a>
         </div>

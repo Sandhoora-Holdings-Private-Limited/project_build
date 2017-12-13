@@ -9,6 +9,7 @@ class Main extends CI_Controller
         parent::__construct();
     }
 
+    //desktop page
     public function index()
     {
         if(isset($_SESSION['user']))
@@ -25,7 +26,6 @@ class Main extends CI_Controller
         {
             redirect('/Main/login', 'refresh');
         }
-
     }
 
     public function login()

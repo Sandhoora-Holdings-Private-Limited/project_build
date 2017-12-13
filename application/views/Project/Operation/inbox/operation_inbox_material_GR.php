@@ -77,7 +77,7 @@
                 echo '</button>';
               }
             ?>
-          <a style="margin-right: 5px;" href="<?= base_url(); ?>/Project/operation_inbox/<?= $project_id ?>" class="btn btn-danger pull-left" >
+          <a style="margin-right: 5px;" href="<?= base_url(); ?>/Project/operation_inbox/<?= $project_id ?>/tab_recive" class="btn btn-danger pull-left" >
             Go back
           </a>
 </div>

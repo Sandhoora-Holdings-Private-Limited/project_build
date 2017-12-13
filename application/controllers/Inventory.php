@@ -33,6 +33,7 @@ class Inventory extends CI_Controller
         }
     }
 
+    //inventory operation page
      public function inventory_dashboard()
     {
     	$project_id = 1;
@@ -84,6 +85,7 @@ class Inventory extends CI_Controller
         }
     }
 
+    //inventory log page
     public function inventory_log()
     {
     	$project_id = 1;

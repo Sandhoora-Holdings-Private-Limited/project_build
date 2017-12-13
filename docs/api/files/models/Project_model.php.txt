@@ -8,6 +8,49 @@ class Project_model extends CI_Model {
 
 	}
 
+	/**
+	 * get athorization table for project team member on material transactions
+	 * @param  [type] $user_id    [description]
+	 * @param  [type] $project_id [description]
+	 * @return [type]             [description]
+	 */
+	public function get_operation_access($user_id, $project_id)
+	{
+		$return_ary = array('request'=>0,'approve'=>0,'order'=>0,'recive'=>0,'pay'=>0);
+		$query = $this->db->get_where('material_transaction_approving_user', array('user_id'=>$user_id,'project_id'=>$project_id));
+		if($query->num_rows())
+		{
+			$row = $query->row();
+			$return_ary = array('request'=>(int)$row->request,'approve'=>(int)$row->approve,'order'=>(int)$row->order,'recive'=>(int)$row->recive,'pay'=>(int)$row->pay);
+		}
+
+		return $return_ary;
+	}
+
+	/**
+	 * get athorizatoin table for project team member on other payments
+	 * @param  [type] $user_id    [description]
+	 * @param  [type] $project_id [description]
+	 * @return [type]             [description]
+	 */
+	public function get_operation_access_pay($user_id, $project_id)
+	{
+		$return_ary = array('request'=>0,'approve'=>0,'pay'=>0);
+		$query = $this->db->get_where('other_payment_approving_user', array('user_id'=>$user_id,'project_id'=>$project_id));
+		if($query->num_rows())
+		{
+			$row = $query->row();
+			$return_ary = array('request'=>(int)$row->request,'approve'=>(int)$row->approve,'pay'=>(int)$row->pay);
+		}
+
+		return $return_ary;
+	}
+
+	/**
+	 * get all project data for users
+	 * @param  [type] $user_id [description]
+	 * @return [type]          [description]
+	 */
 	public function get_projects_by_user($user_id)
 	{
 		$query = 'SELECT `id`,`name`,`address`,`start_date`,`end_date` from project as p JOIN team_member as t WHERE t.user_id = "'.$user_id.'" AND p.active = 1 ';
@@ -15,6 +58,22 @@ class Project_model extends CI_Model {
 		return $query->result();
 	}
 
+	/**
+	 * get all projects
+	 * @return [type] [description]
+	 */
+	public function get_all_projects()
+	{
+		$query = 'SELECT `id`,`name`,`address`,`start_date`,`end_date` from project as p WHERE p.active = 1 ';
+		$query = $this->db->query($query);
+		return $query->result();
+	}
+
+	/**
+	 * add user to project team
+	 * @param [type] $user_id    [description]
+	 * @param [type] $project_id [description]
+	 */
 	public function add_user($user_id, $project_id)
 	{
 		@$this->db->insert('team_member', $data);
@@ -24,7 +83,7 @@ class Project_model extends CI_Model {
 	{
 		$data = array('name'=>$name, 'address'=>$address, 'start_date'=>$start_date, 'end_date'=>$end_date);
 		$query = $this->db->insert('project', $data);
-		var_dump($query);
+		return $this->db->affected_rows();
 	}
 
 	public function get_project_details($project_id)

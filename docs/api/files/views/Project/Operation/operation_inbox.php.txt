@@ -12,18 +12,17 @@
     </div>
   </div>
 </div>
-
 <div class="row">
 	<div class="col-xs-12">
     <div class="nav-tabs-custom">
       <ul class="nav nav-tabs">
-        <li class="<?php if($active_tab == 'tab_approvals') echo 'active';?>"><a href="#tab_approvals" data-toggle="tab" aria-expanded="true">To be approved</a></li>
-        <li class="<?php if($active_tab == 'tab_purchases') echo 'active';?>"><a href="#tab_purchases" data-toggle="tab" aria-expanded="false">To be purchased</a></li>
-        <li class="<?php if($active_tab == 'tab_pay') echo 'active';?>"><a href="#tab_pay" data-toggle="tab" aria-expanded="false">To be paid</a></li>
-        <li class="<?php if($active_tab == 'tab_recive') echo 'active';?>"><a href="#tab_recive" data-toggle="tab" aria-expanded="false">To be recived</a></li>
+        <li style="display: <?php if($tab_access['approve']) echo 'box' ;else echo "none";?>;" class="<?php if($active_tab == 'tab_approvals') echo 'active';?>"><a href="#tab_approvals" data-toggle="tab" aria-expanded="true">To be approved</a></li>
+        <li style="display: <?php if($tab_access['order']) echo 'box' ;else echo "none";?>;" class="<?php if($active_tab == 'tab_purchases') echo 'active';?>"><a href="#tab_purchases" data-toggle="tab" aria-expanded="false">To be purchased</a></li>
+        <li style="display: <?php if($tab_access['pay']) echo 'box' ;else echo "none";?>;" class="<?php if($active_tab == 'tab_pay') echo 'active';?>"><a href="#tab_pay" data-toggle="tab" aria-expanded="false">To be paid</a></li>
+        <li style="display: <?php if($tab_access['recive']) echo 'box' ;else echo "none";?>;" class="<?php if($active_tab == 'tab_recive') echo 'active';?>"><a href="#tab_recive" data-toggle="tab" aria-expanded="false">To be recived</a></li>
       </ul>
       <div class="tab-content">
-        <div class="tab-pane active" id="tab_approvals">
+        <div style="display: <?php if($tab_access['approve']) echo 'box' ;else echo "none";?>;" class="tab-pane <?php if($active_tab == 'tab_approvals') echo 'active';?>" id="tab_approvals">
           <table id="table_approvals" class="table table-bordered table-striped">
             <thead>
               <tr>
@@ -56,7 +55,7 @@
                   echo '<td>'.number_format(((float)$transaction->no_of_units * (float)$transaction->price),2,'.',',' ).'</td>';
                   echo '<td>'.$transaction->time.'</td>';
                   echo '<td>
-                          <form action="'.base_url().'/Project/operation_inbox/'.$project_id.'" method="post">
+                          <form action="'.base_url().'/Project/operation_inbox/'.$project_id.'/tab_approvals" method="post">
                             <input hidden name="transaction_id" value="'.$transaction->transaction_id.'">
                             <input hidden name="transaction_type" value="material">
                             <input hidden name="type" value="approve">
@@ -64,7 +63,7 @@
                           </form>
                         </td>';
                   echo '<td>
-                          <form action="'.base_url().'/Project/operation_inbox/'.$project_id.'" method="post">
+                          <form action="'.base_url().'/Project/operation_inbox/'.$project_id.'/tab_approvals" method="post">
                             <input hidden name="transaction_id" value="'.$transaction->transaction_id.'">
                             <input hidden name="transaction_type" value="material">
                             <input hidden name="type" value="denie">
@@ -72,7 +71,7 @@
                           </form>
                         </td>';
                   echo '<td>
-                          <form action="'.base_url().'/Project/operation_inbox/'.$project_id.'" method="post">
+                          <form action="'.base_url().'/Project/operation_inbox/'.$project_id.'/tab_approvals" method="post">
                             <input hidden name="transaction_type" value="material">
                             <input hidden name="transaction_id" value="'.$transaction->transaction_id.'">
                             <input hidden name="type" value="view">
@@ -94,7 +93,7 @@
                   echo '<td>'.number_format(((float)$transaction->budgeted_ammount),2,'.',',' ).'</td>';
                   echo '<td>'.$transaction->time.'</td>';
                   echo '<td>
-                      <form action="'.base_url().'/Project/operation_inbox/'.$project_id.'" method="post">
+                      <form action="'.base_url().'/Project/operation_inbox/'.$project_id.'/tab_approvals" method="post">
                         <input hidden name="transaction_id" value="'.$transaction->transaction_id.'">
                         <input hidden name="transaction_type" value="other_payment">
                         <input hidden name="type" value="approve">
@@ -102,7 +101,7 @@
                       </form>
                     </td>';
                   echo '<td>
-                          <form action="'.base_url().'/Project/operation_inbox/'.$project_id.'" method="post">
+                          <form action="'.base_url().'/Project/operation_inbox/'.$project_id.'/tab_approvals" method="post">
                             <input hidden name="transaction_id" value="'.$transaction->transaction_id.'">
                             <input hidden name="transaction_type" value="other_payment">
                             <input hidden name="type" value="denie">
@@ -110,7 +109,7 @@
                           </form>
                         </td>';
                   echo '<td>
-                          <form action="'.base_url().'/Project/operation_inbox/'.$project_id.'" method="post">
+                          <form action="'.base_url().'/Project/operation_inbox/'.$project_id.'/tab_approvals" method="post">
                             <input hidden name="transaction_type" value="other_payment">
                             <input hidden name="transaction_id" value="'.$transaction->transaction_id.'">
                             <input hidden name="type" value="view">
@@ -140,7 +139,7 @@
           </table>
         </div>
         <!-- /.tab-pane -->
-        <div class="tab-pane" id="tab_purchases">
+        <div style="display: <?php if($tab_access['order']) echo 'box' ;else echo "none";?>;" class="tab-pane <?php if($active_tab == 'tab_purchases') echo 'active';?>" id="tab_purchases">
           <form action="<?= base_url(); ?>/Project/operation_inbox_create_purchase_order/<?= $project_id; ?>" method="post">
             <table id="table_purchases" class="table table-bordered table-striped">
               <thead>
@@ -195,7 +194,7 @@
           </form>
         </div>
         <!-- /.tab-pane -->
-        <div class="tab-pane" id="tab_pay">
+        <div style="display: <?php if($tab_access['pay']) echo 'box' ;else echo "none";?>;" class="tab-pane <?php if($active_tab == 'tab_pay') echo 'active';?> " id="tab_pay">
           <table id="table_pay" class="table table-bordered table-striped">
             <thead>
               <tr>
@@ -222,7 +221,7 @@
                   echo '<td> - </td>';
                   echo '<td>'.$transaction->time.'</td>';
                   echo '<td>
-                          <form action="'.base_url().'/Project/operation_inbox/'.$project_id.'" method="post">
+                          <form action="'.base_url().'/Project/operation_inbox/'.$project_id.'/tab_pay" method="post">
                             <input hidden name="transaction_id" value="'.$transaction->transaction_id.'">
                             <input hidden name="transaction_type" value="other_payment">
                             <input hidden name="type" value="pay">
@@ -266,7 +265,7 @@
           </table>
         </div>
         <!-- /.tab-pane -->
-        <div class="tab-pane" id="tab_recive">
+        <div style="display: <?php if($tab_access['recive']) echo 'box' ;else echo "none";?>;" class="tab-pane <?php if($active_tab == 'tab_recive') echo 'active';?> " id="tab_recive">
           <form action="<?= base_url(); ?>/Project/operation_inbox_confirm_goods_recived/<?= $project_id; ?>" method="post">
             <table id="table_recivables" class="table table-bordered table-striped">
               <thead>

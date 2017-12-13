@@ -1,30 +1,78 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class User_model extends CI_Model {
 
-	public function __construct()
-	{
+class User_model extends CI_Model
+{
 
-	}
+    public function __construct()
+    {
 
-	public function get_user_data($user_id)
-	{
-		$query = $this->db->get_where('user', array('id' => $user_id));
-		return $query->row_array();
-	}
+    }
+
+    public function set_user_data()
+    {
+        $data = array(
+            'id' => $this->input->post('id'),
+            'name' => $this->input->post('name'),
+            'role_id' => $this->input->post('role_id')
+        );
+        $this->db->insert('user', $data);
+    }
 
 	public function get_all_users()
 	{
+        $this->db->where('active', '1');
 		$query = $this->db->get('user');
-		return $query->results();
+		return $query->result();
 	}
 
-	public function get_users_by_project($project_id)
-	{
-		$query = $this->db->get_where('user', array('project_id' => $project_id));
-		return $query->results();
-	}
+    public function get_user_data($user_id)
+    {
+        $this->db->where('active', '1');
+        $this->db->where('id', $user_id);
+        $query = $this->db->get('user');
+        return $query->row_array();
+    }
+
+    public function get_data_by_id($id)
+    {
+
+        $this->db->where('id', $id);
+        $this->db->where('active', '1');
+        $query = $this->db->get('user');
+        return $query->result();
+
+
+    }
+
+    public function get_role($id)
+    {
+        $this->db->where('id', $id);
+        $query = $this->db->get('user_has_role');
+        return $query->result();
+    }
+
+    public function update($id)
+    {
+        $data = array(
+            'name' => $this->input->post('name'),
+            'role_id' => $this->input->post('role_id'),
+        );
+        $this->db->where('id', $id);
+        $this->db->update('user', $data);
+
+    }
+
+
+    public function delete($id)
+    {
+        $data = array(
+            'active' => '0'
+        );
+        $this->db->where('id', $id);
+        $this->db->update('user', $data);
+    }
 
 	public function get_team_members($project_id)
 	{
@@ -63,9 +111,28 @@ class User_model extends CI_Model {
 
 	public function remove_team_member($project_id, $user_id)
 	{
-		$result = $this->db->delete('team_member', array('user_id' => $user_id, 'project_id' => $project_id));
-		return $result;
+		$this->db->trans_begin();
+		$query ='DELETE FROM `team_member` WHERE `project_id`= '.$project_id.' AND `user_id` = "'.$user_id.'" ';
+		echo $query;
+		$this->db->query($query);
+		// //$result = $this->db->delete('team_member', array('user_id' => $user_id, 'project_id' => (int)$project_id));
+		// return $this->db->affected_rows();
+
+		// $this->db->where('project_id',(int)$project_id);
+		//     $this->db->where('user_id',$user_id);
+		//     $this->db->delete('team_member');
+		if ($this->db->trans_status() === FALSE)
+		{
+		        $this->db->trans_rollback();
+		        return 0;
+		}
+		else
+		{
+		        $this->db->trans_commit();
+		        return 1;
+		}
 	}
+
 
 	public function create_approving_user($project_id, $data_ary)
 	{
@@ -148,4 +215,8 @@ class User_model extends CI_Model {
 		}
 	}
 }
+
+
+
+
 

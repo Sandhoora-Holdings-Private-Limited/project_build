@@ -6,7 +6,7 @@ class Budget_model extends CI_Model
 
 	public function __construct()
 	{
-
+		parent::__construct();
 	}
 
 	public function add_new_stage($project_id, $name)
@@ -22,6 +22,11 @@ class Budget_model extends CI_Model
 		return $query->result();
 	}
 
+	/**
+	 * get budget material entries in stages
+	 * @param  [type] $stage_id [description]
+	 * @return [type]           [description]
+	 */
 	public function get_entries_material_by_stage($stage_id)
 	{
 		$query = 'SELECT
@@ -40,6 +45,11 @@ class Budget_model extends CI_Model
 		return $query->result();
 	}
 
+	/**
+	 * get budget other payment entries in stage
+	 * @param  [type] $stage_id [description]
+	 * @return [type]           [description]
+	 */
 	public function get_entries_payments_by_stage($stage_id)
 	{
 		$query = 'SELECT
@@ -54,6 +64,11 @@ class Budget_model extends CI_Model
 		return $query->result();
 	}
 
+	/**
+	 * get materials that are not in budget entries in a stage
+	 * @param  [type] $stage_id [description]
+	 * @return [type]           [description]
+	 */
 	public function get_items_not_in_stage($stage_id)
 	{
 		$query = 'SELECT b.inventory_item_id as item_id FROM budget_stage as bs JOIN budget_entry_material as b on bs.id = b.budget_stage_id WHERE bs.id = '.$stage_id;
@@ -78,6 +93,10 @@ class Budget_model extends CI_Model
 		}
 	}
 
+	/**
+	 * get all price lists
+	 * @return [type] [description]
+	 */
 	public function get_price_list()
 	{
 		$query = 'SELECT * FROM inventory_item_price_list';
@@ -85,6 +104,15 @@ class Budget_model extends CI_Model
 		return $query->result();
 	}
 
+	/**
+	 * create new budget entry under a stage
+	 * @param  [type] $stage_id      [description]
+	 * @param  [type] $ammount       [description]
+	 * @param  [type] $type          [description]
+	 * @param  [type] $name          [description]
+	 * @param  [type] $price_list_id [description]
+	 * @return [type]                [description]
+	 */
 	public function create_new_entry($stage_id, $ammount, $type, $name, $price_list_id=NULL)
 	{
 		switch($type)
@@ -101,6 +129,11 @@ class Budget_model extends CI_Model
 		return $this->db->affected_rows();
 	}
 
+	/**
+	 * gets summary of whole project analytics
+	 * @param  [type] $project_id [description]
+	 * @return [type]             [description]
+	 */
 	public function get_project_budget_details($project_id)
 	{
 		//get total budgeted ammont
@@ -149,6 +182,11 @@ class Budget_model extends CI_Model
 		return array('spent'=>$spent, 'pending'=>$pending, 'budgeted'=>$budgeted, 'remaining'=>($budgeted-$pending-$spent));
 	}
 
+	/**
+	 * get summary of a stage analytics
+	 * @param  [type] $stage_id [description]
+	 * @return [type]           [description]
+	 */
 	public function get_stage_budget_details($stage_id)
 	{
 		//get budgeted ammount
@@ -272,6 +310,12 @@ class Budget_model extends CI_Model
 		return array('id'=>$id ,'name'=>$name, 'spent'=>$spent, 'pending'=>$pending, 'budgeted'=>$budgeted, 'remaining'=>($budgeted-$pending-$spent));
 	}
 
+	/**
+	 * process cvs to add budget for a project
+	 * @param  [type] $project_id  [description]
+	 * @param  [type] $file_target [description]
+	 * @return [type]              [description]
+	 */
 	public function process_cvs($project_id, $file_target)
 	{
 

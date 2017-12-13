@@ -39,6 +39,12 @@
                   if(isset($vendor))
                   {
                     echo $vendor->name;
+                    echo '<br>';
+                    echo $vendor->email;
+                    echo '<br>';
+                    echo $vendor->phone_number;
+                    echo '<br>';
+                    echo $vendor->address;
                     echo '<input name="vendor" value="'.$vendor->id.'" hidden>';
                   }
                   else
@@ -196,7 +202,7 @@
                 echo '</button>';
               }
             ?>
-          <a style="margin-right: 5px;" href="<?= base_url(); ?>/Project/operation_inbox/<?= $project_id ?>" class="btn btn-danger pull-left" >
+          <a style="margin-right: 5px;" href="<?= base_url(); ?>/Project/operation_inbox/<?= $project_id ?>/tab_purchases" class="btn btn-danger pull-left" >
             Go back
           </a>
         </div>

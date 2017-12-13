@@ -1,8 +1,14 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+/**
+ * All project related functions
+ */
 class Project extends CI_Controller
 {
+    /**
+     *loads all models used
+     */
     public function __construct()
     {
         parent::__construct();
@@ -14,7 +20,10 @@ class Project extends CI_Controller
         $this->load->model('Inventory_model');
     }
 
-    //project CRUD pages
+    /**
+     * pick project page
+     * @return [type] [description]
+     */
     public function index()
     {
         if(isset($_SESSION['user']) && $_SESSION['access']['project'])
@@ -23,6 +32,7 @@ class Project extends CI_Controller
             $data['page'] = array('header'=>'Projects', 'description'=>'pick a project or create new one','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
             $data['apps'] = $_SESSION['apps'];
+            //tabs
             $tab1 = array('name'=>'Project List','link'=>base_url().'/Project', 'icon'=>'fa fa-tasks');
             $tab2 = array('name'=>'New Project','link'=>base_url().'/Project/new', 'icon'=>'fa fa-plus');
             $data['tabs'] = array($tab1,$tab2);
@@ -38,6 +48,10 @@ class Project extends CI_Controller
         }
     }
 
+    /**
+     * add new project page
+     * @return [type] [description]
+     */
     public function new()
     {
         if(isset($_SESSION['user']) && $_SESSION['access']['project'])
@@ -80,6 +94,11 @@ class Project extends CI_Controller
         }
     }
 
+    /**
+     * view project dashboard page
+     * @param  int $project_id [description]
+     * @return [type]             [description]
+     */
     public function view($project_id)
     {
         if(isset($_SESSION['user']) && $_SESSION['access']['project'])
@@ -102,6 +121,11 @@ class Project extends CI_Controller
     }
 
     //project_team pages
+    /**
+     * pick and remove team memebers
+     * @param  int $project_id [description]
+     * @return [type]             [description]
+     */
     public function team_members($project_id)
     {
         if(isset($_SESSION['user']) && $_SESSION['access']['project_team'])
@@ -154,6 +178,11 @@ class Project extends CI_Controller
         }
     }
 
+    /**
+     * set team members privilages
+     * @param  int $project_id [description]
+     * @return [type]             [description]
+     */
     public function team_authority($project_id)
     {
         if(isset($_SESSION['user']) && $_SESSION['access']['project_operation_hierachy'])
@@ -190,6 +219,11 @@ class Project extends CI_Controller
     }
 
     //project_inventory pages
+    /**
+     * do inventory opperation page
+     * @param  int $project_id [description]
+     * @return [type]             [description]
+     */
     public function inventory_dashboard($project_id)
     {
         if(isset($_SESSION['user']) && $_SESSION['access']['project_inventory'])
@@ -241,6 +275,11 @@ class Project extends CI_Controller
         }
     }
 
+    /**
+     * view inventory stock
+     * @param  int $project_id [description]
+     * @return [type]             [description]
+     */
     public function inventory_stock($project_id)
     {
         if(isset($_SESSION['user']) && $_SESSION['access']['project_inventory'])
@@ -262,6 +301,11 @@ class Project extends CI_Controller
         }
     }
 
+    /**
+     * view inventory log
+     * @param  int $project_id [description]
+     * @return [type]             [description]
+     */
     public function inventory_log($project_id)
     {
         if(isset($_SESSION['user']) && $_SESSION['access']['project_inventory'])
@@ -284,6 +328,12 @@ class Project extends CI_Controller
     }
 
     //project_budget pages
+    /**
+     * view budget
+     * @param  int $project_id [description]
+     * @param  int $stage_id   if set shows stage details
+     * @return [type]             [description]
+     */
     public function budget($project_id, $stage_id=NULL)
     {
         if(isset($_SESSION['user']) && $_SESSION['access']['project_budget'])
@@ -365,6 +415,11 @@ class Project extends CI_Controller
         }
     }
 
+    /**
+     * chaneg budget
+     * @param  int $project_id [description]
+     * @return [type]             [description]
+     */
     public function budget_change($project_id)
     {
         if(isset($_SESSION['user']) && $_SESSION['access']['project_budget'])
@@ -436,6 +491,11 @@ class Project extends CI_Controller
         }
     }
 
+    /**
+     * get price list
+     * @param  int $price_list_id [description]
+     * @return [type]                [description]
+     */
     public function get_price_list_cvs($price_list_id)
     {
         $this->Inventory_model->create_price_list_cvs($price_list_id);
@@ -443,6 +503,10 @@ class Project extends CI_Controller
         redirect(base_url().'/assets/downloads/price_list.csv','download');
     }
 
+    /**
+     * get item list
+     * @return [type] [description]
+     */
     public function get_item_list_cvs()
     {
         $this->Inventory_model->create_item_list_cvs();
@@ -451,17 +515,31 @@ class Project extends CI_Controller
     }
 
     //project_operation_pages
+    /**
+     * operation inbox page shows approve requests, create po, goods recived
+     * @param  int $project_id [description]
+     * @param  string $active_tab working active
+     * @return [type]             [description]
+     */
     public function operation_inbox($project_id, $active_tab='tab_approvals')
     {
         if(isset($_SESSION['user']) && $_SESSION['access']['project'])
         {
+            $data['tab_access'] = $this->Project_model->get_operation_access($_SESSION['user']['id'],$project_id);
             if(isset($_POST['type']))
             {
                 switch($_POST['type'])
                 {
                     case 'approve' :
                     {
-                        $result = $this->Transaction_model->approve_transaction($_POST['transaction_id'],$_SESSION['user']['id'],1,$_POST['transaction_type']);
+                        if($data['tab_access']['approve'])
+                        {
+                            $result = $this->Transaction_model->approve_transaction($_POST['transaction_id'],$_SESSION['user']['id'],1,$_POST['transaction_type']);
+                        }
+                        else
+                        {
+                            $result = 0;
+                        }
                         if(!$result)
                         {
                             $data['fail'] = true;
@@ -476,7 +554,10 @@ class Project extends CI_Controller
                     }
                     case 'denie' :
                     {
-                        $result = $this->Transaction_model->approve_transaction($_POST['transaction_id'],$_SESSION['user']['id'],0,$_POST['transaction_type']);
+                        if($data['tab_access']['approve'])
+                            $result = $this->Transaction_model->approve_transaction($_POST['transaction_id'],$_SESSION['user']['id'],0,$_POST['transaction_type']);
+                        else
+                            $result = 0;
                         if(!$result)
                         {
                             $data['fail'] = true;
@@ -531,6 +612,8 @@ class Project extends CI_Controller
                             {
                                 $result = $this->Transaction_model->split_transaction($_POST['transaction_id'], $_SESSION['user']['id'],$_POST['split_ammount'], $project_id);
                             }
+                            if(!$data['tab_access']['approve'])
+                                $result = 0;
                             if($result)
                             {
                                 $data['sucess'] = true;
@@ -552,6 +635,8 @@ class Project extends CI_Controller
                     }
                     case 'pay':
                         $result = $this->Transaction_model->change_transaction_state($_POST['transaction_id'],'paid', 'other_payment');
+                        if(!$data['tab_access']['pay'])
+                                $result = 0;
                         if($result)
                         {
                             $data['sucess'] = true;
@@ -582,6 +667,7 @@ class Project extends CI_Controller
             $data['transactions'] = $transactions;
             $data['data_tables'] = array('table_approvals', 'table_purchases', 'table_recivables','table_pay');
             $data['active_tab'] = $active_tab;
+
             $this->load->view('template/header',$data);
             $this->load->view('Project/Operation/operation_inbox',$data);
             $this->load->view('template/footer');
@@ -594,6 +680,7 @@ class Project extends CI_Controller
 
     public function operation_inbox_create_purchase_order($project_id)
     {
+
         if(isset($_SESSION['user']) && $_SESSION['access']['project'])
         {
             $data['page'] = array('header'=>'Inbox', 'description'=>'Requests need your approval','app_name'=>'PROJECTS');
@@ -601,7 +688,7 @@ class Project extends CI_Controller
             $data['apps'] = $_SESSION['apps'];
             $data['tabs'] = $this->make_tabs($_SESSION['access'],$project_id);
             $data['project_id'] = $project_id;
-            $data['vendors'] = $this->Vendor_model->get_all_vendors();
+            $data['access'] = $_SESSION['access'];
             $transactions = array();
             if(isset($_POST['po_form']))
             {
@@ -680,6 +767,7 @@ class Project extends CI_Controller
                 }
             }
             $data['transactions'] = $transactions;
+            $data['vendors'] = $this->Vendor_model->get_all_vendors();
 
             if(isset($_POST['print']))
             {
@@ -834,7 +922,8 @@ class Project extends CI_Controller
 
     public function operation_request($project_id, $stage_id=NULL)
     {
-        if(isset($_SESSION['user']) && $_SESSION['access']['project'])
+        $access_op_rq = $this->Project_model->get_operation_access($_SESSION['user']['id'],$project_id);
+        if(isset($_SESSION['user']) && $_SESSION['access']['project'] && $access_op_rq['request'])
         {
             $data['page'] = array('header'=>'Create requests', 'description'=>'Create requests for material and other payments','app_name'=>'PROJECTS');
             $data['user'] = $_SESSION['user'];
@@ -1097,12 +1186,24 @@ class Project extends CI_Controller
         $tab5 = array('name'=>'Budget', 'icon'=>'fa fa-fw fa-calculator','next_level'=>array($tab5_1,$tab5_2));
 
         //Opperation
+
         $tab6_1 = array('name'=>'Inbox','link'=>base_url().'/Project/operation_inbox/'.$project_id, 'icon'=>'fa fa-fw fa-circle-o');
         $tab6_2 = array('name'=>'Create request','link'=>base_url().'/Project/operation_request/'.$project_id, 'icon'=>'fa fa-fw fa-circle-o');
         $tab6_3 = array('name'=>'Pending request','link'=>base_url().'/Project/operation_pending/'.$project_id, 'icon'=>'fa fa-fw fa-circle-o');
         $tab6_4 = array('name'=>'Request history','link'=>base_url().'/Project/operation_history/'.$project_id, 'icon'=>'fa fa-fw fa-circle-o');
-        $tab6 = array('name'=>'Operation','link'=>base_url().'/Project/operation/'.$project_id, 'icon'=>'fa fa-fw fa-inbox','next_level'=>array($tab6_1,$tab6_2,$tab6_3,$tab6_4));
 
+        $tab6_ary = array();
+        $operation = $this->Project_model->get_operation_access($_SESSION['user']['id'],$project_id);
+        if($operation['approve'] || $operation['order'] || $operation['recive'] || $operation['pay'])
+            array_push($tab6_ary, $tab6_1);
+        if($operation['request'])
+            array_push($tab6_ary, $tab6_2);
+        array_push($tab6_ary, $tab6_3);
+        array_push($tab6_ary, $tab6_4);
+        $tab6 = array('name'=>'Operation','link'=>base_url().'/Project/operation/'.$project_id, 'icon'=>'fa fa-fw fa-inbox','next_level'=>$tab6_ary);
+
+
+        //setting tabs according to user access
         $return_ary = array();
         if($access['project'])
         {
